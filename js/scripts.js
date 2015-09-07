@@ -16,8 +16,12 @@ App.start = (function ($) {
     // Store the navigation hyperlinks jQuery selector object
     var $_navigationLinks = null;
 
+    // Has the events been binded
+    var _isEventsBound = false;
+
     // Events object
     var _events = {
+        click: 'click.app.main',
         navigation: function (event) {
             // Prevent default click propagation
             event.preventDefault();
@@ -67,8 +71,27 @@ App.start = (function ($) {
      * @return {undefined}
      */
     function bindEvents() {
+        if (_isEventsBound) {
+            return;
+        }
+
         // Navigation hyperlink elements
-        $_navigationLinks.on('click.app.main', _events.navigation);
+        $_navigationLinks.on(_events.click, _events.navigation);
+        _isEventsBound = true;
+    }
+
+    /**
+     * Unbind events
+     *
+     * @return {undefined}
+     */
+    function unbindEvents() {
+        if (!_isEventsBound) {
+            return;
+        }
+
+        $_navigationLinks.off(_events.click);
+        _isEventsBound = false;
     }
 
     /**
