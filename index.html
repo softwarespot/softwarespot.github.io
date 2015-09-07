@@ -2,10 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>SoftwareSpot</title>
+    <title>SoftwareSpot © 2015</title>
 
     <!--Favourite Icon-->
-    <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+    <!--<link rel="icon" type="image/x-icon" href="favicon.ico"/>-->
 
     <!--Page Specific Metas-->
     <meta name="description" content=""/>
@@ -18,28 +18,65 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"/>
 
     <!--Stylesheets-->
-    <link href="css/styles.css" rel="stylesheet"/>
+    <link href="css/vendor.min.css" rel="stylesheet"/>
+    <link href="css/styles.min.css" rel="stylesheet"/>
     <style>
-        /*Body styling*/
-        body {
-            font-family: 'Open Sans', sans-serif, Arial;
-        }
+        /*Empty*/
     </style>
 </head>
 
 <body>
-    <h1>SoftwareSpot</h1>
-    <p>Content coming soon, maybe?!</p>
-
     <!--Content-->
+    <header>
+        <!--Navigation-->
+        <nav>
+            <ul>
+                <li><a href="#about-section">About</a></li>
+                <li><a href="#built-section">Built</a></li>
+                <!--<li><a href="#software-section">Software</a></li>-->
+            </ul>
+            <div id="menu"><a href="#menu"></a></div>
+        </nav>
+    </header>
+
+    <div id="about-section" class="container main-section">
+        <h1>SoftwareSpot</h1>
+        <p>Currently this little corner of the Internet is still being built, because if history has taught us anything, Rome wasn't built in a day.</p>
+        <p>So please sit back, relax and wait as I plan to blow your mind with an awesome looking landing page.</p>
+        <div class="row">
+            <div class="four columns">
+                <img src="images/javascript.svg" title="ES2015 is the best!"/>
+            </div>
+            <div class="four columns">
+                <img src="images/html-5.svg" title="HTML5"/>
+            </div>
+            <div class="four columns">
+                <img src="images/css-3.svg" title="CSS3"/>
+            </div>
+        </div>
+    </div>
+
+    <footer id="built-section" class="container">
+        <h2>Built using...</h2>
+        <a href="http://bower.io" title="A package manager for the web"><img src="images/bower.svg"/></a>
+        <a href="http://gulpjs.com" title="Automate and enhance your workflow"><img src="images/gulp.svg"/></a>
+        <a href="https://github.com" title="Build software better, together"><img src="images/github-icon.svg"/></a>
+        <h6>SoftwareSpot &copy; 2015</h6>
+    </footer>
+
 
     <!--Scripts-->
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="js/scripts.js"></script>
+    <script src="js/vendor.min.js"></script>
+    <script src="js/scripts.min.js"></script>
     <script>
-        $(function () {
-            // Invoked when the DOM has loaded
-        });
-    </script>
+        // // An Immediately Invoked Function Expression (IIFE)
+        // (function ($) {
+
+        //     $(function () {
+        //         // Invoked when the DOM has loaded
+        //     });
+
+        // })(jQuery);
+</script>
 </body>
 </html>

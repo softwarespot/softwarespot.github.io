@@ -1,6 +1,100 @@
 /**
  * Custom CSS
  *
- * Modified: 2015/09/06
+ * Modified: 2015/09/07
  * @author softwarespot
  */
+
+ /*Body styling*/
+ body {
+    background: #fafafa;
+    font-family: 'Open Sans', sans-serif, Arial;
+    color: #222;
+}
+
+/* Style a links as well as increasing the clickable area. */
+a {
+    background: transparent;
+    color: #2980b9;
+    margin: -.5em;
+    padding: .5em;
+    position: relative;
+    text-decoration: none;
+    -webkit-transition: all .3s ease-out;
+    transition: all .3s ease-out;
+}
+
+a:hover {
+    color: #3498db;
+}
+
+/*Navigation*/
+nav,
+nav ul {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+nav a {
+    font-size: 2em;
+}
+
+nav a,
+nav a:hover {
+    color: #fafafa;
+}
+
+nav ul li {
+    background: #4aa3df;
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+}
+
+.container {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.main-section {
+    background: #2ecc71;
+    color: #fafafa;
+    font-size: 1.2em;
+}
+
+.main-section img {
+    width: 50%;
+}
+
+footer img {
+    height: 128px;
+    width: 128px;
+}
+
+/*Mobile first queries*/
+
+/*Larger than mobile*/
+@media (min-width: 400px) {
+    .container {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+/*Larger than phablet*/
+@media (min-width: 550px) {
+}
+
+/*Larger than tablet*/
+@media (min-width: 750px) {
+}
+
+/*Larger than desktop*/
+@media (min-width: 1000px) {
+}
+
+/*Larger than Desktop HD*/
+@media (min-width: 1200px) {
+}
