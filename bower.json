@@ -11,13 +11,12 @@
     "awesome"
   ],
   "license": "MIT",
-  "ignore": [
-  ],
+  "ignore": [],
   "dependencies": {
+    "font-awesome": "fontawesome#~4.4.0",
     "jquery": "~2.1.4",
     "normalize-css": "normalize.css#~3.0.3",
     "skeleton": "~2.0.4"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
