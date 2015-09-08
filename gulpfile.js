@@ -58,6 +58,8 @@ gulp.task('clean', function (cb) {
 
 // Minify the main css file
 gulp.task('cssmin', function () {
+    // Clean the css dist directory
+    del(['./' + Assets.css.dist + '/' + Assets.css.custom.minified]);
     return gulp.src('./' + Assets.css.dist + '/' + Assets.css.custom.main)
         .pipe(cssmin(uglifySettings))
         .pipe(rename({
