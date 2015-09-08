@@ -12,7 +12,7 @@
     color: #222;
 }
 
-/* Style a links as well as increasing the clickable area. */
+/*Style a links as well as increasing the clickable area*/
 a {
     background: transparent;
     color: #2980b9;
@@ -26,6 +26,16 @@ a {
 
 a:hover {
     color: #3498db;
+}
+
+a img {
+    -webkit-transition: -webkit-transform .3s ease-out;
+    transition: transform .3s ease-out;
+}
+
+a img:hover {
+    -webkit-transform: scale(1.4, 1.4);
+    transform: scale(1.4, 1.4);
 }
 
 /*Navigation*/
