@@ -27,7 +27,7 @@ App.start = (function ($) {
             event.preventDefault();
 
             // Get the href attribute using vanilla JavaScript
-            var href = event.toElement.getAttribute('href');
+            var href = event.currentTarget.getAttribute('href');
 
             // Get the jQuery selector object based on the href attribute value
             var $element = $(href);
@@ -61,7 +61,7 @@ App.start = (function ($) {
      * @return {undefined}
      */
     function cacheDom() {
-        $_body = $('body');
+        $_body = $('html, body');
         $_navigationLinks = $('header').find('a');
     }
 
