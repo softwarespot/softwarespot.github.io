@@ -63,7 +63,8 @@ nav a:hover {
 }
 
 .container {
-    padding: 50px 0;
+    padding: 20px 0;
+    width: 100%;
     text-align: center;
 }
 
@@ -71,25 +72,35 @@ nav a:hover {
     background: #2ecc71;
     color: #fafafa;
     font-size: 1.2em;
+    padding: 50px 0;
 }
 
 .main-section img {
     width: 50%;
 }
 
-footer img {
+img.small {
     height: 128px;
     width: 128px;
+}
+
+/*Add space after and before quotation marks*/
+.fa-quote-left {
+    margin-right: 5px;
+}
+
+.fa-quote-right {
+    margin-left: 5px;
+}
+
+footer {
+    border-top: 2px solid #222;
 }
 
 /*Mobile first queries*/
 
 /*Larger than mobile*/
 @media (min-width: 400px) {
-    .container {
-        max-width: 100%;
-        width: 100%;
-    }
 }
 
 /*Larger than phablet*/
@@ -98,6 +109,9 @@ footer img {
 
 /*Larger than tablet*/
 @media (min-width: 750px) {
+    .container {
+        max-width: 85%;
+    }
 }
 
 /*Larger than desktop*/
