@@ -36,8 +36,21 @@ nav ul {
     text-align: center;
 }
 
+nav li {
+    background: red;
+    display: inline-block;
+    list-style: none;
+    margin: 0 0 5px;
+    width: 110px;
+}
+
 nav a {
+    background: #4aa3df;
+    display: block;
     font-size: 2em;
+    margin: 0;
+    padding: 10px;
+    text-align: center;
 }
 
 nav a,
@@ -45,12 +58,8 @@ nav a:hover {
     color: #fafafa;
 }
 
-nav ul li {
-    background: #4aa3df;
-    display: inline-block;
-    list-style: none;
-    margin: 0;
-    padding: 10px;
+#menu {
+    display: none;
 }
 
 .container {
