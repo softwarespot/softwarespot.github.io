@@ -34,18 +34,27 @@ var Assets = {
             minified: 'styles.min.css'
         },
         vendor: {
-            main: 'vendor.css',
+            // main: 'vendor.css',
             minified: 'vendor.min.css'
         }
     },
     js: {
         dist: 'js',
         custom: {
-            main: 'scripts.js',
+            all: [
+                // Note: js is the same as Assets.js.dist
+
+                // Select all js file(s) include sub-directories
+                './js/**/*.js',
+
+                // Ignore all js file(s) that have the .min.js prefix
+                '!./js/**/*.min.js'
+            ],
+            // main: 'scripts.js',
             minified: 'scripts.min.js'
         },
         vendor: {
-            main: 'vendor.js',
+            // main: 'vendor.js',
             minified: 'vendor.min.js'
         }
     }
@@ -53,13 +62,17 @@ var Assets = {
 
 // Clean the current directory
 gulp.task('clean', function (cb) {
-    del(['./' + Assets.js.dist + '/' + Assets.js.custom.minified], cb);
+    del([
+        './' + Assets.css.dist + '/' + Assets.css.custom.minified,
+        './' + Assets.js.dist + '/' + Assets.js.custom.minified
+    ], cb);
 });
 
 // Minify the main css file
 gulp.task('cssmin', function () {
     // Clean the css dist directory
     del(['./' + Assets.css.dist + '/' + Assets.css.custom.minified]);
+
     return gulp.src('./' + Assets.css.dist + '/' + Assets.css.custom.main)
         .pipe(cssmin(uglifySettings))
         .pipe(rename({
@@ -70,18 +83,20 @@ gulp.task('cssmin', function () {
 
 // Check the code meets the following standards outlined in .jshintrc
 gulp.task('jshint', function () {
-    return gulp.src('./' + Assets.js.dist + '/' + Assets.js.custom.main)
+    return gulp.src(Assets.js.custom.all)
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
 
-// Uglify aka minify the main js file
+// Uglify aka minify all js file(s)
 gulp.task('uglify', function () {
-    return gulp.src('./' + Assets.js.dist + '/' + Assets.js.custom.main)
+    // Clean the js dist directory
+    del(['./' + Assets.js.dist + '/' + Assets.js.custom.minified]);
+
+    return gulp.src(Assets.js.custom.all)
+        .pipe(concat(Assets.js.custom.minified))
         .pipe(uglify(uglifySettings))
-        .pipe(rename({
-            suffix: '.min'
-        }))
+        .pipe(rename(Assets.js.custom.minified))
         .pipe(gulp.dest('./' + Assets.js.dist));
 });
 
@@ -117,7 +132,7 @@ gulp.task('vendor', function () {
 
 // Watch for changes to the main file(s)
 gulp.task('watch', function () {
-    gulp.watch('./' + Assets.js.dist + '/' + Assets.js.custom.main, ['jshint', 'uglify']);
+    gulp.watch(Assets.js.all, ['jshint', 'uglify']);
     gulp.watch('./' + Assets.css.dist + '/' + Assets.css.custom.main, ['cssmin']);
 });
 
@@ -126,4 +141,5 @@ gulp.task('default', ['clean', 'cssmin', 'uglify', 'vendor']);
 
 // 'gulp cssmin' to minify the main css file
 // 'gulp jshint' to check the syntax
-// 'gulp uglify' to uglify the main js file
+// 'gulp uglify' to uglify all js file(s)
+// 'gulp vendor' to build the vendor file(s)
