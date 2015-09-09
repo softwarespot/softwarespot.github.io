@@ -1,14 +1,23 @@
-/**
- * Main module
- *
- * Modified: 2015/09/07
- * @author softwarespot
- */
-
 // Create an 'App' namespace if it doesn't already exist
 var App = App || {};
 
+/**
+ * Main module
+ *
+ * Modified: 2015/09/09
+ * @author softwarespot
+ */
 App.main = (function ($) {
+    // Constants
+
+    // SemVer version number of the module
+    var VERSION = '1.0.0';
+
+    // Unique global identifier. Internal usage only
+    // var GUID = '3B732ADD-7465-4972-9E5C-C005DBED2751';
+
+    // Fields
+
     // Store the body jQuery selector object
     var $_body = null;
 
@@ -44,14 +53,33 @@ App.main = (function ($) {
         }
     };
 
+    // Methods
+
     /**
      * Initialisation function
      *
+     * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init() {
+    function init(config) {
+        // Default config that can be overwritten by passing through the config variable
+        var defaultConfig = {
+        };
+
+        // Combine the passed config
+        $.extend(defaultConfig, config);
+
         cacheDom();
         bindEvents();
+    }
+
+    /**
+     * Get the version number of the module
+     *
+     * @returns {number} Version number
+     */
+    function getVersion() {
+        return VERSION;
     }
 
     /**
@@ -111,13 +139,13 @@ App.main = (function ($) {
         }, speed);
     }
 
-    // Invoked when the DOM has loaded
+    // Initialise the module
     $(function () {
         init();
     });
 
     // Public API
     return {
-        // Empty API
+        getVersion: getVersion
     };
 })(jQuery);
