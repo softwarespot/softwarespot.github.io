@@ -1,5 +1,5 @@
 /**
- * Custom JS
+ * Main module
  *
  * Modified: 2015/09/07
  * @author softwarespot
@@ -8,8 +8,7 @@
 // Create an 'App' namespace if it doesn't already exist
 var App = App || {};
 
-// Start module
-App.start = (function ($) {
+App.main = (function ($) {
     // Store the body jQuery selector object
     var $_body = null;
 
@@ -117,4 +116,8 @@ App.start = (function ($) {
         init();
     });
 
+    // Public API
+    return {
+        // Empty API
+    };
 })(jQuery);
