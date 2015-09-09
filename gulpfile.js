@@ -132,7 +132,7 @@ gulp.task('vendor', function () {
 
 // Watch for changes to the main file(s)
 gulp.task('watch', function () {
-    gulp.watch(Assets.js.all, ['jshint', 'uglify']);
+    gulp.watch(Assets.js.custom.all, ['jshint', 'uglify']);
     gulp.watch('./' + Assets.css.dist + '/' + Assets.css.custom.main, ['cssmin']);
 });
 
