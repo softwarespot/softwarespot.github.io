@@ -88,7 +88,7 @@ gulp.task('uglify', function () {
 // Concat and uglify the vendor scripts/styles
 gulp.task('vendor', function () {
     // Copy font-awesome fonts
-    gulp.src('./bower_components/font-awesome/fonts/**/*.{ttf,woff,eof,svg}')
+    gulp.src('./bower_components/font-awesome/fonts/**/*.{ttf,woff,woff2,eof,svg}')
         .pipe(gulp.dest('./fonts'));
 
     // Concatenate and minify styles
