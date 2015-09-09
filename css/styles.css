@@ -88,9 +88,16 @@ nav a:hover {
     width: 50%;
 }
 
-img.small {
+img.small,
+img.x-small {
     height: 128px;
+    margin: 0 10px;
     width: 128px;
+}
+
+img.x-small {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 
 /*Add space after and before quotation marks*/
