@@ -100,6 +100,31 @@ img.x-small {
     transform: rotate(90deg);
 }
 
+/*Custom badge*/
+.badge {
+    display: inline-block;
+    margin: 0 50px 0 0;
+    position: relative;
+}
+
+.badge .badge-text {
+    background: #2980b9;
+    display: inline-block;
+    position: absolute;
+    right: -10px;
+    z-index: 1;
+    width: 40px;
+}
+
+.badge a {
+    color: #fafafa;
+}
+
+.badge a:hover {
+    -webkit-transform: scale(2, 2);
+    transform: scale(2, 2);
+}
+
 /*Add space after and before quotation marks*/
 .fa-quote-left {
     margin-right: 5px;

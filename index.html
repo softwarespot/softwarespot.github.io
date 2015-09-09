@@ -35,6 +35,7 @@
                 <li id="menu"><a href="#menu"></a></li>
                 <li><a href="#about-section">About</a></li>
                 <li><a href="#software-section">Software</a></li>
+                <li><a href="#gists-section">Gist</a></li>
                 <li><a href="#built-section">Built</a></li>
             </ul>
         </nav>
@@ -67,7 +68,7 @@
                 <p>PHP developers in the past used to overlook the importance of coding standards and would instead opt for the approach of "code first, fix later". Thankfully this way of thinking has slowly dwindled in the last two years, due to the likes of <a href="http://www.php-fig.org/">PHP-FIG</a> creating a recommended standard for developing PHP applications.</p>
 
                 <p>With <a href="http://php.net">PHP</a> just months away from a stable release, it's clear 83% of the Internet is about to get a whole lot better.</p>
-                <a href="http://php.net" title="The Elephant in the room just got a whole lot bigger"><img src="images/php.svg" class="small"/></a>
+                <!--<a href="http://php.net" title="The Elephant in the room just got a whole lot bigger"><img src="images/php.svg" class="small"/></a>-->
             </div>
             <div class="six columns">
                 <h3>Standards</h3>
@@ -76,17 +77,34 @@
         </div>
     </div>
 
+    <div id="gists-section" class="container">
+        <h2>GitHub Gists</h2>
+        <p>The following gists currently exist for my account and are dynamically accessed using GitHub's <a href="https://developer.github.com/v3/gists/">API</a>. Right now to see the content you must select a gist, though in the future this will change with a small popup displaying a preview of the content.</p>
+    </div>
+
     <footer id="built-section" class="container">
         <h2>Built using...</h2>
         <a href="http://bower.io" title="A package manager for the web"><img src="images/bower.svg" class="small"/></a>
         <a href="http://gulpjs.com" title="Automate and enhance your workflow"><img src="images/gulp.svg" class="small"/></a>
         <a href="http://handlebarsjs.com/" title="Build semantic templates"><img src="images/handlebars.svg" class="x-small"/></a>
         <a href="https://github.com/softwarespot" title="Build software better, together"><img src="images/github-icon.svg" class="small"/></a>
-        <h6>Made with <i class="fa fa-heart" title="... by SoftwareSpot"></i></h6>
+        <h6>Made with <i class="fa fa-heart" title="... by SoftwareSpot"></i> by SoftwareSpot</h6>
     </footer>
 
     <!--Scripts-->
     <script src="js/vendor.min.js"></script>
     <script src="js/scripts.min.js"></script>
+
+    <!--START: Templates-->
+    <script id="template-gists" type="text/x-handlebars">
+        {{#each this}}
+            <div class="badge"><div class="badge-text"><a href="{{html_url}}">{{@index}}</a></div> <i class="fa fa-github fa-3x"></i></div>
+        {{/each}}
+    </script>
+
+    <script id="template-gists-error" type="text/x-handlebars">
+        <i class="fa fa-exclamation-triangle"></i> Whoops! Something seriously went wrong whilst conneting to GitHub. Please refresh the page and try again
+    </script>
+    <!--END: Templates-->
 </body>
 </html>

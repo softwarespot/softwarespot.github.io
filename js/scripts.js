@@ -83,7 +83,7 @@ App.main = (function ($) {
     }
 
     /**
-     * Initialise all DOM cache variables
+     * Initialise all DOM cachable variables
      *
      * @return {undefined}
      */
