@@ -47,7 +47,6 @@ nav ul {
 }
 
 nav li {
-    background: red;
     display: inline-block;
     list-style: none;
     margin: 0 0 5px;
