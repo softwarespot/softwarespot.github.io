@@ -95,16 +95,23 @@ gulp.task('vendor', function () {
     gulp.src([
             './bower_components/font-awesome/css/font-awesome.css',
             './bower_components/normalize-css/normalize.css',
-            './bower_components/skeleton/css/skeleton.css'
+            './bower_components/skeleton/css/skeleton.css',
+            './bower_components/nprogress/nprogress.css',
         ])
         .pipe(concat(Assets.css.vendor.minified))
         .pipe(cssmin(cssMinSettings))
         .pipe(gulp.dest('./' + Assets.css.dist + '/'));
 
     // Concatenate and uglify scripts
-    gulp.src(['./bower_components/jquery/dist/jquery.js'])
+    gulp.src([
+            './bower_components/jquery/dist/jquery.js',
+            './bower_components/handlebars/handlebars.js',
+            './bower_components/momentjs/moment.js',
+            './bower_components/jquery-handlebars/jquery-handlebars.js',
+            './bower_components/nprogress/nprogress.js',
+        ])
         .pipe(concat(Assets.js.vendor.minified))
-        .pipe(uglify())
+        .pipe(uglify(uglifySettings))
         .pipe(gulp.dest('./' + Assets.js.dist + '/'));
 });
 
