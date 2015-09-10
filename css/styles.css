@@ -1,7 +1,7 @@
 /**
  * Custom CSS
  *
- * Modified: 2015/09/09
+ * Modified: 2015/09/10
  * @author softwarespot
  */
 
@@ -78,8 +78,6 @@ nav a:hover {
 }
 
 .main-section {
-    background: #2ecc71;
-    color: #fafafa;
     font-size: 1.2em;
     padding: 50px 0;
 }
@@ -88,6 +86,30 @@ nav a:hover {
     width: 50%;
 }
 
+.fill-green {
+    background: #2cc36b;
+}
+
+.fill-red {
+    background: #e74c3c;
+}
+
+.fill-green,
+.fill-red,
+.fill-red a,
+.fill-red a:hover {
+    color: #fafafa;
+}
+
+.external-links a[href^="http"]::after {
+    content: '\f14c';
+    font-family: 'FontAwesome';
+    margin: 5px;
+    position: relative;
+    top: -10px;
+}
+
+/*SVG imagws*/
 img.small,
 img.x-small {
     height: 128px;
@@ -125,6 +147,11 @@ img.x-small {
     transform: scale(2, 2);
 }
 
+/*Blog*/
+.blog-entry {
+    text-align: left;
+}
+
 /*Add space after and before quotation marks*/
 .fa-quote-left {
     margin-right: 5px;
@@ -135,7 +162,7 @@ img.x-small {
 }
 
 footer {
-    border-top: 2px solid #222;
+    /*border-top: 2px solid #222;*/
 }
 
 /*Mobile first queries*/
