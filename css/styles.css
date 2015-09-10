@@ -143,8 +143,8 @@ img.x-small {
 }
 
 .badge a:hover {
-    -webkit-transform: scale(2, 2);
-    transform: scale(2, 2);
+    -webkit-transform: scale(1.2, 1.2);
+    transform: scale(1.2, 1.2);
 }
 
 /*Blog*/
