@@ -4,10 +4,10 @@ var App = App || {};
 /**
  * Main module
  *
- * Modified: 2015/09/09
+ * Modified: 2015/09/10
  * @author softwarespot
  */
-App.main = (function ($) {
+App.main = (function ($, window, document, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -63,8 +63,7 @@ App.main = (function ($) {
      */
     function init(config) {
         // Default config that can be overwritten by passing through the config variable
-        var defaultConfig = {
-        };
+        var defaultConfig = {};
 
         // Combine the passed config
         $.extend(defaultConfig, config);
@@ -99,7 +98,7 @@ App.main = (function ($) {
      */
     function bindEvents() {
         if (_isEventsBound) {
-            return;
+            unbindEvents();
         }
 
         // Navigation hyperlink elements
@@ -148,4 +147,4 @@ App.main = (function ($) {
     return {
         getVersion: getVersion
     };
-})(jQuery);
+})(jQuery, window, document);

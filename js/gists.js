@@ -6,13 +6,14 @@ var App = App || {};
 /**
  * Gists module
  *
- * Modified: 2015/09/09
+ * Modified: 2015/09/10
  * @author softwarespot
  */
-App.gists = (function ($) {
+App.gists = (function ($, window, document, undefined) {
     // Constants
     var API = {
-        get_users_all: 'https://api.github.com/users/{username}/gists'
+        get_gists_by_user: 'https://api.github.com/users/{username}/gists',
+        get_gist_by_id: 'https://api.github.com/gists/{id}'
     };
 
     // HTTP Status Codes
@@ -77,12 +78,13 @@ App.gists = (function ($) {
     function load(config) {
         var options = {
             // Replace the '{username}' with the user's username
-            url: API.get_users_all.replace('{username}', config.username),
+            url: API.get_gists_by_user.replace('{username}', config.username),
             method: 'get',
             dataType: 'jsonp',
             cache: false
         };
 
+        // Create a fail template function expression to call later on
         var failTemplate = function () {
             $(config.content).handlebars('add', config.templates.fail, null, {
                 validate: false
@@ -99,13 +101,12 @@ App.gists = (function ($) {
             console.log($this);
 
             // If the status code is not OK, then display the fail template
-            if (response.meta.status !== HTTP_OK) {
+            if (response.meta.status === HTTP_OK) {
+                // Add the response to the template
+                $(config.content).handlebars('add', config.templates.done, response.data);
+            } else {
                 failTemplate();
-                return;
             }
-
-            // Add the response to the template
-            $(config.content).handlebars('add', config.templates.done, response.data);
         });
 
         // If the request failed
@@ -160,4 +161,4 @@ App.gists = (function ($) {
     return {
         getVersion: getVersion
     };
-})(jQuery);
+})(jQuery, window, document);
