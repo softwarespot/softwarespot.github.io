@@ -31,11 +31,24 @@ App.main = (function ($, window, document, undefined) {
     var _events = {
         click: 'click.app.main',
         navigation: function (event) {
-            // Prevent default click propagation
-            event.preventDefault();
-
             // Get the href attribute using vanilla JavaScript
             var href = event.currentTarget.getAttribute('href');
+
+            // The following idea was taken from sizzle.js, URL: https://github.com/jquery/sizzle/blob/master/dist/sizzle.js
+
+            // http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
+            var identifier = '(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+';
+
+            // Create a regular expression object to test valid id fragments
+            var reIdentifier = new RegExp('^#' + identifier + '$');
+
+            // Only bind if it's a valid anchor link
+            if (!reIdentifier.test(href)) {
+                return true;
+            }
+
+            // Prevent default click propagation
+            event.preventDefault();
 
             // Get the jQuery selector object based on the href attribute value
             var $element = $(href);
@@ -116,7 +129,7 @@ App.main = (function ($, window, document, undefined) {
             return;
         }
 
-        $_navigationLinks.off(_events.click);
+        $_navigationLinks.off(_events.click, _events.navigation);
         _isEventsBound = false;
     }
 
@@ -140,11 +153,12 @@ App.main = (function ($, window, document, undefined) {
 
     // Initialise the module
     $(function () {
-        init();
+        // init();
     });
 
     // Public API
     return {
+        init: init,
         getVersion: getVersion
     };
 })(jQuery, window, document);
