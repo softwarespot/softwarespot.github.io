@@ -145,20 +145,23 @@ App.gists = (function ($, window, document, undefined) {
 
     // Invoked when the DOM has loaded
     $(function () {
-        init({
-            gists: {
-                username: 'softwarespot',
-                content: '#gists-section',
-                templates: {
-                    fail: '#template-gists-error',
-                    done: '#template-gists'
-                }
-            }
-        });
+        // init();
     });
 
     // Public API
     return {
+        init: function () {
+            init({
+                gists: {
+                    username: 'softwarespot',
+                    content: '#gists-section',
+                    templates: {
+                        fail: '#template-gists-error',
+                        done: '#template-gists'
+                    }
+                }
+            });
+        },
         getVersion: getVersion
     };
 })(jQuery, window, document);

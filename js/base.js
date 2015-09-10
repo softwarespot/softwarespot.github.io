@@ -55,11 +55,12 @@ App.base = (function ($, window, document, undefined) {
 
     // Invoked when the DOM has loaded
     $(function () {
-        init({});
+        // init({});
     });
 
     // Public API
     return {
+        init: init,
         getVersion: getVersion
     };
 })(jQuery, window, document);
