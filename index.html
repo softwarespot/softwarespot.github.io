@@ -98,7 +98,7 @@
     <!--START: Templates-->
     <script id="template-gists" type="text/x-handlebars">
         {{#each this}}
-            <div class="badge"><div class="badge-text"><a href="{{html_url}}">{{@index}}</a></div> <i class="fa fa-github fa-3x"></i></div>
+        <div class="badge"><div class="badge-text"><a href="{{html_url}}" data-gists-id="{{id}}">{{@index}}</a></div> <i class="fa fa-github fa-3x"></i></div>
         {{/each}}
     </script>
 
