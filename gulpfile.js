@@ -30,7 +30,16 @@ var Assets = {
     css: {
         dist: 'css',
         custom: {
-            main: 'styles.css',
+            all: [
+                // Note: /css/ is the same as Assets.css.dist
+
+                // Select all js file(s) include sub-directories
+                './css/**/*.css',
+
+                // Ignore all css file(s) that have the .min.css prefix
+                '!./css/**/*.min.css'
+            ],
+            // main: 'styles.css',
             minified: 'styles.min.css'
         },
         vendor: {
@@ -42,7 +51,7 @@ var Assets = {
         dist: 'js',
         custom: {
             all: [
-                // Note: js is the same as Assets.js.dist
+                // Note: /js/ is the same as Assets.js.dist
 
                 // Select all js file(s) include sub-directories
                 './js/**/*.js',
@@ -73,11 +82,10 @@ gulp.task('cssmin', function () {
     // Clean the css dist directory
     del(['./' + Assets.css.dist + '/' + Assets.css.custom.minified]);
 
-    return gulp.src('./' + Assets.css.dist + '/' + Assets.css.custom.main)
-        .pipe(cssmin(uglifySettings))
-        .pipe(rename({
-            suffix: '.min'
-        }))
+    return gulp.src(Assets.css.custom.all)
+        .pipe(concat(Assets.css.custom.minified))
+        .pipe(cssmin(cssMinSettings))
+        .pipe(rename(Assets.css.custom.minified))
         .pipe(gulp.dest('./' + Assets.css.dist));
 });
 
@@ -130,16 +138,21 @@ gulp.task('vendor', function () {
         .pipe(gulp.dest('./' + Assets.js.dist + '/'));
 });
 
-// Watch for changes to the main file(s)
+// Build the custom css and js file(s)
+gulp.task('build', ['clean', 'cssmin', 'uglify']);
+
+// Watch for changes to the main css and js file(s)
 gulp.task('watch', function () {
+    gulp.watch(Assets.css.custom.all, ['cssmin']);
     gulp.watch(Assets.js.custom.all, ['jshint', 'uglify']);
-    gulp.watch('./' + Assets.css.dist + '/' + Assets.css.custom.main, ['cssmin']);
 });
 
-// Register the default task
-gulp.task('default', ['clean', 'cssmin', 'uglify', 'vendor']);
+// Register the default task which is build and vendor included
+gulp.task('default', ['build', 'vendor']);
 
-// 'gulp cssmin' to minify the main css file
-// 'gulp jshint' to check the syntax
+// 'gulp build' to build the custom file(s)
+// 'gulp cssmin' to minify all css file(s)
+// 'gulp jshint' to check the syntax of all js file(s)
 // 'gulp uglify' to uglify all js file(s)
 // 'gulp vendor' to build the vendor file(s)
+// 'gulp' to build everything
