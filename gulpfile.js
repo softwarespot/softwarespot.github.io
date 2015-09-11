@@ -29,10 +29,10 @@ var uglifySettings = {
 // Assets for the project
 var Assets = {
     css: {
-        dist: 'css',
+        dest: 'css',
         custom: {
             all: [
-                // Note: /css/ is the same as Assets.css.dist
+                // Note: /css/ is the same as Assets.css.dest
 
                 // Select all js file(s) include sub-directories
                 './css/**/*.css',
@@ -49,10 +49,10 @@ var Assets = {
         }
     },
     js: {
-        dist: 'js',
+        dest: 'js',
         custom: {
             all: [
-                // Note: /js/ is the same as Assets.js.dist
+                // Note: /js/ is the same as Assets.js.dest
 
                 // Select all js file(s) include sub-directories
                 './js/**/*.js',
@@ -73,21 +73,21 @@ var Assets = {
 // Clean the current directory
 gulp.task('clean', function (cb) {
     del([
-        './' + Assets.css.dist + '/' + Assets.css.custom.minified,
-        './' + Assets.js.dist + '/' + Assets.js.custom.minified
+        './' + Assets.css.dest + '/' + Assets.css.custom.minified,
+        './' + Assets.js.dest + '/' + Assets.js.custom.minified
     ], cb);
 });
 
 // Minify the main css file(s)
 gulp.task('cssmin', function () {
-    // Clean the css dist directory
-    del(['./' + Assets.css.dist + '/' + Assets.css.custom.minified]);
+    // Clean the css dest directory
+    del(['./' + Assets.css.dest + '/' + Assets.css.custom.minified]);
 
     return gulp.src(Assets.css.custom.all)
         .pipe(concat(Assets.css.custom.minified))
         .pipe(cssmin(cssMinSettings))
         .pipe(rename(Assets.css.custom.minified))
-        .pipe(gulp.dest('./' + Assets.css.dist));
+        .pipe(gulp.dest('./' + Assets.css.dest));
 });
 
 // Check the code meets the following standards outlined in .jshintrc
@@ -104,19 +104,19 @@ gulp.task('prettify-js', function () {
             config: '.jsbeautifyrc',
             mode: 'VERIFY_AND_WRITE'
         }))
-        .pipe(gulp.dest('./' + Assets.js.dist));
+        .pipe(gulp.dest('./' + Assets.js.dest));
 });
 
 // Uglify aka minify the main js file(s)
 gulp.task('uglify', function () {
-    // Clean the js dist directory
-    del(['./' + Assets.js.dist + '/' + Assets.js.custom.minified]);
+    // Clean the js dest directory
+    del(['./' + Assets.js.dest + '/' + Assets.js.custom.minified]);
 
     return gulp.src(Assets.js.custom.all)
         .pipe(concat(Assets.js.custom.minified))
         .pipe(uglify(uglifySettings))
         .pipe(rename(Assets.js.custom.minified))
-        .pipe(gulp.dest('./' + Assets.js.dist));
+        .pipe(gulp.dest('./' + Assets.js.dest));
 });
 
 // Concat and uglify the vendor scripts/styles
@@ -134,7 +134,7 @@ gulp.task('vendor', function () {
         ])
         .pipe(concat(Assets.css.vendor.minified))
         .pipe(cssmin(cssMinSettings))
-        .pipe(gulp.dest('./' + Assets.css.dist + '/'));
+        .pipe(gulp.dest('./' + Assets.css.dest + '/'));
 
     // Concatenate and uglify scripts
     gulp.src([
@@ -146,7 +146,7 @@ gulp.task('vendor', function () {
         ])
         .pipe(concat(Assets.js.vendor.minified))
         .pipe(uglify(uglifySettings))
-        .pipe(gulp.dest('./' + Assets.js.dist + '/'));
+        .pipe(gulp.dest('./' + Assets.js.dest + '/'));
 });
 
 // Build the main css and js file(s)
