@@ -9,7 +9,7 @@ var App = App || {};
  * Modified: 2015/09/10
  * @author softwarespot
  */
-App.gists = (function ($, window, document, undefined) {
+App.gists = (function ($, window, document, core, undefined) {
     // Constants
     var API = {
         get_gists_by_user: 'https://api.github.com/users/{username}/gists',
@@ -181,4 +181,4 @@ App.gists = (function ($, window, document, undefined) {
         },
         getVersion: getVersion
     };
-})(jQuery, window, document);
+})(jQuery, window, document, App.core);

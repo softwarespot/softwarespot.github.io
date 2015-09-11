@@ -7,7 +7,7 @@ var App = App || {};
  * Modified: 2015/09/10
  * @author softwarespot
  */
-App.main = (function ($, window, document, undefined) {
+App.main = (function ($, window, document, core, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -17,9 +17,6 @@ App.main = (function ($, window, document, undefined) {
     // var GUID = '3B732ADD-7465-4972-9E5C-C005DBED2751';
 
     // Fields
-
-    // Core functions
-    var _core = App.core;
 
     // Store the body jQuery selector object
     var $_body = null;
@@ -57,7 +54,7 @@ App.main = (function ($, window, document, undefined) {
             var $element = $(href);
 
             // If an error occurred i.e. no node was found in the DOM, the return false
-            if (!_core.isjQueryNotEmpty($element)) {
+            if (!core.isjQueryNotEmpty($element)) {
                 return false;
             }
 
@@ -144,7 +141,7 @@ App.main = (function ($, window, document, undefined) {
      * @return {undefined}
      */
     function _scrollTo($element, speed) {
-        if (_core.isUndefined(speed)) {
+        if (core.isUndefined(speed)) {
             speed = 500;
         }
 
@@ -164,4 +161,4 @@ App.main = (function ($, window, document, undefined) {
         init: init,
         getVersion: getVersion
     };
-})(jQuery, window, document);
+})(jQuery, window, document, App.core);
