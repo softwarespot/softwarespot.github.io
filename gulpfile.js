@@ -116,6 +116,7 @@ gulp.task('uglify', function () {
     del([dest + '/' + Assets.js.custom.minified]);
 
     return gulp.src([
+            dest + '/core.js',
             dest + '/gists.js',
             dest + '/main.js'
         ])
