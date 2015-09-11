@@ -3,7 +3,7 @@
 /**
  * Main module
  *
- * Modified: 2015/09/10
+ * Modified: 2015/09/11
  * @author softwarespot
  */
 App.namespace().main = (function ($, window, document, core, undefined) {
