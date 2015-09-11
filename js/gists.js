@@ -30,11 +30,19 @@ App.gists = (function ($, window, document, undefined) {
     // Store the document jQuery selector object
     var $_document = null;
 
+    // Store the jQuery selector object to add the gists data
+    var $_content = null;
+
+    // Template string selectors
+    var _templateDone = '';
+    var _templateFail = '';
+
     // Methods
 
     /**
      * Initialisation function
      *
+     * @param {object} config Options to configure the module
      * @return {undefined}
      */
     function init(config) {
@@ -46,9 +54,13 @@ App.gists = (function ($, window, document, undefined) {
         // Combine the passed config
         $.extend(defaultConfig, config);
 
-        _cacheDom();
+        // Store the template strings
+        _templateDone = config.gists.done;
+        _templateFail = config.gists.fail;
+
+        _cacheDom(config.gists.content);
         _setAjaxGlobal();
-        _load(config.gists);
+        _load(config.gists.username);
     }
 
     /**
@@ -63,32 +75,27 @@ App.gists = (function ($, window, document, undefined) {
     /**
      * Initialise all DOM cachable variables
      *
+     * {string} content Content to add the gists data
      * @return {undefined}
      */
-    function _cacheDom() {
+    function _cacheDom(content) {
         $_document = $(document);
+        $_content = $(content);
     }
 
     /**
-     * Load gists of a particular user. Uses API: https://developer.github.com/v3/gists/
+     * Load gists for a particular user. Uses API: https://developer.github.com/v3/gists/
      *
      * @param  {object} config Configuration object literal
      * @return @return {undefined}
      */
-    function _load(config) {
+    function _load(username) {
         var options = {
             // Replace the '{username}' with the user's username
-            url: API.get_gists_by_user.replace('{username}', config.username),
+            url: API.get_gists_by_user.replace('{username}', username),
             method: 'get',
             dataType: 'jsonp',
             cache: false
-        };
-
-        // Create a fail template function expression to call later on
-        var failTemplate = function () {
-            $(config.content).handlebars('add', config.templates.fail, null, {
-                validate: false
-            });
         };
 
         // Store the jQuery XHR object reference
@@ -100,13 +107,9 @@ App.gists = (function ($, window, document, undefined) {
             console.log(textStatus);
             console.log($this);
 
-            // If the status code is not OK, then display the fail template
-            if (response.meta.status === HTTP_OK) {
-                // Add the response to the template
-                $(config.content).handlebars('add', config.templates.done, response.data);
-            } else {
-                failTemplate();
-            }
+            // Is the HTTP status code equal to OK (200)?
+            var isSuccess = response.meta.status === HTTP_OK;
+            _render(isSuccess, isSuccess ? response.data : null);
         });
 
         // If the request failed
@@ -115,7 +118,21 @@ App.gists = (function ($, window, document, undefined) {
             console.log(textStatus);
             console.log(errorThrown);
 
-            failTemplate();
+            _render(false, null);
+        });
+    }
+
+    /**
+     * Render the gists data
+     *
+     * @param {boolean} done True renders the 'done' template; otherwise, false renders the 'fail' template
+     * @param {object} data Data to pass to the template
+     * @return {undefined}
+     */
+    function _render(done, data) {
+        $_content.handlebars('add', done ? _templateDone : _templateFail, data, {
+            remove_type: 'same',
+            validate: done
         });
     }
 
