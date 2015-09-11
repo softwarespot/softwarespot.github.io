@@ -34,7 +34,7 @@ App.base = (function ($, window, document, undefined) {
         // Combine the passed config
         $.extend(defaultConfig, config);
 
-        cacheDom();
+        _cacheDom();
     }
 
     /**
@@ -51,7 +51,7 @@ App.base = (function ($, window, document, undefined) {
      *
      * @return {undefined}
      */
-    function cacheDom() {}
+    function _cacheDom() {}
 
     // Invoked when the DOM has loaded
     $(function () {
