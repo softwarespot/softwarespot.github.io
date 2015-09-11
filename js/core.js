@@ -13,9 +13,6 @@ App.core = (function ($, window, document, undefined) {
     // SemVer version number of the module
     var VERSION = '1.0.0';
 
-    // Store this
-    var THIS = App;
-
     // Unique global identifier. Internal usage only
     // var GUID = 'BF1D7691-79D4-4A89-930B-84C65A309E86';
 
@@ -64,25 +61,6 @@ App.core = (function ($, window, document, undefined) {
      */
     function getVersion() {
         return VERSION;
-    }
-
-    /**
-     * Create a namespace. Idea based on the work by Nikolas C. Zakas from Maintainable JavaScript
-     * @param {string} ns A namespace comprised of optional parts e.g. App.system.clock
-     * @return {object} Context of this, based on the last part in the namespace e.g. this would be equal to the 'clock' object reference
-     */
-    function namespace(ns) {
-        var _this = THIS;
-        var parts = ns.split('.');
-
-        for (var i = 0, length = parts.length; i < length; i++) {
-            if (!_this[parts[i]]) {
-                _this[parts[i]] = {};
-            }
-            _this = _this[parts[i]];
-        }
-
-        return _this;
     }
 
     /**
@@ -311,7 +289,6 @@ App.core = (function ($, window, document, undefined) {
     // Public API
     return {
         getVersion: getVersion,
-        namespace: namespace,
         isArray: isArray,
         isBoolean: isBoolean,
         isDate: isDate,
@@ -333,5 +310,22 @@ App.core = (function ($, window, document, undefined) {
     };
 })(jQuery, window, document);
 
-// Create an alias for 'App.core.namespace'
-App.namespace = App.core.namespace;
+/**
+ * Create a namespace. Idea based on the work by Nikolas C. Zakas from Maintainable JavaScript
+ *
+ * @param {string} ns A namespace comprised of optional parts e.g. App.system.clock
+ * @return {object} Context of this, based on the last part in the namespace e.g. this would be equal to the 'clock' object reference
+ */
+App.namespace = function namespace(ns) {
+    var _this = this;
+    var parts = ns.split('.');
+
+    for (var i = 0, length = parts.length; i < length; i++) {
+        if (!_this[parts[i]]) {
+            _this[parts[i]] = {};
+        }
+        _this = _this[parts[i]];
+    }
+
+    return _this;
+};
