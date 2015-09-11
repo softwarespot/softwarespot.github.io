@@ -78,7 +78,7 @@ gulp.task('clean', function (cb) {
     ], cb);
 });
 
-// Minify the main css file
+// Minify the main css file(s)
 gulp.task('cssmin', function () {
     // Clean the css dist directory
     del(['./' + Assets.css.dist + '/' + Assets.css.custom.minified]);
@@ -107,7 +107,7 @@ gulp.task('prettify-js', function () {
         .pipe(gulp.dest('./' + Assets.js.dist));
 });
 
-// Uglify aka minify all js file(s)
+// Uglify aka minify the main js file(s)
 gulp.task('uglify', function () {
     // Clean the js dist directory
     del(['./' + Assets.js.dist + '/' + Assets.js.custom.minified]);
@@ -149,7 +149,7 @@ gulp.task('vendor', function () {
         .pipe(gulp.dest('./' + Assets.js.dist + '/'));
 });
 
-// Build the custom css and js file(s)
+// Build the main css and js file(s)
 gulp.task('build', ['clean', 'cssmin', 'uglify']);
 
 // Watch for changes to the main css and js file(s)
@@ -161,10 +161,11 @@ gulp.task('watch', function () {
 // Register the default task which is essentially 'build' and 'vendor' included
 gulp.task('default', ['build', 'vendor']);
 
-// 'gulp build' to build the custom file(s)
-// 'gulp cssmin' to minify all css file(s)
-// 'gulp jshint' to check the syntax of all js file(s)
-// 'gulp prettify-js' to prettify all js file(s)
-// 'gulp uglify' to uglify all js file(s)
+// 'gulp build' to build the main css and js file(s)
+// 'gulp cssmin' to minify the main css file(s)
+// 'gulp jshint' to check the syntax of the main js file(s)
+// 'gulp prettify-js' to prettify the main js file(s)
+// 'gulp uglify' to uglify the main js file(s)
 // 'gulp vendor' to build the vendor file(s)
+// 'gulp watch' to watch for changes to the main css and js file(s)
 // 'gulp' to build everything
