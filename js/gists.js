@@ -125,14 +125,14 @@ App.gists = (function ($, window, document, undefined) {
     /**
      * Render the gists data
      *
-     * @param {boolean} done True renders the 'done' template; otherwise, false renders the 'fail' template
+     * @param {boolean} isSuccess True renders the 'done' template; otherwise, false renders the 'fail' template
      * @param {object} data Data to pass to the template
      * @return {undefined}
      */
-    function _render(done, data) {
-        $_content.handlebars('add', done ? _templateDone : _templateFail, data, {
+    function _render(isSuccess, data) {
+        $_content.handlebars('add', isSuccess ? _templateDone : _templateFail, data, {
             remove_type: 'same',
-            validate: done
+            validate: isSuccess
         });
     }
 
