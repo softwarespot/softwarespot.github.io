@@ -317,9 +317,15 @@ App.core = (function ($, window, document, undefined) {
  * @return {object} Context of this, based on the last part in the namespace e.g. this would be equal to the 'clock' object reference
  */
 App.namespace = function namespace(ns) {
+    var core = App.core;
     var _this = this;
-    var parts = ns.split('.');
 
+    // Set to an empty string if not a string datatype
+    if (!core.isString(core) || core.isStringEmptyOrWhitespace(ns)) {
+        return _this;
+    }
+
+    var parts = ns.split('.');
     for (var i = 0, length = parts.length; i < length; i++) {
         if (!_this[parts[i]]) {
             _this[parts[i]] = {};

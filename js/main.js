@@ -1,5 +1,4 @@
-// Create an 'App' namespace if it doesn't already exist
-var App = App || {};
+/* global App */
 
 /**
  * Main module
@@ -7,7 +6,7 @@ var App = App || {};
  * Modified: 2015/09/10
  * @author softwarespot
  */
-App.main = (function ($, window, document, core, undefined) {
+App.namespace().main = (function ($, window, document, core, undefined) {
     // Constants
 
     // SemVer version number of the module

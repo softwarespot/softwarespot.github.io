@@ -1,7 +1,4 @@
-/* global NProgress */
-
-// Create an 'App' namespace if it doesn't already exist
-var App = App || {};
+/* global App, NProgress */
 
 /**
  * Gists module
@@ -9,7 +6,7 @@ var App = App || {};
  * Modified: 2015/09/10
  * @author softwarespot
  */
-App.gists = (function ($, window, document, core, undefined) {
+App.namespace().gists = (function ($, window, document, core, undefined) {
     // Constants
     var API = {
         get_gists_by_user: 'https://api.github.com/users/{username}/gists',

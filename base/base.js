@@ -1,7 +1,4 @@
-// /* global */
-
-// Create an 'App' namespace if it doesn't already exist
-var App = App || {};
+/* global App */
 
 /**
  * Base module
@@ -9,7 +6,7 @@ var App = App || {};
  * Modified: YYYY/MM/DD
  * @author author
  */
-App.base = (function ($, window, document, undefined) {
+App.namespace().base = (function ($, window, document, undefined) {
     // Constants
 
     // SemVer version number of the module
