@@ -104,7 +104,7 @@ gulp.task('prettify-js', function () {
             config: '.jsbeautifyrc',
             mode: 'VERIFY_AND_WRITE'
         }))
-        .pipe(gulp.dest('./'));
+        .pipe(gulp.dest('./' + Assets.js.dist));
 });
 
 // Uglify aka minify all js file(s)
