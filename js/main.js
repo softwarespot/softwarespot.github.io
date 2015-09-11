@@ -18,6 +18,9 @@ App.main = (function ($, window, document, undefined) {
 
     // Fields
 
+    // Core functions
+    var _core = App.core;
+
     // Store the body jQuery selector object
     var $_body = null;
 
@@ -54,7 +57,7 @@ App.main = (function ($, window, document, undefined) {
             var $element = $(href);
 
             // If an error occurred i.e. no node was found in the DOM, the return false
-            if (!$element.length) {
+            if (!_core.isjQueryNotEmpty($element)) {
                 return false;
             }
 
@@ -141,7 +144,7 @@ App.main = (function ($, window, document, undefined) {
      * @return {undefined}
      */
     function _scrollTo($element, speed) {
-        if (typeof speed === 'undefined') {
+        if (_core.isUndefined(speed)) {
             speed = 500;
         }
 
