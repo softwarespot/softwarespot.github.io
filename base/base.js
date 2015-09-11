@@ -25,6 +25,7 @@ App.base = (function ($, window, document, undefined) {
     /**
      * Initialisation function
      *
+     * @param {object} config Options to configure the module
      * @return {undefined}
      */
     function init(config) {
