@@ -46,9 +46,9 @@ App.gists = (function ($, window, document, undefined) {
         // Combine the passed config
         $.extend(defaultConfig, config);
 
-        cacheDom();
-        setAjaxGlobal();
-        load(config.gists);
+        _cacheDom();
+        _setAjaxGlobal();
+        _load(config.gists);
     }
 
     /**
@@ -65,7 +65,7 @@ App.gists = (function ($, window, document, undefined) {
      *
      * @return {undefined}
      */
-    function cacheDom() {
+    function _cacheDom() {
         $_document = $(document);
     }
 
@@ -75,7 +75,7 @@ App.gists = (function ($, window, document, undefined) {
      * @param  {object} config Configuration object literal
      * @return @return {undefined}
      */
-    function load(config) {
+    function _load(config) {
         var options = {
             // Replace the '{username}' with the user's username
             url: API.get_gists_by_user.replace('{username}', config.username),
@@ -124,7 +124,7 @@ App.gists = (function ($, window, document, undefined) {
      *
      * @returns {undefined}
      */
-    function setAjaxGlobal() {
+    function _setAjaxGlobal() {
         // Disable showing the spinner in the top right hand corner
         NProgress.configure({
             minimum: 0.1,

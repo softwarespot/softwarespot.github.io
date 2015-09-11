@@ -59,7 +59,7 @@ App.main = (function ($, window, document, undefined) {
             }
 
             // Scroll to the element intended
-            scrollTo($element, 500);
+            _scrollTo($element, 500);
 
             // Fallback to prevent jitter
             return false;
@@ -81,8 +81,8 @@ App.main = (function ($, window, document, undefined) {
         // Combine the passed config
         $.extend(defaultConfig, config);
 
-        cacheDom();
-        bindEvents();
+        _cacheDom();
+        _bindEvents();
     }
 
     /**
@@ -99,7 +99,7 @@ App.main = (function ($, window, document, undefined) {
      *
      * @return {undefined}
      */
-    function cacheDom() {
+    function _cacheDom() {
         $_body = $('html, body');
         $_navigationLinks = $('header').find('a');
     }
@@ -109,9 +109,9 @@ App.main = (function ($, window, document, undefined) {
      *
      * @return {undefined}
      */
-    function bindEvents() {
+    function _bindEvents() {
         if (_isEventsBound) {
-            unbindEvents();
+            _unbindEvents();
         }
 
         // Navigation hyperlink elements
@@ -124,7 +124,7 @@ App.main = (function ($, window, document, undefined) {
      *
      * @return {undefined}
      */
-    function unbindEvents() {
+    function _unbindEvents() {
         if (!_isEventsBound) {
             return;
         }
@@ -140,7 +140,7 @@ App.main = (function ($, window, document, undefined) {
      * @param  {number|string} speed Speed at which to scroll the element
      * @return {undefined}
      */
-    function scrollTo($element, speed) {
+    function _scrollTo($element, speed) {
         if (typeof speed === 'undefined') {
             speed = 500;
         }
