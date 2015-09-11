@@ -55,8 +55,8 @@ App.gists = (function ($, window, document, undefined) {
         $.extend(defaultConfig, config);
 
         // Store the template strings
-        _templateDone = config.gists.done;
-        _templateFail = config.gists.fail;
+        _templateDone = config.gists.templates.done;
+        _templateFail = config.gists.templates.fail;
 
         _cacheDom(config.gists.content);
         _setAjaxGlobal();
