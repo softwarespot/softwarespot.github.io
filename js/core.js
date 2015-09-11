@@ -64,6 +64,25 @@ App.core = (function ($, window, document, undefined) {
     }
 
     /**
+     * Create a namespace. Idea based on the work by Nikolas C. Zakas from Maintainable JavaScript
+     * @param {string} ns A namespace comprised of optional parts e.g. App.system.clock
+     * @return {object} Context of this, based on the last part in the namespace e.g. this would be equal to the 'clock' object reference
+     */
+    // function namespace(ns) {
+    //     var _this = this;
+    //     var parts = ns.split('.');
+    //     for (var i = 0, length = parts.length; i < length; i++) {
+    //         if (!_this[parts[i]]) {
+    //             _this[parts[i]] = {};
+    //         }
+
+    //         _this = _this[parts[i]];
+    //     }
+
+    //     return _this;
+    // }
+
+    /**
      * Check if a variable is an array datatype
      *
      * @param {mixed} value Value to check

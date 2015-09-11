@@ -1,4 +1,4 @@
-/* global */
+// /* global */
 
 // Create an 'App' namespace if it doesn't already exist
 var App = App || {};
