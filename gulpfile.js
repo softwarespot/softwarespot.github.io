@@ -109,44 +109,53 @@ gulp.task('prettify-js', function () {
 
 // Uglify aka minify the main js file(s)
 gulp.task('uglify', function () {
-    // Clean the js dest directory
-    del(['./' + Assets.js.dest + '/' + Assets.js.custom.minified]);
+    // Store the destination directory
+    var dest = './' + Assets.js.dest;
 
-    return gulp.src(Assets.js.custom.all)
+    // Clean the js dest directory
+    del([dest + '/' + Assets.js.custom.minified]);
+
+    return gulp.src([
+            dest + '/gists.js',
+            dest + '/main.js'
+        ])
         .pipe(concat(Assets.js.custom.minified))
         .pipe(uglify(uglifySettings))
         .pipe(rename(Assets.js.custom.minified))
-        .pipe(gulp.dest('./' + Assets.js.dest));
+        .pipe(gulp.dest(dest));
 });
 
 // Concat and uglify the vendor scripts/styles
 gulp.task('vendor', function () {
+    // Store the bower_components directory
+    var bowerComponents = './bower_components/';
+
     // Copy font-awesome fonts
-    gulp.src('./bower_components/font-awesome/fonts/**/*.{eof,svg,ttf,woff,woff2}')
+    gulp.src(bowerComponents + 'font-awesome/fonts/**/*.{eof,svg,ttf,woff,woff2}')
         .pipe(gulp.dest('./fonts'));
 
     // Concatenate and minify styles
     gulp.src([
-            './bower_components/font-awesome/css/font-awesome.css',
-            './bower_components/normalize-css/normalize.css',
-            './bower_components/skeleton/css/skeleton.css',
-            './bower_components/nprogress/nprogress.css',
+            bowerComponents + 'font-awesome/css/font-awesome.css',
+            bowerComponents + 'normalize-css/normalize.css',
+            bowerComponents + 'skeleton/css/skeleton.css',
+            bowerComponents + 'nprogress/nprogress.css',
         ])
         .pipe(concat(Assets.css.vendor.minified))
         .pipe(cssmin(cssMinSettings))
-        .pipe(gulp.dest('./' + Assets.css.dest + '/'));
+        .pipe(gulp.dest('./' + Assets.css.dest));
 
     // Concatenate and uglify scripts
     gulp.src([
-            './bower_components/jquery/dist/jquery.js',
-            './bower_components/handlebars/handlebars.js',
-            './bower_components/momentjs/moment.js',
-            './bower_components/jquery-handlebars/jquery-handlebars.js',
-            './bower_components/nprogress/nprogress.js',
+            bowerComponents + 'jquery/dist/jquery.js',
+            bowerComponents + 'handlebars/handlebars.js',
+            bowerComponents + 'momentjs/moment.js',
+            bowerComponents + 'jquery-handlebars/jquery-handlebars.js',
+            bowerComponents + 'nprogress/nprogress.js',
         ])
         .pipe(concat(Assets.js.vendor.minified))
         .pipe(uglify(uglifySettings))
-        .pipe(gulp.dest('./' + Assets.js.dest + '/'));
+        .pipe(gulp.dest('./' + Assets.js.dest));
 });
 
 // Build the main css and js file(s)
