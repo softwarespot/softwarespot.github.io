@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var cssmin = require('gulp-cssmin');
 var jshint = require('gulp-jshint');
+var prettify = require('gulp-jsbeautifier');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var del = require('del');
@@ -96,6 +97,16 @@ gulp.task('jshint', function () {
         .pipe(jshint.reporter('default'));
 });
 
+// Prettify the main js file(s)
+gulp.task('prettify-js', function () {
+    gulp.src(Assets.js.custom.all)
+        .pipe(prettify({
+            config: '.jsbeautifyrc',
+            mode: 'VERIFY_AND_WRITE'
+        }))
+        .pipe(gulp.dest('./'));
+});
+
 // Uglify aka minify all js file(s)
 gulp.task('uglify', function () {
     // Clean the js dist directory
@@ -147,12 +158,13 @@ gulp.task('watch', function () {
     gulp.watch(Assets.js.custom.all, ['jshint', 'uglify']);
 });
 
-// Register the default task which is build and vendor included
+// Register the default task which is essentially 'build' and 'vendor' included
 gulp.task('default', ['build', 'vendor']);
 
 // 'gulp build' to build the custom file(s)
 // 'gulp cssmin' to minify all css file(s)
 // 'gulp jshint' to check the syntax of all js file(s)
+// 'gulp prettify-js' to prettify all js file(s)
 // 'gulp uglify' to uglify all js file(s)
 // 'gulp vendor' to build the vendor file(s)
 // 'gulp' to build everything
