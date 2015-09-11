@@ -79,7 +79,6 @@ App.core = (function ($, window, document, undefined) {
             if (!_this[parts[i]]) {
                 _this[parts[i]] = {};
             }
-
             _this = _this[parts[i]];
         }
 
@@ -333,7 +332,6 @@ App.core = (function ($, window, document, undefined) {
         stringStripEOL: stringStripEOL
     };
 })(jQuery, window, document);
-
 
 // Create an alias for 'App.core.namespace'
 App.namespace = App.core.namespace;
