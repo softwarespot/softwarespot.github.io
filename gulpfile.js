@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var cssmin = require('gulp-cssmin');
 var jshint = require('gulp-jshint');
+var php = require('gulp-connect-php');
 var prettify = require('gulp-jsbeautifier');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
@@ -97,6 +98,19 @@ gulp.task('jshint', function () {
         .pipe(jshint.reporter('default'));
 });
 
+// Initialise the PHP server 'php -S localhost:8000'
+gulp.task('php-server', function () {
+    php.server({
+        base: '.',
+        hostname: 'localhost',
+        port: 8000,
+        open: true,
+        keepalive: true
+        // bin: ''
+        // ini: ''
+    });
+});
+
 // Prettify the main js file(s)
 gulp.task('prettify-js', function () {
     gulp.src(Assets.js.custom.all)
@@ -174,6 +188,7 @@ gulp.task('default', ['build', 'vendor']);
 // 'gulp build' to build the main css and js file(s)
 // 'gulp cssmin' to minify the main css file(s)
 // 'gulp jshint' to check the syntax of the main js file(s)
+// 'gulp php-server' to connect to the local PHP server
 // 'gulp prettify-js' to prettify the main js file(s)
 // 'gulp uglify' to uglify the main js file(s)
 // 'gulp vendor' to build the vendor file(s)
