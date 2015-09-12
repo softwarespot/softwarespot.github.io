@@ -13,6 +13,8 @@ App.core = (function ($, window, document, undefined) {
     // SemVer version number of the module
     var VERSION = '1.0.0';
 
+    var APP_NAME = 'SoftwareSpot';
+
     // Unique global identifier. Internal usage only
     // var GUID = 'BF1D7691-79D4-4A89-930B-84C65A309E86';
 
@@ -60,6 +62,15 @@ App.core = (function ($, window, document, undefined) {
      * @return {undefined}
      */
     function destroy() {}
+
+    /**
+     * Get the name of the application name
+     *
+     * @returns {string} Application name
+     */
+    function getAppName() {
+        return APP_NAME;
+    }
 
     /**
      * Get the version number of the module
@@ -235,6 +246,21 @@ App.core = (function ($, window, document, undefined) {
     }
 
     /**
+     * Pad a number with leading zeros
+     *
+     * @param {number} value Value to pad with leading zeros
+     * @param {number} length Minimum length of the value
+     * @return {string} Value with padded zero
+     */
+    function padDigits(value, length) {
+        // Coerce as a string
+        value = '' + value;
+
+        // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
+        return new Array(Math.max(length - value.length + 1, 0)).join(0) + value;
+    }
+
+    /**
      * Generate a random number
      *
      * @param {number} min Minimum value
@@ -296,6 +322,7 @@ App.core = (function ($, window, document, undefined) {
 
     // Public API
     return {
+        getAppName: getAppName,
         getVersion: getVersion,
         isArray: isArray,
         isBoolean: isBoolean,
@@ -312,6 +339,7 @@ App.core = (function ($, window, document, undefined) {
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
         isUndefined: isUndefined,
+        padDigits: padDigits,
         randomNumber: randomNumber,
         stringFormat: stringFormat,
         stringStripEOL: stringStripEOL
