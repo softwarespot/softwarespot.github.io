@@ -1,19 +1,19 @@
 /* global App */
 
 /**
- * Main module
+ * Navigation module
  *
- * Modified: 2015/09/11
+ * Modified: 2015/09/12
  * @author softwarespot
  */
-App.namespace().main = (function ($, window, document, core, undefined) {
+App.namespace().navigation = (function ($, window, document, core, undefined) {
     // Constants
 
     // SemVer version number of the module
     var VERSION = '1.0.0';
 
     // Unique global identifier. Internal usage only
-    // var GUID = '3B732ADD-7465-4972-9E5C-C005DBED2751';
+    // var GUID = 'AEE5249D-6F2D-44C7-8FFB-5391C69A4CF2';
 
     // Fields
 
@@ -28,7 +28,7 @@ App.namespace().main = (function ($, window, document, core, undefined) {
 
     // Events object
     var _events = {
-        click: 'click.app.main',
+        click: 'click.app.navigation',
         navigation: function (event) {
             // Get the href attribute using vanilla JavaScript
             var href = event.currentTarget.getAttribute('href');

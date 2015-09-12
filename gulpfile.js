@@ -101,11 +101,11 @@ gulp.task('jshint', function () {
 // Initialise the PHP server 'php -S localhost:8000'
 gulp.task('php-server', function () {
     php.server({
-        base: '.',
         hostname: 'localhost',
         port: 8000,
-        open: true,
-        keepalive: true
+        base: '.',
+        keepalive: true,
+        open: true
         // bin: ''
         // ini: ''
     });
@@ -132,7 +132,8 @@ gulp.task('uglify', function () {
     return gulp.src([
             dest + '/core.js',
             dest + '/gists.js',
-            dest + '/main.js'
+            dest + '/main.js',
+            dest + '/navigation.js'
         ])
         .pipe(concat(Assets.js.custom.minified))
         .pipe(uglify(uglifySettings))
