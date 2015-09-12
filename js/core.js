@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/09/11
+ * Modified: 2015/09/12
  * @author softwarespot
  */
 App.core = (function ($, window, document, undefined) {
@@ -39,7 +39,7 @@ App.core = (function ($, window, document, undefined) {
     // Methods
 
     /**
-     * Initialisation function
+     * Initialise the module
      *
      * @param {object} config Options to configure the module
      * @return {undefined}
@@ -53,6 +53,13 @@ App.core = (function ($, window, document, undefined) {
 
         // _cacheDom();
     }
+
+    /**
+     * Destroy the module
+     *
+     * @return {undefined}
+     */
+    function destroy() {}
 
     /**
      * Get the version number of the module
@@ -283,6 +290,7 @@ App.core = (function ($, window, document, undefined) {
 
     // Invoked when the DOM has loaded
     $(function () {
+        destroy();
         init({});
     });
 

@@ -20,7 +20,7 @@ App.namespace().base = (function ($, window, document, undefined) {
     // Methods
 
     /**
-     * Initialisation function
+     * Initialise the module
      *
      * @param {object} config Options to configure the module
      * @return {undefined}
@@ -34,6 +34,13 @@ App.namespace().base = (function ($, window, document, undefined) {
 
         _cacheDom();
     }
+
+    /**
+     * Destroy the module
+     *
+     * @return {undefined}
+     */
+    function destroy() {}
 
     /**
      * Get the version number of the module
@@ -59,6 +66,7 @@ App.namespace().base = (function ($, window, document, undefined) {
     // Public API
     return {
         init: init,
+        destroy: destroy,
         getVersion: getVersion
     };
 })(jQuery, window, document);

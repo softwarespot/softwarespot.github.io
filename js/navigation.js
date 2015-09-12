@@ -68,7 +68,7 @@ App.namespace().navigation = (function ($, window, document, core, undefined) {
     // Methods
 
     /**
-     * Initialisation function
+     * Initialise the module
      *
      * @param {object} config Options to configure the module
      * @return {undefined}
@@ -82,6 +82,17 @@ App.namespace().navigation = (function ($, window, document, core, undefined) {
 
         _cacheDom();
         _bindEvents();
+    }
+
+    /**
+     * Destroy the module
+     *
+     * @return {undefined}
+     */
+    function destroy() {
+        _unbindEvents();
+        $_body = null;
+        $_navigationLinks = null;
     }
 
     /**
@@ -158,6 +169,7 @@ App.namespace().navigation = (function ($, window, document, core, undefined) {
     // Public API
     return {
         init: init,
+        destroy: destroy,
         getVersion: getVersion
     };
 })(jQuery, window, document, App.core);
