@@ -3,7 +3,7 @@
 /**
  * Gists module
  *
- * Modified: 2015/09/11
+ * Modified: 2015/09/12
  * @author softwarespot
  */
 App.namespace().gists = (function ($, window, document, core, undefined) {
@@ -37,7 +37,7 @@ App.namespace().gists = (function ($, window, document, core, undefined) {
     // Methods
 
     /**
-     * Initialisation function
+     * Initialise the module
      *
      * @param {object} config Options to configure the module
      * @return {undefined}
@@ -58,6 +58,16 @@ App.namespace().gists = (function ($, window, document, core, undefined) {
         _cacheDom(config.gists.content);
         _setAjaxGlobal();
         _load(config.gists.username);
+    }
+
+    /**
+     * Destroy the module
+     *
+     * @return {undefined}
+     */
+    function destroy() {
+        $_document = null;
+        $_content = null;
     }
 
     /**
@@ -176,6 +186,7 @@ App.namespace().gists = (function ($, window, document, core, undefined) {
                 }
             });
         },
+        destroy: destroy,
         getVersion: getVersion
     };
 })(jQuery, window, document, App.core);
