@@ -13,9 +13,6 @@ App.namespace().gists = (function ($, window, document, core, undefined) {
         get_gist_by_id: 'https://api.github.com/gists/{id}'
     };
 
-    // HTTP Status Codes
-    var HTTP_OK = 200;
-
     // SemVer version number of the module
     var VERSION = '1.0.0';
 
@@ -115,7 +112,7 @@ App.namespace().gists = (function ($, window, document, core, undefined) {
             console.log($this);
 
             // Is the HTTP status code equal to OK (200)?
-            var isSuccess = response.meta.status === HTTP_OK;
+            var isSuccess = response.meta.status === core.api.HTTP.OK;
             _render(isSuccess, isSuccess ? response.data : null);
         });
 
