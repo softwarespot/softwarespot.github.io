@@ -132,6 +132,7 @@ gulp.task('uglify', function () {
     return gulp.src([
             dest + '/core.js',
             dest + '/core.api.js',
+            dest + '/core.features.js',
             dest + '/gists.js',
             dest + '/main.js',
             dest + '/navigation.js'
