@@ -313,19 +313,19 @@ App.core = (function ($, window, document, undefined) {
 /**
  * Create a namespace. Idea based on the work by Nikolas C. Zakas from Maintainable JavaScript
  *
- * @param {string} ns A namespace comprised of optional parts e.g. App.system.clock
+ * @param {string} namespacePath A namespace comprised of optional parts e.g. App.system.clock
  * @return {object} Context of this, based on the last part in the namespace e.g. this would be equal to the 'clock' object reference
  */
-App.namespace = function namespace(ns) {
+App.namespace = function namespace(namespacePath) {
     var core = App.core;
     var _this = this;
 
-    // Set to an empty string if not a string datatype
-    if (!core.isString(core) || core.isStringEmptyOrWhitespace(ns)) {
+    // Return the context this being the root object, if not a valid string
+    if (core.isUndefined(namespacePath) || !core.isString(namespacePath) || core.isStringEmptyOrWhitespace(namespacePath)) {
         return _this;
     }
 
-    var parts = ns.split('.');
+    var parts = namespacePath.split('.');
     for (var i = 0, length = parts.length; i < length; i++) {
         if (!_this[parts[i]]) {
             _this[parts[i]] = {};
