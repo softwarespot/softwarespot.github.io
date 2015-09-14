@@ -32,8 +32,14 @@ App.core = (function (window, document, $, undefined) {
         STRING: '[object String]'
     };
 
-    // Store the Object prototype toString method
-    var _objectToString = Object.prototype.toString;
+    // Store the object prototype
+    var _objectPrototype = Object.prototype;
+
+    // Store the hasOwnProperty method
+    var _objectHasOwnProperty = _objectPrototype.hasOwnProperty;
+
+    // Store the toString method
+    var _objectToString = _objectPrototype.toString;
 
     // Regular expression to strip EOL characters
     var _reEOLChars = /\r?\n|\r/gm;
@@ -85,11 +91,11 @@ App.core = (function (window, document, $, undefined) {
      * Check if an object contains a key
      *
      * @param {object} object Object to check
-     * @param {string} key Key to check exists in the object
-     * @return {boolean} True the key exists; otherwise, false
+     * @param {string} property Property to check exists in the object
+     * @return {boolean} True the property exists; otherwise, false
      */
-    function has(object, key) {
-        return hasOwnProperty.call(object, key);
+    function has(object, property) {
+        return _objectHasOwnProperty.call(object, property);
     }
 
     /**
@@ -117,7 +123,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is an array datatype
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is an array datatype; otherwise, false
+     * @returns {boolean} True the value is an array datatype; otherwise, false
      */
     var isArray = Array.isArray;
 
@@ -125,17 +131,26 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is a boolean datatype
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is a boolean datatype; otherwise, false
+     * @returns {boolean} True the value is a boolean datatype; otherwise, false
      */
     function isBoolean(value) {
         return value === true || value === false || (isObjectLike(value) && _objectToString.call(value) === _objectStrings.BOOLEAN);
     }
 
     /**
+     * Check if currently running inside a browser
+     *
+     * @return {boolean} True inside a browser; otherwise, false
+     */
+    function isBrowser() {
+        return !!(!isUndefined(window) && !isUndefined(window.navigator) && window.document);
+    }
+
+    /**
      * Check if a variable is a Date object
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is a Date datatype; otherwise, false
+     * @returns {boolean} True the value is a Date datatype; otherwise, false
      */
     function isDate(value) {
         return isObjectLike(value) && _objectToString.call(value) === _objectStrings.DATE;
@@ -145,7 +160,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is empty
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is empty; otherwise, false
+     * @returns {boolean} True the value is empty; otherwise, false
      */
     function isEmpty(value) {
         if (value === null) {
@@ -170,7 +185,7 @@ App.core = (function (window, document, $, undefined) {
      * 'SyntaxError', 'TypeError', or 'URIError' object
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is a Error object; otherwise, false
+     * @returns {boolean} True the value is a Error object; otherwise, false
      */
     function isError(value) {
         return isObjectLike(value) && typeof value.message === 'string' && _objectToString.call(value) === _objectStrings.ERROR;
@@ -180,7 +195,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is a function datatype
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is a function datatype; otherwise, false
+     * @returns {boolean} True the value is a function datatype; otherwise, false
      */
     function isFunction(value) {
         return isObject(value) && _objectToString.call(value) === _objectStrings.FUNCTION;
@@ -210,7 +225,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is null
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is null; otherwise, false
+     * @returns {boolean} True the value is null; otherwise, false
      */
     function isNull(value) {
         return value === null;
@@ -220,7 +235,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is null or undefined
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is null or undefined; otherwise, false
+     * @returns {boolean} True the value is null or undefined; otherwise, false
      */
     function isNullOrUndefined(value) {
         return isNull(value) || isUndefined(value);
@@ -230,7 +245,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is a number datatype
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is a number datatype; otherwise, false
+     * @returns {boolean} True the value is a number datatype; otherwise, false
      */
     function isNumber(value) {
         return typeof value === 'number' || (isObjectLike(value) && _objectToString.call(value) === _objectStrings.NUMBER);
@@ -240,7 +255,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is an object
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is an object; otherwise, false
+     * @returns {boolean} True the value is an object; otherwise, false
      */
     function isObject(value) {
         // Store the typeof value
@@ -255,7 +270,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is an object
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is an object; otherwise, false
+     * @returns {boolean} True the value is an object; otherwise, false
      */
     function isObjectLike(value) {
         return !!value && typeof value === 'object';
@@ -265,7 +280,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is a RegExp object
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is a RegExp object; otherwise, false
+     * @returns {boolean} True the value is a RegExp object; otherwise, false
      */
     function isRegExp(value) {
         return isObject(value) && _objectToString.call(value) === _objectStrings.REGEXP;
@@ -275,7 +290,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is a string datatype
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is a string datatype; otherwise, false
+     * @returns {boolean} True the value is a string datatype; otherwise, false
      */
     function isString(value) {
         return typeof value === 'string' || _objectToString.call(value) === _objectStrings.STRING;
@@ -285,7 +300,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is a string and empty or whitespace
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} true the value is a string and empty; otherwise, false
+     * @returns {boolean} True the value is a string and empty; otherwise, false
      */
     function isStringEmptyOrWhitespace(value) {
         return isString(value) && value.trim().length === 0;
@@ -295,10 +310,20 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is undefined
      *
      * @param {object} value Value to check
-     * @returns {boolean} true the value is undefined; otherwise, false
+     * @returns {boolean} True the value is undefined; otherwise, false
      */
     function isUndefined(value) {
         return value === undefined;
+    }
+
+    /**
+     * Check if an object is a window
+     *
+     * @param  {object} object Object to check
+     * @return {boolean} True is a window; otherwise, false
+     */
+    function isWindow(object) {
+        return isObject(object) && object === object.window;
     }
 
     /**
@@ -384,6 +409,7 @@ App.core = (function (window, document, $, undefined) {
         keys: keys,
         isArray: isArray,
         isBoolean: isBoolean,
+        isBrowser: isBrowser,
         isDate: isDate,
         isEmpty: isEmpty,
         isError: isError,
@@ -398,6 +424,7 @@ App.core = (function (window, document, $, undefined) {
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
         isUndefined: isUndefined,
+        isWindow: isWindow,
         padDigits: padDigits,
         randomNumber: randomNumber,
         stringFormat: stringFormat,
