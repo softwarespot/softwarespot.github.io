@@ -6,7 +6,7 @@
  * Modified: 2015/09/12
  * @author softwarespot
  */
-App.namespace('core').api = (function ($, window, document, core, undefined) {
+App.namespace('core').api = (function (window, document, $, core, undefined) {
     // Constants
 
     /**
@@ -172,4 +172,4 @@ App.namespace('core').api = (function ($, window, document, core, undefined) {
         getVersion: getVersion,
         HTTP: HTTP
     };
-})(jQuery, window, document, App.core);
+})(window, document, jQuery, App.core);

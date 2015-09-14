@@ -6,7 +6,7 @@
  * Modified: 2015/09/12
  * @author softwarespot
  */
-App.namespace().gists = (function ($, window, document, core, undefined) {
+App.namespace().gists = (function (window, document, $, core, undefined) {
     // Constants
     var API = {
         get_gists_by_user: 'https://api.github.com/users/{username}/gists',
@@ -186,4 +186,4 @@ App.namespace().gists = (function ($, window, document, core, undefined) {
         destroy: destroy,
         getVersion: getVersion
     };
-})(jQuery, window, document, App.core);
+})(window, document, jQuery, App.core);

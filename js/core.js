@@ -7,7 +7,7 @@ var App = App || {};
  * Modified: 2015/09/12
  * @author softwarespot
  */
-App.core = (function ($, window, document, undefined) {
+App.core = (function (window, document, $, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -344,7 +344,7 @@ App.core = (function ($, window, document, undefined) {
         stringFormat: stringFormat,
         stringStripEOL: stringStripEOL
     };
-})(jQuery, window, document);
+})(window, document, jQuery);
 
 /**
  * Create a namespace. Idea based on the work by Nikolas C. Zakas from Maintainable JavaScript

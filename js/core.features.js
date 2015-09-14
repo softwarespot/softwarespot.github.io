@@ -11,7 +11,7 @@
  * Modified: 2015/09/12
  * @author softwarespot
  */
-App.namespace('core').features = (function ($, window, document, core, undefined) {
+App.namespace('core').features = (function (window, document, $, core, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -284,4 +284,4 @@ App.namespace('core').features = (function ($, window, document, core, undefined
         hasWebStorage: hasWebStorage,
         hasGeoLocation: hasGeoLocation
     };
-})(jQuery, window, document, App.core);
+})(window, document, jQuery, App.core);

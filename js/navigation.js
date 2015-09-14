@@ -6,7 +6,7 @@
  * Modified: 2015/09/12
  * @author softwarespot
  */
-App.namespace().navigation = (function ($, window, document, core, undefined) {
+App.namespace().navigation = (function (window, document, $, core, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -172,4 +172,4 @@ App.namespace().navigation = (function ($, window, document, core, undefined) {
         destroy: destroy,
         getVersion: getVersion
     };
-})(jQuery, window, document, App.core);
+})(window, document, jQuery, App.core);
