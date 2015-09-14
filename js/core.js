@@ -82,6 +82,38 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if an object contains a key
+     *
+     * @param {object} object Object to check
+     * @param {string} key Key to check exists in the object
+     * @return {boolean} True the key exists; otherwise, false
+     */
+    function has(object, key) {
+        return hasOwnProperty.call(object, key);
+    }
+
+    /**
+     * Extract the keys of an object to an array
+     *
+     * @param {object} object Object to extract the keys from
+     * @return {array} An array of keys; otherwise, an empty array
+     */
+    function keys(object) {
+        if (!isObject(object)) {
+            return [];
+        }
+
+        var keysArray = [];
+        for (var key in object) {
+            if (has(object, key)) {
+                keysArray.push(key);
+            }
+        }
+
+        return keys;
+    }
+
+    /**
      * Check if a variable is an array datatype
      *
      * @param {mixed} value Value to check
@@ -107,6 +139,30 @@ App.core = (function (window, document, $, undefined) {
      */
     function isDate(value) {
         return isObjectLike(value) && _objectToString.call(value) === _objectStrings.DATE;
+    }
+
+    /**
+     * Check if a variable is empty
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} true the value is empty; otherwise, false
+     */
+    function isEmpty(value) {
+        if (value === null) {
+            return true;
+        }
+
+        if (isArray(value) || isString(value)) {
+            return value.length === 0;
+        }
+
+        for (var key in value) {
+            if (has(value, key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -324,9 +380,12 @@ App.core = (function (window, document, $, undefined) {
     return {
         getAppName: getAppName,
         getVersion: getVersion,
+        has: has,
+        keys: keys,
         isArray: isArray,
         isBoolean: isBoolean,
         isDate: isDate,
+        isEmpty: isEmpty,
         isError: isError,
         isFunction: isFunction,
         isjQuery: isjQuery,
