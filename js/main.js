@@ -69,4 +69,4 @@ App.namespace().main = (function (window, document, $, core, undefined) {
         destroy: destroy,
         getVersion: getVersion
     };
-})(window, document, jQuery, App.core);
+})(this, this.document, this.jQuery, this.App.core);

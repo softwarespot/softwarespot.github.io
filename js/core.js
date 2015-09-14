@@ -344,7 +344,7 @@ App.core = (function (window, document, $, undefined) {
         stringFormat: stringFormat,
         stringStripEOL: stringStripEOL
     };
-})(window, document, jQuery);
+})(this, this.document, this.jQuery);
 
 /**
  * Create a namespace. Idea based on the work by Nikolas C. Zakas from Maintainable JavaScript

@@ -172,4 +172,4 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         getVersion: getVersion,
         HTTP: HTTP
     };
-})(window, document, jQuery, App.core);
+})(this, this.document, this.jQuery, this.App.core);

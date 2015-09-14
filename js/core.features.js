@@ -284,4 +284,4 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         hasWebStorage: hasWebStorage,
         hasGeoLocation: hasGeoLocation
     };
-})(window, document, jQuery, App.core);
+})(this, this.document, this.jQuery, this.App.core);
