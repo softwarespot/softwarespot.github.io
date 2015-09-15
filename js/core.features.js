@@ -153,7 +153,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      * @return {boolean} True the feature exists; otherwise, false
      */
     function hasGeoLocation() {
-        return 'geolocation' in window.navigator;
+        return core.isObject(window.navigator) && 'geolocation' in window.navigator;
     }
 
     // INPUTS
@@ -174,19 +174,19 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         _inputs = {};
 
         // Input types that will are split as an array
-        var inputTypes = 'color date datetime datetime-local email month number range search tel time url week'.split(' '),
+        var inputTypes = 'color date datetime datetime-local email month number range search tel time url week'.split(' ');
 
-            // Create a temporary input element
-            input = document.createElement('input'),
+        // Create a temporary input element
+        var input = document.createElement('input');
 
-            // Document element to bind the input element to
-            documentElem = document.documentElement,
+        // Document element to bind the input element to
+        var documentElem = document.documentElement;
 
-            // Inline stylesheet
-            cssStyles = 'position:absolute;visibility:hidden;',
+        // Inline stylesheet
+        var cssStyles = 'position:absolute;visibility:hidden;';
 
-            // Data to test with
-            testData = '=)';
+        // Data to test with
+        var testData = '=)';
 
         // Iterate through the array. A polyfill is available at
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Polyfill
