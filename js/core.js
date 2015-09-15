@@ -116,7 +116,7 @@ App.core = (function (window, document, $, undefined) {
             }
         }
 
-        return keys;
+        return keysArray;
     }
 
     /**
