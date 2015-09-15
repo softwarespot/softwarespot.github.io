@@ -222,6 +222,17 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is an integer
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is an integer; otherwise, false
+     */
+    function isInteger(value) {
+        // Coerce as a string
+        return /^-?\d+$/.test('' + value);
+    }
+
+    /**
      * Check if a variable is null
      *
      * @param {mixed} value Value to check
@@ -317,6 +328,26 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a value is the right file extension
+     *
+     * @param {string}  value File extension to check
+     * @param {string}  extensions Semi-colon separated list e.g. js;html;htm
+     * @return {boolean} True the file extension matches; otherwise, false
+     */
+    function isValidFileExtension(value, extensions) {
+        value = escapeRegExChars(value);
+        if (isNull(value)) {
+            return false;
+        }
+
+        // Replace semi-colon(s) (;) with pipe(s) (|)
+        extensions = ('' + extensions).replace(';', '|');
+
+        // Coerce value as a string
+        return (new RegExp('\.(?:' + extensions + ')$', 'i')).test('' + value);
+    }
+
+    /**
      * Check if an object is a window
      *
      * @param  {object} object Object to check
@@ -351,6 +382,21 @@ App.core = (function (window, document, $, undefined) {
     function randomNumber(min, max) {
         // URL: http://www.w3schools.com/jsref/jsref_random.asp
         return Math.floor((Math.random() * max) + min);
+    }
+
+    /**
+     * Escape RegExp characters with a prefix backslash
+     *
+     * @param {string} value String to escape
+     * @return {mixed} Escaped string; otherwise, null if not a string datatype
+     */
+    function escapeRegExChars(value) {
+        if (!isString(value)) {
+            return null;
+        }
+
+        // Escape RegExp special characters
+        return value.replace('/([\].|*?+(){}^$\\[])/g', '\$1');
     }
 
     /**
@@ -416,6 +462,7 @@ App.core = (function (window, document, $, undefined) {
         isFunction: isFunction,
         isjQuery: isjQuery,
         isjQueryNotEmpty: isjQueryNotEmpty,
+        isInteger: isInteger,
         isNull: isNull,
         isNullOrUndefined: isNullOrUndefined,
         isNumber: isNumber,
@@ -424,10 +471,13 @@ App.core = (function (window, document, $, undefined) {
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
         isUndefined: isUndefined,
+        isValidFileExtension: isValidFileExtension,
         isWindow: isWindow,
         padDigits: padDigits,
         randomNumber: randomNumber,
+        escapeRegExChars: escapeRegExChars,
         stringFormat: stringFormat,
+        sprintf: stringFormat,
         stringStripEOL: stringStripEOL
     };
 })(this, this.document, this.jQuery);
