@@ -120,12 +120,58 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a string contains only alphanumeric characters ( 0-9 and A-Z )
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string contains alphanumeric characters only; otherwise, false
+     */
+    function isAlNum(value) {
+        return isString(value) && /^[0-9A-Za-z]+$/.test(value);
+    }
+
+    /**
+     * Check if a string contains only alphabetic characters ( A-Z )
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string contains alphabetic characters only; otherwise, false
+     */
+    function isAlpha(value) {
+        return isString(value) && /^[A-Za-z]+$/.test(value);
+    }
+
+    /**
      * Check if a variable is an array datatype
      *
      * @param {mixed} value Value to check
      * @returns {boolean} True the value is an array datatype; otherwise, false
      */
     var isArray = Array.isArray;
+
+    /**
+     * Check if a string contains ASCII characters only ( 0-127 or 0-255 if extended is set to true )
+     *
+     * @param {string} value String to check
+     * @param {boolean} extended True to use the extended character set i.e. 0-255; otherwise default is false ( 0-127 )
+     * @return {boolean} True the string contains ASCII characters only; otherwise, false
+     */
+    function isASCII(value, extended) {
+        if (!isBoolean(extended)) {
+            extended = false;
+        }
+
+        return isString(value) && (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(value);
+    }
+
+    /**
+     * Check if a string is base64 encoded
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the value is a base64 encoded string; otherwise, false
+     */
+    function isBase64(value) {
+        // URL: http://stackoverflow.com/a/475217
+        return isString(value) && /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value);
+    }
 
     /**
      * Check if a variable is a boolean datatype
@@ -144,6 +190,17 @@ App.core = (function (window, document, $, undefined) {
      */
     function isBrowser() {
         return !!(!isUndefined(window) && !isUndefined(window.navigator) && window.document);
+    }
+
+    /**
+     * Check if a string is a char
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string is a char; otherwise, false
+     */
+    function isChar(value) {
+        // Well there is no 'char' datatype is JavaScript, but this is close as it gets
+        return isString(value) && value.length === 1;
     }
 
     /**
@@ -199,6 +256,16 @@ App.core = (function (window, document, $, undefined) {
      */
     function isFunction(value) {
         return isObject(value) && _objectToString.call(value) === _objectStrings.FUNCTION;
+    }
+
+    /**
+     * Check if a string is hexadecimal
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string is hexadecimal; otherwise, false
+     */
+    function isHex(value) {
+        return isString(value) && /^0[xX][\dA-Fa-f]+$/.test(value);
     }
 
     /**
@@ -453,13 +520,19 @@ App.core = (function (window, document, $, undefined) {
         getVersion: getVersion,
         has: has,
         keys: keys,
+        isAlNum: isAlNum,
+        isAlpha: isAlpha,
         isArray: isArray,
+        isASCII: isASCII,
+        isBase64: isBase64,
         isBoolean: isBoolean,
         isBrowser: isBrowser,
+        isChar: isChar,
         isDate: isDate,
         isEmpty: isEmpty,
         isError: isError,
         isFunction: isFunction,
+        isHex: isHex,
         isjQuery: isjQuery,
         isjQueryNotEmpty: isjQueryNotEmpty,
         isInteger: isInteger,
