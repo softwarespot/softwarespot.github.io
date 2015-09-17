@@ -126,7 +126,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the string contains alphanumeric characters only; otherwise, false
      */
     function isAlNum(value) {
-        return isString(value) && /^[0-9A-Za-z]+$/.test(value);
+        return isString(value) && /(?:^[0-9A-Za-z]+$)/.test(value);
     }
 
     /**
@@ -136,7 +136,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the string contains alphabetic characters only; otherwise, false
      */
     function isAlpha(value) {
-        return isString(value) && /^[A-Za-z]+$/.test(value);
+        return isString(value) && /(?:^[A-Za-z]+$)/.test(value);
     }
 
     /**
@@ -159,7 +159,7 @@ App.core = (function (window, document, $, undefined) {
             extended = false;
         }
 
-        return isString(value) && (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(value);
+        return isString(value) && (extended ? /(?:^[\x00-\xFF]*$)/ : /(?:^[\x00-\x7F]*$)/).test(value);
     }
 
     /**
@@ -170,7 +170,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function isBase64(value) {
         // URL: http://stackoverflow.com/a/475217
-        return isString(value) && /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value);
+        return isString(value) && /(?:^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$)/.test(value);
     }
 
     /**
@@ -259,13 +259,34 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a string is a GUID
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string is a GUID; otherwise, false
+     */
+    function isGUID(value) {
+        return isString(value) && /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/.test(value);
+    }
+
+    /**
      * Check if a string is hexadecimal
      *
      * @param {string} value String to check
      * @return {boolean} True the string is hexadecimal; otherwise, false
      */
     function isHex(value) {
-        return isString(value) && /^0[xX][\dA-Fa-f]+$/.test(value);
+        return isString(value) && /(?:^0[xX][\dA-Fa-f]+$)/.test(value);
+    }
+
+    /**
+     * Check if a variable is an integer
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is an integer; otherwise, false
+     */
+    function isInteger(value) {
+        // Coerce as a string
+        return /(?:^-?\d+$)/.test('' + value);
     }
 
     /**
@@ -286,17 +307,6 @@ App.core = (function (window, document, $, undefined) {
      */
     function isjQueryNotEmpty($value) {
         return isjQuery($value) && $value.length !== 0;
-    }
-
-    /**
-     * Check if a variable is an integer
-     *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True the value is an integer; otherwise, false
-     */
-    function isInteger(value) {
-        // Coerce as a string
-        return /^-?\d+$/.test('' + value);
     }
 
     /**
@@ -602,10 +612,11 @@ App.core = (function (window, document, $, undefined) {
         isEmpty: isEmpty,
         isError: isError,
         isFunction: isFunction,
+        isGUID: isGUID,
         isHex: isHex,
+        isInteger: isInteger,
         isjQuery: isjQuery,
         isjQueryNotEmpty: isjQueryNotEmpty,
-        isInteger: isInteger,
         isNull: isNull,
         isNotNull: isNotNull,
         isNullOrUndefined: isNullOrUndefined,
