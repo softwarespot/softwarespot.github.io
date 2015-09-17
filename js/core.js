@@ -120,12 +120,58 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a string contains only alphanumeric characters ( 0-9 and A-Z )
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string contains alphanumeric characters only; otherwise, false
+     */
+    function isAlNum(value) {
+        return isString(value) && /^[0-9A-Za-z]+$/.test(value);
+    }
+
+    /**
+     * Check if a string contains only alphabetic characters ( A-Z )
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string contains alphabetic characters only; otherwise, false
+     */
+    function isAlpha(value) {
+        return isString(value) && /^[A-Za-z]+$/.test(value);
+    }
+
+    /**
      * Check if a variable is an array datatype
      *
      * @param {mixed} value Value to check
      * @returns {boolean} True the value is an array datatype; otherwise, false
      */
     var isArray = Array.isArray;
+
+    /**
+     * Check if a string contains ASCII characters only ( 0-127 or 0-255 if extended is set to true )
+     *
+     * @param {string} value String to check
+     * @param {boolean} extended True to use the extended character set i.e. 0-255; otherwise default is false ( 0-127 )
+     * @return {boolean} True the string contains ASCII characters only; otherwise, false
+     */
+    function isASCII(value, extended) {
+        if (!isBoolean(extended)) {
+            extended = false;
+        }
+
+        return isString(value) && (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(value);
+    }
+
+    /**
+     * Check if a string is base64 encoded
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the value is a base64 encoded string; otherwise, false
+     */
+    function isBase64(value) {
+        // URL: http://stackoverflow.com/a/475217
+        return isString(value) && /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value);
+    }
 
     /**
      * Check if a variable is a boolean datatype
@@ -144,6 +190,17 @@ App.core = (function (window, document, $, undefined) {
      */
     function isBrowser() {
         return !!(!isUndefined(window) && !isUndefined(window.navigator) && window.document);
+    }
+
+    /**
+     * Check if a string is a char
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string is a char; otherwise, false
+     */
+    function isChar(value) {
+        // Well there is no 'char' datatype is JavaScript, but this is close as it gets
+        return isString(value) && value.length === 1;
     }
 
     /**
@@ -202,6 +259,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a string is hexadecimal
+     *
+     * @param {string} value String to check
+     * @return {boolean} True the string is hexadecimal; otherwise, false
+     */
+    function isHex(value) {
+        return isString(value) && /^0[xX][\dA-Fa-f]+$/.test(value);
+    }
+
+    /**
      * Check if a value is an instance of jQuery
      *
      * @param {mixed} $value Value to check
@@ -240,6 +307,16 @@ App.core = (function (window, document, $, undefined) {
      */
     function isNull(value) {
         return value === null;
+    }
+
+    /**
+     * Check if a variable is not null
+     *
+     * @param {mixed} value Value to check
+     * @return {boolean} True the value is not null; otherwise, false
+     */
+    function isNotNull(value) {
+        return value !== null;
     }
 
     /**
@@ -315,6 +392,15 @@ App.core = (function (window, document, $, undefined) {
      */
     function isStringEmptyOrWhitespace(value) {
         return isString(value) && value.trim().length === 0;
+    }
+    /**
+     * Check if a variable is a string and not empty
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a string and not empty; otherwise, false
+     */
+    function isStringNotEmpty(value) {
+        return isString(value) && value.length !== 0;
     }
 
     /**
@@ -400,6 +486,27 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Prefix all line-feed characters ( ASCII 10 ) with a carriage return character ( ASCII 13 )
+     *
+     * @param {string} value Value to replace
+     * @return {string} New string with carriage returns added; otherwise, original string
+     */
+    function stringAddCR(value) {
+        // Needs testing due to no negative look-behind
+        return isStringNotEmpty(value) ? value.replace(/(?!\r)\n/, '\r\n') : value;
+    }
+
+    /**
+     * Postfix all carriage return characters ( ASCII 13 ) with a line-feed character ( ASCII 10 )
+     *
+     * @param {string} value Value to replace
+     * @return {string} New string with line-feeds added; otherwise, original string
+     */
+    function stringAddLF(value) {
+        return isStringNotEmpty(value) ? value.replace(/\r(?!\n)/, '\r\n') : value;
+    }
+
+    /**
      * String format. Similar to the C# implementation
      * URL: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format. User: @Filipiz
      *
@@ -425,13 +532,43 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Strip EOL characters in a string
+     * Convert a null/undefined string to an empty string
+     *
+     * @param {string} value Value to convert
+     * @return {string} An empty string; otherwise original string
+     */
+    function stringNullUndefinedToEmpty(value) {
+        return isNull(value) || isUndefined(value) ? '' : value;
+    }
+
+    /**
+     * Strip EOL characters ( ASCII 10 and ASCII 13 ) in a string
      *
      * @param {string} value String value to strip the EOL characters
-     * @return {string} String stripped of EOL characters; otherwise, on error, the original string
+     * @return {string} String stripped of EOL characters; otherwise, the original string
      */
     function stringStripEOL(value) {
         return isString(value) ? value.replace(_reEOLChars, '') : value;
+    }
+
+    /**
+     * Strip carriage return characters ( ASCII 10 ) in a string
+     *
+     * @param {string} value String value to strip
+     * @return {string} New string of stripped carriage returns; otherwise, the original string
+     */
+    function stringStripCR(value) {
+        return isString(value) ? value.replace(/\r/, '') : value;
+    }
+
+    /**
+     * Strip line-feed characters ( ASCII 13 ) in a string
+     *
+     * @param {string} value String value to strip
+     * @return {string} New string of stripped line-feeds; otherwise, the original string
+     */
+    function stringStripLF(value) {
+        return isString(value) ? value.replace(/\r/, '') : value;
     }
 
     /**
@@ -453,30 +590,43 @@ App.core = (function (window, document, $, undefined) {
         getVersion: getVersion,
         has: has,
         keys: keys,
+        isAlNum: isAlNum,
+        isAlpha: isAlpha,
         isArray: isArray,
+        isASCII: isASCII,
+        isBase64: isBase64,
         isBoolean: isBoolean,
         isBrowser: isBrowser,
+        isChar: isChar,
         isDate: isDate,
         isEmpty: isEmpty,
         isError: isError,
         isFunction: isFunction,
+        isHex: isHex,
         isjQuery: isjQuery,
         isjQueryNotEmpty: isjQueryNotEmpty,
         isInteger: isInteger,
         isNull: isNull,
+        isNotNull: isNotNull,
         isNullOrUndefined: isNullOrUndefined,
         isNumber: isNumber,
         isObject: isObject,
         isRegExp: isRegExp,
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
+        isStringNotEmpty: isStringNotEmpty,
         isUndefined: isUndefined,
         isValidFileExtension: isValidFileExtension,
         isWindow: isWindow,
         padDigits: padDigits,
         randomNumber: randomNumber,
         escapeRegExChars: escapeRegExChars,
+        stringAddCR: stringAddCR,
+        stringAddLF: stringAddLF,
         stringFormat: stringFormat,
+        stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
+        stringStripCR: stringStripCR,
+        stringStripLF: stringStripLF,
         sprintf: stringFormat,
         stringStripEOL: stringStripEOL
     };
