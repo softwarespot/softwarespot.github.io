@@ -8,7 +8,7 @@
  * @link http://caniuse.com/
  * @link https://github.com/NielsLeenheer/html5test/
  *
- * Modified: 2015/09/12
+ * Modified: 2015/09/18
  * @author softwarespot
  */
 App.namespace('core').features = (function (window, document, $, core, undefined) {
@@ -21,6 +21,9 @@ App.namespace('core').features = (function (window, document, $, core, undefined
     // var GUID = '3B8C44B7-6A3B-4F84-A031-2D7B5D4ED211';
 
     // Fields
+
+    // Store if the module has been initialised
+    var _isInitialised = false;
 
     // Hold the input data, with the key being the input type and the value of either true or false as
     // whether or not it's supported by the following browser
@@ -35,6 +38,10 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      * @return {undefined}
      */
     function init(config) {
+        if (_isInitialised) {
+            return;
+        }
+
         // Default config that can be overwritten by passing through the config variable
         var defaultConfig = {};
 
@@ -45,6 +52,8 @@ App.namespace('core').features = (function (window, document, $, core, undefined
 
         // Initialise the input object literal
         _getInputs();
+
+        _isInitialised = true;
     }
 
     /**
@@ -53,7 +62,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      * @return {undefined}
      */
     function destroy() {
-        // Empty
+        _isInitialised = false;
     }
 
     /**
@@ -271,7 +280,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
 
     // Invoked when the DOM has loaded
     $(function () {
-        init();
+        // init();
     });
 
     // Public API

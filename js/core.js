@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/09/12
+ * Modified: 2015/09/18
  * @author softwarespot
  */
 App.core = (function (window, document, $, undefined) {
@@ -19,6 +19,9 @@ App.core = (function (window, document, $, undefined) {
     // var GUID = 'BF1D7691-79D4-4A89-930B-84C65A309E86';
 
     // Fields
+
+    // Store if the module has been initialised
+    var _isInitialised = false;
 
     // Return strings of toString() found on the Object prototype
     // Based on the implementation by lodash inc. is* function as well
@@ -60,6 +63,8 @@ App.core = (function (window, document, $, undefined) {
         $.extend(defaultConfig, config);
 
         // _cacheDom();
+
+        _isInitialised = true;
     }
 
     /**
@@ -68,7 +73,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {undefined}
      */
     function destroy() {
-        // Empty
+        _isInitialised = false;
     }
 
     /**
@@ -593,7 +598,7 @@ App.core = (function (window, document, $, undefined) {
     // Invoked when the DOM has loaded
     $(function () {
         destroy();
-        init({});
+        init();
     });
 
     // Public API

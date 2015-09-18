@@ -1,9 +1,9 @@
-/* global App, NProgress */
+/* global App */
 
 /**
  * Gists module
  *
- * Modified: 2015/09/12
+ * Modified: 2015/09/18
  * @author softwarespot
  */
 App.namespace().gists = (function (window, document, $, core, undefined) {
@@ -21,8 +21,8 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
 
     // Fields
 
-    // Store the document jQuery selector object
-    var $_document = null;
+    // Store if the module has been initialised
+    var _isInitialised = false;
 
     // Store the jQuery selector object to add the gists data
     var $_content = null;
@@ -40,6 +40,8 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function init(config) {
+        core.api.init();
+
         // Default config that can be overwritten by passing through the config variable
         var defaultConfig = {
             gists: null
@@ -53,8 +55,9 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
         _templateFail = config.gists.templates.fail;
 
         _cacheDom(config.gists.content);
-        _setAjaxGlobal();
         _load(config.gists.username);
+
+        _isInitialised = true;
     }
 
     /**
@@ -63,8 +66,8 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function destroy() {
-        $_document = null;
         $_content = null;
+        _isInitialised = false;
     }
 
     /**
@@ -83,7 +86,6 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function _cacheDom(content) {
-        $_document = $(document);
         $_content = $(content);
     }
 
@@ -138,30 +140,6 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
             remove_type: 'same',
             validate: isSuccess
         });
-    }
-
-    /**
-     * Set display the NProgress nano bar when an ajax request is taking place
-     *
-     * @returns {undefined}
-     */
-    function _setAjaxGlobal() {
-        // Disable showing the spinner in the top right hand corner
-        NProgress.configure({
-            minimum: 0.1,
-            showSpinner: false
-        });
-
-        // When an ajax request is started
-        $_document.ajaxStart(function () {
-            NProgress.start();
-        });
-
-        // When an ajax request has stopped
-        $_document.ajaxStop(function () {
-            NProgress.done();
-        });
-
     }
 
     // Invoked when the DOM has loaded

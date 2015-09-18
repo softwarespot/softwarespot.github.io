@@ -1,9 +1,9 @@
-/* global App */
+/* global App, NProgress */
 
 /**
  * API module
  *
- * Modified: 2015/09/12
+ * Modified: 2015/09/18
  * @author softwarespot
  */
 App.namespace('core').api = (function (window, document, $, core, undefined) {
@@ -119,6 +119,12 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
 
     // Fields
 
+    // Store if the module has been initialised
+    var _isInitialised = false;
+
+    // Store the document jQuery selector object
+    var $_document = null;
+
     // Methods
 
     /**
@@ -128,13 +134,20 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function init(config) {
+        if (_isInitialised) {
+            return;
+        }
+
         // Default config that can be overwritten by passing through the config variable
         var defaultConfig = {};
 
         // Combine the passed config
         $.extend(defaultConfig, config);
 
-        // _cacheDom();
+        _cacheDom();
+        _setAjaxGlobal();
+
+        _isInitialised = true;
     }
 
     /**
@@ -143,7 +156,8 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function destroy() {
-        // Empty
+        $_document = null;
+        _isInitialised = false;
     }
 
     /**
@@ -158,13 +172,47 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
     /**
      * Initialise all DOM cachable variables
      *
+     * {string} content Content to add the gists data
+     * @return {undefined}
+     */
+    function _cacheDom() {
+        $_document = $(document);
+    }
+
+    /**
+     * Set display the NProgress nano bar when an ajax request is taking place
+     *
+     * @returns {undefined}
+     */
+    function _setAjaxGlobal() {
+        // Disable showing the spinner in the top right hand corner
+        NProgress.configure({
+            minimum: 0.1,
+            showSpinner: false
+        });
+
+        // When an ajax request is started
+        $_document.ajaxStart(function () {
+            NProgress.start();
+        });
+
+        // When an ajax request has stopped
+        $_document.ajaxStop(function () {
+            NProgress.done();
+        });
+
+    }
+
+    /**
+     * Initialise all DOM cachable variables
+     *
      * @return {undefined}
      */
     // function _cacheDom() {}
 
     // Invoked when the DOM has loaded
     $(function () {
-        // init({});
+        init();
     });
 
     // Public API

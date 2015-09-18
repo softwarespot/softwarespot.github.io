@@ -3,7 +3,7 @@
 /**
  * Navigation module
  *
- * Modified: 2015/09/12
+ * Modified: 2015/09/18
  * @author softwarespot
  */
 App.namespace().navigation = (function (window, document, $, core, undefined) {
@@ -16,6 +16,9 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
     // var GUID = 'AEE5249D-6F2D-44C7-8FFB-5391C69A4CF2';
 
     // Fields
+
+    // Store if the module has been initialised
+    var _isInitialised = false;
 
     // Store the body jQuery selector object
     var $_body = null;
@@ -82,6 +85,8 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
 
         _cacheDom();
         _bindEvents();
+
+        _isInitialised = true;
     }
 
     /**
@@ -93,6 +98,7 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
         _unbindEvents();
         $_body = null;
         $_navigationLinks = null;
+        _isInitialised = false;
     }
 
     /**
