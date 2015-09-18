@@ -3,7 +3,7 @@
 /**
  * Main module
  *
- * Modified: 2015/09/12
+ * Modified: 2015/09/18
  * @author softwarespot
  */
 App.namespace().main = (function (window, document, $, core, undefined) {
@@ -16,6 +16,9 @@ App.namespace().main = (function (window, document, $, core, undefined) {
     // var GUID = '3B732ADD-7465-4972-9E5C-C005DBED2751';
 
     // Fields
+
+    // Store if the module has been initialised
+    var _isInitialised = false;
 
     // Methods
 
@@ -33,6 +36,8 @@ App.namespace().main = (function (window, document, $, core, undefined) {
         $.extend(defaultConfig, config);
 
         _cacheDom();
+
+        _isInitialised = true;
     }
 
     /**
@@ -41,7 +46,7 @@ App.namespace().main = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function destroy() {
-        // Empty
+        _isInitialised = false;
     }
 
     /**

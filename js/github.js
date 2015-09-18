@@ -1,16 +1,18 @@
 /* global App */
 
+// https://api.github.com/users/softwarespot
+// https://github.com/users/softwarespot/contributions
+
 /**
- * Gists module
+ * GitHub module
  *
  * Modified: 2015/09/18
  * @author softwarespot
  */
-App.namespace().gists = (function (window, document, $, core, undefined) {
+App.namespace().github = (function (window, document, $, core, undefined) {
     // Constants
     var API = {
-        get_gists_by_user: 'https://api.github.com/users/{username}/gists',
-        get_gist_by_id: 'https://api.github.com/gists/{id}'
+        get_github_by_user: 'https://api.github.com/users/{username}'
     };
 
     // SemVer version number of the module
@@ -24,7 +26,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     // Store if the module has been initialised
     var _isInitialised = false;
 
-    // Store the jQuery selector object to add the gists data
+    // Store the jQuery selector object to add the GitHub data
     var $_content = null;
 
     // Template string selectors
@@ -44,18 +46,18 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
 
         // Default config that can be overwritten by passing through the config variable
         var defaultConfig = {
-            gists: null
+            github: null
         };
 
         // Combine the passed config
         $.extend(defaultConfig, config);
 
         // Store the template strings
-        _templateDone = config.gists.templates.done;
-        _templateFail = config.gists.templates.fail;
+        _templateDone = config.github.templates.done;
+        _templateFail = config.github.templates.fail;
 
-        _cacheDom(config.gists.content);
-        _load(config.gists.username);
+        _cacheDom(config.github.content);
+        _load(config.github.username);
 
         _isInitialised = true;
     }
@@ -82,7 +84,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     /**
      * Initialise all DOM cachable variables
      *
-     * {string} content Content to add the gists data
+     * {string} content Content to add the github data
      * @return {undefined}
      */
     function _cacheDom(content) {
@@ -90,7 +92,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     }
 
     /**
-     * Load gists for a particular user. Uses API: https://developer.github.com/v3/gists/
+     * Load github for a particular user. Uses API: https://developer.github.com/v3/github/
      *
      * @param  {object} config Configuration object literal
      * @return @return {undefined}
@@ -98,7 +100,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     function _load(username) {
         var options = {
             // Replace the '{username}' with the user's username
-            url: API.get_gists_by_user.replace('{username}', username),
+            url: API.get_github_by_user.replace('{username}', username),
             method: 'get',
             dataType: 'jsonp',
             cache: false
@@ -129,7 +131,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     }
 
     /**
-     * Render the gists data
+     * Render the github data
      *
      * @param {boolean} isSuccess True renders the 'done' template; otherwise, false renders the 'fail' template
      * @param {object} data Data to pass to the template
@@ -151,12 +153,12 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     return {
         init: function () {
             init({
-                gists: {
+                github: {
                     username: 'softwarespot',
-                    content: '#gists-section',
+                    content: '#github-section',
                     templates: {
-                        fail: '#template-gists-error',
-                        done: '#template-gists'
+                        fail: '#template-github-error',
+                        done: '#template-github'
                     }
                 }
             });
