@@ -40,7 +40,9 @@ App.namespace().main = (function (window, document, $, core, undefined) {
      *
      * @return {undefined}
      */
-    function destroy() {}
+    function destroy() {
+        // Empty
+    }
 
     /**
      * Get the version number of the module
@@ -56,7 +58,9 @@ App.namespace().main = (function (window, document, $, core, undefined) {
      *
      * @return {undefined}
      */
-    function _cacheDom() {}
+    function _cacheDom() {
+        // Empty
+    }
 
     // Initialise the module
     $(function () {

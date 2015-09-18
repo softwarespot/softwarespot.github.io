@@ -142,7 +142,9 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      *
      * @return {undefined}
      */
-    function destroy() {}
+    function destroy() {
+        // Empty
+    }
 
     /**
      * Get the version number of the module

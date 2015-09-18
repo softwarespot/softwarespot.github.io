@@ -22,7 +22,7 @@ App.core = (function (window, document, $, undefined) {
 
     // Return strings of toString() found on the Object prototype
     // Based on the implementation by lodash inc. is* function as well
-    const _objectStrings = {
+    var _objectStrings = {
         BOOLEAN: '[object Boolean]',
         DATE: '[object Date]',
         ERROR: '[object Error]',
@@ -67,7 +67,9 @@ App.core = (function (window, document, $, undefined) {
      *
      * @return {undefined}
      */
-    function destroy() {}
+    function destroy() {
+        // Empty
+    }
 
     /**
      * Get the name of the application name
@@ -465,7 +467,7 @@ App.core = (function (window, document, $, undefined) {
         value = '' + value;
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
-        return new Array(Math.max(length - value.length + 1, 0)).join(0) + value;
+        return new Array(Math.max(length - value.length + 1, 0)).join('0') + value;
     }
 
     /**
