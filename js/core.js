@@ -559,6 +559,17 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Repeat a string value
+     *
+     * @param {string} value String value to repeat
+     * @param {number} count Number of times to repeat the string
+     * @return {string} Repeated string; otherwise, empty string on error
+     */
+    function stringRepeat(value, count) {
+        return isString(value) ? (new Array(++count)).join(value) : '';
+    }
+
+    /**
      * Strip EOL characters ( ASCII 10 and ASCII 13 ) in a string
      *
      * @param {string} value String value to strip the EOL characters
@@ -643,6 +654,7 @@ App.core = (function (window, document, $, undefined) {
         stringAddLF: stringAddLF,
         stringFormat: stringFormat,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
+        stringRepeat: stringRepeat,
         stringStripCR: stringStripCR,
         stringStripLF: stringStripLF,
         sprintf: stringFormat,
