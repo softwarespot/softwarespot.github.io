@@ -630,6 +630,54 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a string ends with a certain string
+     *
+     * @param {string} value Value to check
+     * @param {string} searchFor Value to search for
+     * @param {number} position Position to start searching. Default is start at the end of the string
+     * @return {boolean} True the string ends with a certain string; otherwise, false
+     */
+    function stringEndsWith(value, searchFor, position) {
+        if (!isString(value)) {
+            return false;
+        }
+
+        if (!isNumber(position) || position > value.length) {
+            position = value.length;
+        }
+        position -= searchFor.length;
+
+        if (isFunction(String.prototype.endsWith)) {
+            return value.endsWith(searchFor, position);
+        }
+
+        // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+        var lastIndex = value.indexOf(searchFor, position);
+        return lastIndex !== -1 && lastIndex === position;
+    }
+
+    /**
+     * Check if a string starts with a certain string
+     *
+     * @param {string} value Value to check
+     * @param {string} searchFor Value to search for
+     * @param {number} position Position to start searching. Default is start at the beginning of the string
+     * @return {boolean} True the string starts with a certain string; otherwise, false
+     */
+    function stringStartsWith(value, searchFor, position) {
+        if (!isString(value)) {
+            return false;
+        }
+
+        if (!isNumber(position)) {
+            position = 0;
+        }
+
+        // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
+        return isFunction(String.prototype.startsWith) ? value.startsWith(searchFor, position) : value.indexOf(searchFor, position) === position;
+    }
+
+    /**
      * Strip EOL characters ( ASCII 10 and ASCII 13 ) in a string
      *
      * @param {string} value String value to strip the EOL characters
@@ -676,9 +724,9 @@ App.core = (function (window, document, $, undefined) {
     return {
         getAppName: getAppName,
         getVersion: getVersion,
-        has: has,
-        keys: keys,
+        escapeRegExChars: escapeRegExChars,
         functionExists: isFunction,
+        has: has,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
         isArray: isArray,
@@ -697,8 +745,8 @@ App.core = (function (window, document, $, undefined) {
         isInteger: isInteger,
         isjQuery: isjQuery,
         isjQueryNotEmpty: isjQueryNotEmpty,
-        isNull: isNull,
         isNotNull: isNotNull,
+        isNull: isNull,
         isNullOrUndefined: isNullOrUndefined,
         isNumber: isNumber,
         isObject: isObject,
@@ -711,19 +759,21 @@ App.core = (function (window, document, $, undefined) {
         isUndefined: isUndefined,
         isValidFileExtension: isValidFileExtension,
         isWindow: isWindow,
+        keys: keys,
         padDigits: padDigits,
         randomNumber: randomNumber,
-        escapeRegExChars: escapeRegExChars,
+        sprintf: stringFormat,
         stringAddCR: stringAddCR,
         stringAddLF: stringAddLF,
         stringContains: stringContains,
+        stringEndsWith: stringEndsWith,
         stringFormat: stringFormat,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
         stringRepeat: stringRepeat,
+        stringStartsWith: stringStartsWith,
         stringStripCR: stringStripCR,
-        stringStripLF: stringStripLF,
-        sprintf: stringFormat,
-        stringStripEOL: stringStripEOL
+        stringStripEOL: stringStripEOL,
+        stringStripLF: stringStripLF
     };
 })(this, this.document, this.jQuery);
 
