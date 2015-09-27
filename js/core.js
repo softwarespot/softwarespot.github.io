@@ -565,6 +565,21 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a string contains another string
+     *
+     * @param {string} value Value to search in
+     * @param {string} searchFor Value to search for
+     * @return {boolean} True the string is found; otherwise, false
+     */
+    function stringContains(value, searchFor) {
+        if (!isString(value)) {
+            return false;
+        }
+
+        return isFunction(String.prototype.includes) ? value.includes(searchFor) : value.indexOf(searchFor) !== -1;
+    }
+
+    /**
      * String format. Similar to the C# implementation
      * URL: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format. User: @Filipiz
      *
@@ -697,6 +712,7 @@ App.core = (function (window, document, $, undefined) {
         escapeRegExChars: escapeRegExChars,
         stringAddCR: stringAddCR,
         stringAddLF: stringAddLF,
+        stringContains: stringContains,
         stringFormat: stringFormat,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
         stringRepeat: stringRepeat,
