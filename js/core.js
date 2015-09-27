@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/09/18
+ * Modified: 2015/09/27
  * @author softwarespot
  */
 App.core = (function (window, document, $, undefined) {
@@ -659,6 +659,7 @@ App.core = (function (window, document, $, undefined) {
         getVersion: getVersion,
         has: has,
         keys: keys,
+        functionExists: isFunction,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
         isArray: isArray,
