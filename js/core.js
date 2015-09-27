@@ -622,7 +622,11 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} Repeated string; otherwise, empty string on error
      */
     function stringRepeat(value, count) {
-        return isString(value) ? (new Array(++count)).join(value) : '';
+        if (!isString(value)) {
+            return '';
+        }
+
+        return isFunction(String.prototype.repeat) ? value.repeat(count) : (new Array(++count)).join(value);
     }
 
     /**
