@@ -44,8 +44,17 @@ App.core = (function (window, document, $, undefined) {
     // Store the toString method
     var _objectToString = _objectPrototype.toString;
 
-    // Regular expression to strip EOL characters
-    var _reEOLChars = /\r?\n|\r/gm;
+    // Regular expressions
+    var _regExp = {
+        // Strip EOL characters
+        EOL_CHARS: /\r?\n|\r/gm,
+
+        // Float values
+        FLOAT: /(?:^-?\d+\.\d+$)/,
+
+        // Integer values
+        INTEGER: /(?:^-?\d+$)/
+    };
 
     // Methods
 
@@ -256,6 +265,17 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a float datatype
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a float; otherwise, false
+     */
+    function isFloat(value) {
+        // Coerce as a string
+        return isNumber(value) && _regExp.FLOAT.test('' + value);
+    }
+
+    /**
      * Check if a variable is a function datatype
      *
      * @param {mixed} value Value to check
@@ -286,14 +306,14 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Check if a variable is an integer
+     * Check if a variable is an integer datatype
      *
      * @param {mixed} value Value to check
      * @returns {boolean} True the value is an integer; otherwise, false
      */
     function isInteger(value) {
         // Coerce as a string
-        return /(?:^-?\d+$)/.test('' + value);
+        return isNumber(value) && _regExp.INTEGER.test('' + value);
     }
 
     /**
@@ -402,6 +422,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a string and representing a float
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is representing a float; otherwise, false
+     */
+    function isStringFloat(value) {
+        return isString(value) && _regExp.FLOAT.test(value);
+    }
+
+    /**
      * Check if a variable is a string and empty or whitespace
      *
      * @param {mixed} value Value to check
@@ -410,6 +440,17 @@ App.core = (function (window, document, $, undefined) {
     function isStringEmptyOrWhitespace(value) {
         return isString(value) && value.trim().length === 0;
     }
+
+    /**
+     * Check if a variable is a string and representing an integer
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is representing an integer; otherwise, false
+     */
+    function isStringInteger(value) {
+        return isString(value) && _regExp.INTEGER.test(value);
+    }
+
     /**
      * Check if a variable is a string and not empty
      *
@@ -576,7 +617,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} String stripped of EOL characters; otherwise, the original string
      */
     function stringStripEOL(value) {
-        return isString(value) ? value.replace(_reEOLChars, '') : value;
+        return isString(value) ? value.replace(_regExp.EOL_CHARS, '') : value;
     }
 
     /**
@@ -596,7 +637,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string of stripped line-feeds; otherwise, the original string
      */
     function stringStripLF(value) {
-        return isString(value) ? value.replace(/\r/, '') : value;
+        return isString(value) ? value.replace(/\n/, '') : value;
     }
 
     /**
@@ -629,6 +670,7 @@ App.core = (function (window, document, $, undefined) {
         isDate: isDate,
         isEmpty: isEmpty,
         isError: isError,
+        isFloat: isFloat,
         isFunction: isFunction,
         isGUID: isGUID,
         isHex: isHex,
@@ -643,6 +685,8 @@ App.core = (function (window, document, $, undefined) {
         isRegExp: isRegExp,
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
+        isStringFloat: isStringFloat,
+        isStringInteger: isStringInteger,
         isStringNotEmpty: isStringNotEmpty,
         isUndefined: isUndefined,
         isValidFileExtension: isValidFileExtension,
