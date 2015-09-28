@@ -402,6 +402,26 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check is an integer is even
+     *
+     * @param {number} value Value to check
+     * @return {boolean} True the integer is even; otherwise, false
+     */
+    function isEven(value) {
+        return isInteger(value) && value % 2 === 0;
+    }
+
+    /**
+     * Check is an integer is odd
+     *
+     * @param {number} value Value to check
+     * @return {boolean} True the integer is odd; otherwise, false
+     */
+    function isOdd(value) {
+        return isInteger(value) && value % 2 !== 0;
+    }
+
+    /**
      * Check if a variable is a RegExp object
      *
      * @param {mixed} value Value to check
@@ -738,6 +758,7 @@ App.core = (function (window, document, $, undefined) {
         isDate: isDate,
         isEmpty: isEmpty,
         isError: isError,
+        isEven: isEven,
         isFloat: isFloat,
         isFunction: isFunction,
         isGUID: isGUID,
@@ -750,6 +771,7 @@ App.core = (function (window, document, $, undefined) {
         isNullOrUndefined: isNullOrUndefined,
         isNumber: isNumber,
         isObject: isObject,
+        isOdd: isOdd,
         isRegExp: isRegExp,
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
