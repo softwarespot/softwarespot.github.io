@@ -728,6 +728,28 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Trim a number of characters left of a string
+     *
+     * @param {string} value String value to trim
+     * @param {number} count Number of characters to trim from the left
+     * @return {string} Trimmed string; otherwise, an empty string
+     */
+    function stringTrimLeft(value, count) {
+        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(count) : '';
+    }
+
+    /**
+     * Trim a number of characters right of a string
+     *
+     * @param {string} value String value to trim
+     * @param {number} count Number of characters to trim from the right
+     * @return {string} Trimmed string; otherwise, an empty string
+     */
+    function stringTrimRight(value, count) {
+        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(0, value.length - count) : '';
+    }
+
+    /**
      * Initialise all DOM cachable variables
      *
      * @return {undefined}
@@ -795,7 +817,9 @@ App.core = (function (window, document, $, undefined) {
         stringStartsWith: stringStartsWith,
         stringStripCR: stringStripCR,
         stringStripEOL: stringStripEOL,
-        stringStripLF: stringStripLF
+        stringStripLF: stringStripLF,
+        stringTrimLeft: stringTrimLeft,
+        stringTrimRight: stringTrimRight
     };
 })(this, this.document, this.jQuery);
 
