@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/09/18
+ * Modified: 2015/09/27
  * @author softwarespot
  */
 App.core = (function (window, document, $, undefined) {
@@ -44,8 +44,17 @@ App.core = (function (window, document, $, undefined) {
     // Store the toString method
     var _objectToString = _objectPrototype.toString;
 
-    // Regular expression to strip EOL characters
-    var _reEOLChars = /\r?\n|\r/gm;
+    // Regular expressions
+    var _regExp = {
+        // Strip EOL characters
+        EOL_CHARS: /\r?\n|\r/gm,
+
+        // Float values
+        FLOAT: /(?:^-?\d+\.\d+$)/,
+
+        // Integer values
+        INTEGER: /(?:^-?\d+$)/
+    };
 
     // Methods
 
@@ -256,6 +265,17 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a float datatype
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a float; otherwise, false
+     */
+    function isFloat(value) {
+        // Coerce as a string
+        return isNumber(value) && _regExp.FLOAT.test('' + value);
+    }
+
+    /**
      * Check if a variable is a function datatype
      *
      * @param {mixed} value Value to check
@@ -286,14 +306,14 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Check if a variable is an integer
+     * Check if a variable is an integer datatype
      *
      * @param {mixed} value Value to check
      * @returns {boolean} True the value is an integer; otherwise, false
      */
     function isInteger(value) {
         // Coerce as a string
-        return /(?:^-?\d+$)/.test('' + value);
+        return isNumber(value) && _regExp.INTEGER.test('' + value);
     }
 
     /**
@@ -402,6 +422,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a string and representing a float
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is representing a float; otherwise, false
+     */
+    function isStringFloat(value) {
+        return isString(value) && _regExp.FLOAT.test(value);
+    }
+
+    /**
      * Check if a variable is a string and empty or whitespace
      *
      * @param {mixed} value Value to check
@@ -410,6 +440,17 @@ App.core = (function (window, document, $, undefined) {
     function isStringEmptyOrWhitespace(value) {
         return isString(value) && value.trim().length === 0;
     }
+
+    /**
+     * Check if a variable is a string and representing an integer
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is representing an integer; otherwise, false
+     */
+    function isStringInteger(value) {
+        return isString(value) && _regExp.INTEGER.test(value);
+    }
+
     /**
      * Check if a variable is a string and not empty
      *
@@ -524,6 +565,21 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a string contains another string
+     *
+     * @param {string} value Value to search in
+     * @param {string} searchFor Value to search for
+     * @return {boolean} True the string is found; otherwise, false
+     */
+    function stringContains(value, searchFor) {
+        if (!isString(value)) {
+            return false;
+        }
+
+        return isFunction(String.prototype.includes) ? value.includes(searchFor) : value.indexOf(searchFor) !== -1;
+    }
+
+    /**
      * String format. Similar to the C# implementation
      * URL: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format. User: @Filipiz
      *
@@ -559,13 +615,28 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Repeat a string value
+     *
+     * @param {string} value String value to repeat
+     * @param {number} count Number of times to repeat the string
+     * @return {string} Repeated string; otherwise, empty string on error
+     */
+    function stringRepeat(value, count) {
+        if (!isString(value)) {
+            return '';
+        }
+
+        return isFunction(String.prototype.repeat) ? value.repeat(count) : (new Array(++count)).join(value);
+    }
+
+    /**
      * Strip EOL characters ( ASCII 10 and ASCII 13 ) in a string
      *
      * @param {string} value String value to strip the EOL characters
      * @return {string} String stripped of EOL characters; otherwise, the original string
      */
     function stringStripEOL(value) {
-        return isString(value) ? value.replace(_reEOLChars, '') : value;
+        return isString(value) ? value.replace(_regExp.EOL_CHARS, '') : value;
     }
 
     /**
@@ -585,7 +656,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string of stripped line-feeds; otherwise, the original string
      */
     function stringStripLF(value) {
-        return isString(value) ? value.replace(/\r/, '') : value;
+        return isString(value) ? value.replace(/\n/, '') : value;
     }
 
     /**
@@ -607,6 +678,7 @@ App.core = (function (window, document, $, undefined) {
         getVersion: getVersion,
         has: has,
         keys: keys,
+        functionExists: isFunction,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
         isArray: isArray,
@@ -618,6 +690,7 @@ App.core = (function (window, document, $, undefined) {
         isDate: isDate,
         isEmpty: isEmpty,
         isError: isError,
+        isFloat: isFloat,
         isFunction: isFunction,
         isGUID: isGUID,
         isHex: isHex,
@@ -632,6 +705,8 @@ App.core = (function (window, document, $, undefined) {
         isRegExp: isRegExp,
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
+        isStringFloat: isStringFloat,
+        isStringInteger: isStringInteger,
         isStringNotEmpty: isStringNotEmpty,
         isUndefined: isUndefined,
         isValidFileExtension: isValidFileExtension,
@@ -641,8 +716,10 @@ App.core = (function (window, document, $, undefined) {
         escapeRegExChars: escapeRegExChars,
         stringAddCR: stringAddCR,
         stringAddLF: stringAddLF,
+        stringContains: stringContains,
         stringFormat: stringFormat,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
+        stringRepeat: stringRepeat,
         stringStripCR: stringStripCR,
         stringStripLF: stringStripLF,
         sprintf: stringFormat,
