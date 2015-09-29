@@ -46,14 +46,50 @@ App.core = (function (window, document, $, undefined) {
 
     // Regular expressions
     var _regExp = {
+        // Alphanumeric characters
+        ALNUM: /(?:^[0-9A-Za-z]+$)/,
+
+        // Alphabet characters
+        ALPHA: /(?:^[A-Za-z]+$)/,
+
+        // ASCII characters ( ASCII 0 - 127 )
+        ASCII: /(?:^[\x00-\x7F]*$)/,
+
+        // Extended ASCII characters ( ASCII 0 - 255 )
+        ASCII_EXTENDED: /(?:^[\x00-\xFF]*$)/,
+
+        // Base64
+        BASE_64: /(?:^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$)/,
+
+        // EOL carriage return
+        CARRIAGE_RETURN: /\r/,
+
+        // Carriage return append
+        CARRIAGE_RETURN_ADD: /(?!\r)\n/,
+
         // Strip EOL characters
         EOL_CHARS: /\r?\n|\r/gm,
 
         // Float values
         FLOAT: /(?:^-?\d+\.\d+$)/,
 
+        // Globally unique identifier
+        GUID: /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/,
+
+        // Hex string ( ASCII A-F, a-f, 0-9 )
+        HEX: /(?:^0[xX][\dA-Fa-f]+$)/,
+
         // Integer values
-        INTEGER: /(?:^-?\d+$)/
+        INTEGER: /(?:^-?\d+$)/,
+
+        // EOL line feed
+        LINE_FEED: /\n/,
+
+        // Line feed append
+        LINE_FEED_ADD: /\r(?!\n)/,
+
+        // Regular expression meta characters
+        REGEXP_ESCAPE: /([\].|*?+(){}^$\\[])/g
     };
 
     // Methods
@@ -142,7 +178,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the string contains alphanumeric characters only; otherwise, false
      */
     function isAlNum(value) {
-        return isString(value) && /(?:^[0-9A-Za-z]+$)/.test(value);
+        return isString(value) && _regExp.ALNUM.test(value);
     }
 
     /**
@@ -152,7 +188,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the string contains alphabetic characters only; otherwise, false
      */
     function isAlpha(value) {
-        return isString(value) && /(?:^[A-Za-z]+$)/.test(value);
+        return isString(value) && _regExp.ALPHA.test(value);
     }
 
     /**
@@ -175,7 +211,7 @@ App.core = (function (window, document, $, undefined) {
             extended = false;
         }
 
-        return isString(value) && (extended ? /(?:^[\x00-\xFF]*$)/ : /(?:^[\x00-\x7F]*$)/).test(value);
+        return isString(value) && (extended ? _regExp.ASCII_EXTENDED : _regExp.ASCII).test(value);
     }
 
     /**
@@ -186,7 +222,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function isBase64(value) {
         // URL: http://stackoverflow.com/a/475217
-        return isString(value) && /(?:^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$)/.test(value);
+        return isString(value) && _regExp.BASE_64.test(value);
     }
 
     /**
@@ -292,7 +328,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the string is a GUID; otherwise, false
      */
     function isGUID(value) {
-        return isString(value) && /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/.test(value);
+        return isString(value) && _regExp.GUID.test(value);
     }
 
     /**
@@ -302,7 +338,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the string is hexadecimal; otherwise, false
      */
     function isHex(value) {
-        return isString(value) && /(?:^0[xX][\dA-Fa-f]+$)/.test(value);
+        return isString(value) && _regExp.HEX.test(value);
     }
 
     /**
@@ -526,11 +562,15 @@ App.core = (function (window, document, $, undefined) {
      *
      * @param {number} value Value to pad with leading zeros
      * @param {number} length Minimum length of the value
-     * @return {string} Value with padded zero
+     * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
         // Coerce as a string
         value = '' + value;
+
+        if (!isInteger(length) || length <= 0) {
+            return value;
+        }
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
         return new Array(Math.max(length - value.length + 1, 0)).join('0') + value;
@@ -544,6 +584,10 @@ App.core = (function (window, document, $, undefined) {
      * @return {number} Returns a random number between the minimum and maximum values
      */
     function randomNumber(min, max) {
+        if (!isNumber(min) || !isNumber(max)) {
+            return 0;
+        }
+
         // URL: http://www.w3schools.com/jsref/jsref_random.asp
         return Math.floor((Math.random() * max) + min);
     }
@@ -560,7 +604,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Escape RegExp special characters
-        return value.replace('/([\].|*?+(){}^$\\[])/g', '\$1');
+        return value.replace(_regExp.REGEXP_ESCAPE, '\$1');
     }
 
     /**
@@ -571,7 +615,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function stringAddCR(value) {
         // Needs testing due to no negative look-behind
-        return isStringNotEmpty(value) ? value.replace(/(?!\r)\n/, '\r\n') : value;
+        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN_ADD, '\r\n') : value;
     }
 
     /**
@@ -581,7 +625,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string with line-feeds added; otherwise, original string
      */
     function stringAddLF(value) {
-        return isStringNotEmpty(value) ? value.replace(/\r(?!\n)/, '\r\n') : value;
+        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED_ADD, '\r\n') : value;
     }
 
     /**
@@ -714,7 +758,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string of stripped carriage returns; otherwise, the original string
      */
     function stringStripCR(value) {
-        return isString(value) ? value.replace(/\r/, '') : value;
+        return isString(value) ? value.replace(_regExp.CARRIAGE_RETURN, '') : value;
     }
 
     /**
@@ -724,7 +768,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string of stripped line-feeds; otherwise, the original string
      */
     function stringStripLF(value) {
-        return isString(value) ? value.replace(/\n/, '') : value;
+        return isString(value) ? value.replace(_regExp.LINE_FEED, '') : value;
     }
 
     /**
