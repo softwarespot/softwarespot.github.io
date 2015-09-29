@@ -562,11 +562,15 @@ App.core = (function (window, document, $, undefined) {
      *
      * @param {number} value Value to pad with leading zeros
      * @param {number} length Minimum length of the value
-     * @return {string} Value with padded zero
+     * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
         // Coerce as a string
         value = '' + value;
+
+        if (!isInteger(length) || length <= 0) {
+            return value;
+        }
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
         return new Array(Math.max(length - value.length + 1, 0)).join('0') + value;
@@ -580,6 +584,10 @@ App.core = (function (window, document, $, undefined) {
      * @return {number} Returns a random number between the minimum and maximum values
      */
     function randomNumber(min, max) {
+        if (!isNumber(min) || !isNumber(max)) {
+            return 0;
+        }
+
         // URL: http://www.w3schools.com/jsref/jsref_random.asp
         return Math.floor((Math.random() * max) + min);
     }
