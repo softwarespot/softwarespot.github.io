@@ -772,6 +772,23 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Convert a string to a UTF-16 char array
+     *
+     * @param {string} value String value
+     * @return {array} UTF-16 char array; otherwise, an empty array
+     */
+    function stringToCharArray(value) {
+        if (!isString(value) || value.length === 0) {
+            return [];
+        }
+
+        // Split to a string array and map each character to the char code
+        return value.split('').map(function (char) {
+            return char.charCodeAt();
+        });
+    }
+
+    /**
      * Trim a number of characters left of a string
      *
      * @param {string} value String value to trim
@@ -853,6 +870,7 @@ App.core = (function (window, document, $, undefined) {
         sprintf: stringFormat,
         stringAddCR: stringAddCR,
         stringAddLF: stringAddLF,
+        stringToCharArray: stringToCharArray,
         stringContains: stringContains,
         stringEndsWith: stringEndsWith,
         stringFormat: stringFormat,
