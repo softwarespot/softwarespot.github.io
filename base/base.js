@@ -40,6 +40,8 @@ App.namespace().base = (function (window, document, $, core, undefined) {
         $.extend(defaultConfig, config);
 
         _cacheDom();
+
+        _isInitialised = true;
     }
 
     /**
