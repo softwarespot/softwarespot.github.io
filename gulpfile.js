@@ -81,10 +81,15 @@ gulp.task('clean', function (cb) {
 
 // Minify the main css file(s)
 gulp.task('cssmin', function () {
+    // Store the destination directory
+    var dest = './' + Assets.css.dest;
+
     // Clean the css dest directory
     del(['./' + Assets.css.dest + '/' + Assets.css.custom.minified]);
 
-    return gulp.src(Assets.css.custom.all)
+    return gulp.src([
+            dest + '/styles.css',
+        ])
         .pipe(concat(Assets.css.custom.minified))
         .pipe(cssmin(cssMinSettings))
         .pipe(rename(Assets.css.custom.minified))
