@@ -912,7 +912,7 @@ App.namespace = function namespace(namespacePath) {
     var _this = this;
 
     // Return the context this being the root object, if not a valid string
-    if (core.isUndefined(namespacePath) || !core.isString(namespacePath) || core.isStringEmptyOrWhitespace(namespacePath)) {
+    if (!core.isString(namespacePath) || core.isStringEmptyOrWhitespace(namespacePath)) {
         return _this;
     }
 
