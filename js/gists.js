@@ -82,7 +82,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     /**
      * Initialise all DOM cachable variables
      *
-     * {string} content Content to add the gists data
+     * {string} content Content to add the gists data to
      * @return {undefined}
      */
     function _cacheDom(content) {

@@ -172,7 +172,6 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
     /**
      * Initialise all DOM cachable variables
      *
-     * {string} content Content to add the gists data
      * @return {undefined}
      */
     function _cacheDom() {
@@ -200,7 +199,6 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         $_document.ajaxStop(function () {
             NProgress.done();
         });
-
     }
 
     /**
