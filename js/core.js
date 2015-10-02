@@ -811,6 +811,21 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Convert the first character of a string to upper-case
+     *
+     * @param {string} value String value to change
+     * @return {string} First character of the string changed to upper-case; otherwise, an empty string
+     */
+    function stringUCFirst(value) {
+        if (!isString(value)) {
+            return '';
+        }
+
+
+        return (value[0].toUpperCase()) + value.substr(1);
+    }
+
+    /**
      * Initialise all DOM cachable variables
      *
      * @return {undefined}
@@ -881,7 +896,8 @@ App.core = (function (window, document, $, undefined) {
         stringStripEOL: stringStripEOL,
         stringStripLF: stringStripLF,
         stringTrimLeft: stringTrimLeft,
-        stringTrimRight: stringTrimRight
+        stringTrimRight: stringTrimRight,
+        stringUCFirst: stringUCFirst
     };
 })(this, this.document, this.jQuery);
 
