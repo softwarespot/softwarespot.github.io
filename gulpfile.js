@@ -153,13 +153,17 @@ gulp.task('vendor', function () {
     // Store the bower_components directory
     var bowerComponents = './bower_components/';
 
-    // Copy font-awesome fonts
-    gulp.src(bowerComponents + 'font-awesome/fonts/**/*.{eof,svg,ttf,woff,woff2}')
+    // Copy fonts
+    gulp.src([
+            bowerComponents + 'font-awesome/fonts/**/*.{eof,svg,ttf,woff,woff2}',
+            bowerComponents + 'open-sans/fonts/**/*.{eof,svg,ttf,woff,woff2}'
+        ])
         .pipe(gulp.dest('./fonts'));
 
     // Concatenate and minify styles
     gulp.src([
             bowerComponents + 'font-awesome/css/font-awesome.css',
+            bowerComponents + 'open-sans/css/open-sans.css',
             bowerComponents + 'normalize-css/normalize.css',
             bowerComponents + 'skeleton/css/skeleton.css',
             bowerComponents + 'nprogress/nprogress.css',
