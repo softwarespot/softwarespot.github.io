@@ -17,6 +17,9 @@ App.namespace().base = (function (window, document, $, core, undefined) {
 
     // Fields
 
+    // Store if the module has been initialised
+    var _isInitialised = false;
+
     // Methods
 
     /**
@@ -26,6 +29,10 @@ App.namespace().base = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function init(config) {
+        if (_isInitialised) {
+            return;
+        }
+
         // Default config that can be overwritten by passing through the config variable
         var defaultConfig = {};
 
@@ -40,7 +47,9 @@ App.namespace().base = (function (window, document, $, core, undefined) {
      *
      * @return {undefined}
      */
-    function destroy() {}
+    function destroy() {
+        _isInitialised = false;
+    }
 
     /**
      * Get the version number of the module
