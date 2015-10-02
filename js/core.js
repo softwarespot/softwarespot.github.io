@@ -13,6 +13,7 @@ App.core = (function (window, document, $, undefined) {
     // SemVer version number of the module
     var VERSION = '1.0.0';
 
+    // Application name
     var APP_NAME = 'SoftwareSpot';
 
     // Unique global identifier. Internal usage only
@@ -232,7 +233,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a boolean datatype; otherwise, false
      */
     function isBoolean(value) {
-        return value === true || value === false || (isObjectLike(value) && _objectToString.call(value) === _objectStrings.BOOLEAN);
+        return value === true || value === false || (_isObjectLike(value) && _objectToString.call(value) === _objectStrings.BOOLEAN);
     }
 
     /**
@@ -262,7 +263,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a Date datatype; otherwise, false
      */
     function isDate(value) {
-        return isObjectLike(value) && _objectToString.call(value) === _objectStrings.DATE;
+        return _isObjectLike(value) && _objectToString.call(value) === _objectStrings.DATE;
     }
 
     /**
@@ -297,7 +298,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a Error object; otherwise, false
      */
     function isError(value) {
-        return isObjectLike(value) && typeof value.message === 'string' && _objectToString.call(value) === _objectStrings.ERROR;
+        return _isObjectLike(value) && typeof value.message === 'string' && _objectToString.call(value) === _objectStrings.ERROR;
     }
 
     /**
@@ -373,16 +374,6 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Check if a variable is null
-     *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True the value is null; otherwise, false
-     */
-    function isNull(value) {
-        return value === null;
-    }
-
-    /**
      * Check if a variable is not null
      *
      * @param {mixed} value Value to check
@@ -390,6 +381,16 @@ App.core = (function (window, document, $, undefined) {
      */
     function isNotNull(value) {
         return value !== null;
+    }
+
+    /**
+     * Check if a variable is null
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is null; otherwise, false
+     */
+    function isNull(value) {
+        return value === null;
     }
 
     /**
@@ -409,7 +410,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a number datatype; otherwise, false
      */
     function isNumber(value) {
-        return typeof value === 'number' || (isObjectLike(value) && _objectToString.call(value) === _objectStrings.NUMBER);
+        return typeof value === 'number' || (_isObjectLike(value) && _objectToString.call(value) === _objectStrings.NUMBER);
     }
 
     /**
@@ -433,7 +434,7 @@ App.core = (function (window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True the value is an object; otherwise, false
      */
-    function isObjectLike(value) {
+    function _isObjectLike(value) {
         return !!value && typeof value === 'object';
     }
 
@@ -515,6 +516,16 @@ App.core = (function (window, document, $, undefined) {
      */
     function isStringNotEmpty(value) {
         return isString(value) && value.length !== 0;
+    }
+
+    /**
+     * Check if a variable is a string and representing a number
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is representing a number; otherwise, false
+     */
+    function isStringNumber(value) {
+        return isString(value) && (_regExp.FLOAT.test(value) || _regExp.INTEGER.test(value));
     }
 
     /**
@@ -876,6 +887,7 @@ App.core = (function (window, document, $, undefined) {
         isStringFloat: isStringFloat,
         isStringInteger: isStringInteger,
         isStringNotEmpty: isStringNotEmpty,
+        isStringNumber: isStringNumber,
         isUndefined: isUndefined,
         isValidFileExtension: isValidFileExtension,
         isWindow: isWindow,
