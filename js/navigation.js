@@ -31,7 +31,10 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
 
     // Events object
     var _events = {
+        // Click event string
         click: 'click.app.navigation',
+
+        // When the click event is invoked, call the following function
         navigation: function (event) {
             // Get the href attribute using vanilla JavaScript
             var href = event.currentTarget.getAttribute('href');
@@ -96,6 +99,7 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
      */
     function destroy() {
         _unbindEvents();
+
         $_body = null;
         $_navigationLinks = null;
         _isInitialised = false;
