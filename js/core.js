@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/09/27
+ * Modified: 2015/10/04
  * @author softwarespot
  */
 App.core = (function (window, document, $, undefined) {
@@ -436,6 +436,25 @@ App.core = (function (window, document, $, undefined) {
      */
     function _isObjectLike(value) {
         return !!value && typeof value === 'object';
+    }
+
+    /**
+     * Check if a variable is an object literal
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is an object literal; otherwise, false
+     */
+    function isObjectLiteral(value) {
+        if (!_isObjectLike(value)) {
+            return false;
+        }
+
+        // Based on the idea by jQuery
+        if (value.constructor && !has(value.constructor.prototype, 'isPrototypeOf')) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -880,6 +899,7 @@ App.core = (function (window, document, $, undefined) {
         isNullOrUndefined: isNullOrUndefined,
         isNumber: isNumber,
         isObject: isObject,
+        isObjectLiteral: isObjectLiteral,
         isOdd: isOdd,
         isRegExp: isRegExp,
         isString: isString,
