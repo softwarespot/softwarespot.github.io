@@ -141,6 +141,38 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Clear the contents of an array, but maintain the same reference
+     *
+     * @param {array} array The array to clear
+     * @return {undefined}
+     */
+    function arrayClear(array) {
+        // If not an array then don't continue
+        if (!isArray(array)) {
+            return;
+        }
+
+        // Pop all items on the array until empty
+        while (array.length > 0) {
+            array.pop();
+        }
+    }
+
+    /**
+     * Look at the last item in the array
+     *
+     * @param {array} array The array to peek at
+     * @return {mixed|undefined} The last item pushed onto the array; otherwise, undefined
+     */
+    function arrayPeek(array) {
+        if (!isArray(array) || array.length === 0) {
+            return undefined;
+        }
+
+        return array[array.length - 1];
+    }
+
+    /**
      * Check if an object contains a key
      *
      * @param {object} object Object to check
@@ -690,9 +722,9 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Iterate through the items replacing the identifiers e.g. {n} with the array item that matches the index value
-        $.each(items, function (index, item) {
+        items.forEach(function (element, index) {
             var regexp = new RegExp('\\{' + index + '\\}', 'gi');
-            value = value.replace(regexp, item);
+            value = value.replace(regexp, element);
         });
 
         return value;
@@ -874,6 +906,8 @@ App.core = (function (window, document, $, undefined) {
         getVersion: getVersion,
         escapeRegExChars: escapeRegExChars,
         functionExists: isFunction,
+        arrayClear: arrayClear,
+        arrayPeek: arrayPeek,
         has: has,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
