@@ -83,6 +83,9 @@ App.core = (function (window, document, $, undefined) {
         // Integer values
         INTEGER: /(?:^-?\d+$)/,
 
+        // Is representing a boolean datatype
+        IS_BOOLEAN: /^(?:(?!0+)[0-9]+|true)$/i,
+
         // EOL line feed
         LINE_FEED: /\n/,
 
@@ -834,6 +837,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Convert a string to a boolean datatype i.e. non-zero and 'true' (case-insensitive) are true; otherwise, false
+     *
+     * @param {string} value String value
+     * @return {boolean} True; otherwise, false
+     */
+    function stringToBoolean(value) {
+        return _regExp.IS_BOOLEAN.test(value);
+    }
+
+    /**
      * Convert a string to a UTF-16 char array
      *
      * @param {string} value String value
@@ -951,6 +964,7 @@ App.core = (function (window, document, $, undefined) {
         sprintf: stringFormat,
         stringAddCR: stringAddCR,
         stringAddLF: stringAddLF,
+        stringToBoolean: stringToBoolean,
         stringToCharArray: stringToCharArray,
         stringContains: stringContains,
         stringEndsWith: stringEndsWith,
