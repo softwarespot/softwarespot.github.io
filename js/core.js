@@ -31,6 +31,7 @@ App.core = (function (window, document, $, undefined) {
         DATE: '[object Date]',
         ERROR: '[object Error]',
         FUNCTION: '[object Function]',
+        GENERATOR: '[object GeneratorFunction]',
         NUMBER: '[object Number]',
         REGEXP: '[object RegExp]',
         STRING: '[object String]'
@@ -354,7 +355,8 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a function datatype; otherwise, false
      */
     function isFunction(value) {
-        return isObject(value) && _objectToString.call(value) === _objectStrings.FUNCTION;
+        var tag = isObject(value) ? _objectToString.call(value) : '';
+        return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
     }
 
     /**
