@@ -903,6 +903,19 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Convert a value to a string. Null or undefined are an empty string
+     * @param {mixed} value Value to convert
+     * @return {string} New string value
+     */
+    function toString(value) {
+        if (isString(value)) {
+            return value;
+        }
+
+        return isNullOrUndefined(value) ? '' : ('' + value);
+    }
+
+    /**
      * Initialise all DOM cachable variables
      *
      * @return {undefined}
@@ -979,7 +992,8 @@ App.core = (function (window, document, $, undefined) {
         stringStripLF: stringStripLF,
         stringTrimLeft: stringTrimLeft,
         stringTrimRight: stringTrimRight,
-        stringUCFirst: stringUCFirst
+        stringUCFirst: stringUCFirst,
+        toString: toString
     };
 })(this, this.document, this.jQuery);
 
