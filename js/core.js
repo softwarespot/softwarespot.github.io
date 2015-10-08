@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/10/04
+ * Modified: 2015/10/08
  * @author softwarespot
  */
 App.core = (function (window, document, $, undefined) {
@@ -142,6 +142,21 @@ App.core = (function (window, document, $, undefined) {
      */
     function getVersion() {
         return VERSION;
+    }
+
+    /**
+     * Convert the array-like arguments variable used in a closure to an array
+     *
+     * @param {arguments} args The array-like arguments value
+     * @return {array} An array
+     */
+    function argumentsToArray(args) {
+        var array = [];
+        for (var i = 0, length = args.length; i < length; i++) {
+            array.push(args[i]);
+        }
+
+        return args;
     }
 
     /**
@@ -512,6 +527,16 @@ App.core = (function (window, document, $, undefined) {
      */
     function isOdd(value) {
         return isInteger(value) && value % 2 !== 0;
+    }
+
+    /**
+     * Check if a promise
+     *
+     * @param {promise} value Value to check
+     * @return {boolean} True the value is a promise; otherwise, false
+     */
+    function isPromise(value) {
+        return isObject(value) && isFunction(value.then);
     }
 
     /**
@@ -934,6 +959,7 @@ App.core = (function (window, document, $, undefined) {
         getVersion: getVersion,
         escapeRegExChars: escapeRegExChars,
         functionExists: isFunction,
+        argumentsToArray: argumentsToArray,
         arrayClear: arrayClear,
         arrayPeek: arrayPeek,
         has: has,
@@ -963,6 +989,7 @@ App.core = (function (window, document, $, undefined) {
         isObject: isObject,
         isObjectLiteral: isObjectLiteral,
         isOdd: isOdd,
+        isPromise: isPromise,
         isRegExp: isRegExp,
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
