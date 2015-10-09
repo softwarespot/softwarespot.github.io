@@ -32,6 +32,7 @@ App.core = (function (window, document, $, undefined) {
         ERROR: '[object Error]',
         FUNCTION: '[object Function]',
         GENERATOR: '[object GeneratorFunction]',
+        MAP: '[object Map]',
         NUMBER: '[object Number]',
         REGEXP: '[object RegExp]',
         STRING: '[object String]'
@@ -423,6 +424,16 @@ App.core = (function (window, document, $, undefined) {
      */
     function isjQueryNotEmpty($value) {
         return isjQuery($value) && $value.length !== 0;
+    }
+
+    /**
+     * Check if a variable is a Map object
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a Map object; otherwise, false
+     */
+    function isMap(value) {
+        return isObject(value) && _objectToString.call(value) === _objectStrings.MAP;
     }
 
     /**
@@ -982,6 +993,7 @@ App.core = (function (window, document, $, undefined) {
         isInteger: isInteger,
         isjQuery: isjQuery,
         isjQueryNotEmpty: isjQueryNotEmpty,
+        isMap: isMap,
         isNotNull: isNotNull,
         isNull: isNull,
         isNullOrUndefined: isNullOrUndefined,
