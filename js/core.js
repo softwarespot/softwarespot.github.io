@@ -319,6 +319,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is defined
+     *
+     * @param {object} value Value to check
+     * @returns {boolean} True the value is defined; otherwise, false
+     */
+    function isDefined(value) {
+        return value !== undefined;
+    }
+
+    /**
      * Check if a variable is empty
      *
      * @param {mixed} value Value to check
@@ -983,6 +993,7 @@ App.core = (function (window, document, $, undefined) {
         isBrowser: isBrowser,
         isChar: isChar,
         isDate: isDate,
+        isDefined: isDefined,
         isEmpty: isEmpty,
         isError: isError,
         isEven: isEven,
