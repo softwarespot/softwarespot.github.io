@@ -830,7 +830,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Iterate through the items replacing the identifiers e.g. {n} with the array item that matches the index value
-        items.forEach(function (element, index) {
+        items.forEach(function forEachFormat(element, index) {
             var regExp = new RegExp('\\{' + index + '\\}', 'gi');
             value = value.replace(regExp, element);
         });
@@ -963,7 +963,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Split to a string array and map each character to the char code
-        return value.split('').map(function (char) {
+        return value.split('').map(function mapCharArray(char) {
             return char.charCodeAt();
         });
     }

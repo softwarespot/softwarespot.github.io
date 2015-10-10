@@ -201,7 +201,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
 
         // Iterate through the array. A polyfill is available at
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Polyfill
-        inputTypes.forEach(function (inputType) {
+        inputTypes.forEach(function forEachInputTypes(inputType) {
 
             // Set the attribute type of the input element
             input.setAttribute('type', inputType);

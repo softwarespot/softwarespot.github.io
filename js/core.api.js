@@ -191,12 +191,12 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         });
 
         // When an ajax request is started
-        $_document.ajaxStart(function () {
+        $_document.ajaxStart(function ajaxStart() {
             NProgress.start();
         });
 
         // When an ajax request has stopped
-        $_document.ajaxStop(function () {
+        $_document.ajaxStop(function sjaxStop() {
             NProgress.done();
         });
     }

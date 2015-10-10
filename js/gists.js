@@ -109,7 +109,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
         var jqxhr = $.ajax(options);
 
         // If the request completed successfully
-        jqxhr.done(function (response, textStatus, $this) {
+        jqxhr.done(function done(response, textStatus, $this) {
             console.log(response);
             console.log(textStatus);
             console.log($this);
@@ -120,7 +120,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
         });
 
         // If the request failed
-        jqxhr.fail(function ($this, textStatus, errorThrown) {
+        jqxhr.fail(function fail($this, textStatus, errorThrown) {
             console.log($this);
             console.log(textStatus);
             console.log(errorThrown);
@@ -150,7 +150,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
 
     // Public API
     return {
-        init: function () {
+        init: function init() {
             init({
                 gists: {
                     username: 'softwarespot',
