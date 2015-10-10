@@ -17,6 +17,9 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
 
     // Fields
 
+    // Has the events been binded
+    var _isEventsBound = false;
+
     // Store if the module has been initialised
     var _isInitialised = false;
 
@@ -26,16 +29,13 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
     // Store the navigation hyperlinks jQuery selector object
     var $_navigationLinks = null;
 
-    // Has the events been binded
-    var _isEventsBound = false;
-
     // Events object
     var _events = {
         // Click event string
-        click: 'click.app.navigation',
+        navigation: 'click.app.navigation',
 
         // When the click event is invoked, call the following function
-        navigation: function (event) {
+        navigationFn: function (event) {
             // Get the href attribute using vanilla JavaScript
             var href = event.currentTarget.getAttribute('href');
 
@@ -79,12 +79,12 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(config) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
-        var defaultConfig = {};
+        // var defaultConfig = {};
 
         // Combine the passed config
-        $.extend(defaultConfig, config);
+        // $.extend(defaultConfig, config);
 
         _cacheDom();
         _bindEvents();
@@ -102,6 +102,7 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
 
         $_body = null;
         $_navigationLinks = null;
+
         _isInitialised = false;
     }
 
@@ -115,16 +116,6 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
     }
 
     /**
-     * Initialise all DOM cachable variables
-     *
-     * @return {undefined}
-     */
-    function _cacheDom() {
-        $_body = $('html, body');
-        $_navigationLinks = $('header').find('a');
-    }
-
-    /**
      * Bind events
      *
      * @return {undefined}
@@ -135,7 +126,8 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
         }
 
         // Navigation hyperlink elements
-        $_navigationLinks.on(_events.click, _events.navigation);
+        $_navigationLinks.on(_events.navigation, _events.navigationFn);
+
         _isEventsBound = true;
     }
 
@@ -149,8 +141,19 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
             return;
         }
 
-        $_navigationLinks.off(_events.click, _events.navigation);
+        $_navigationLinks.off(_events.navigation, _events.navigationFn);
+
         _isEventsBound = false;
+    }
+
+    /**
+     * Initialise all DOM cachable variables
+     *
+     * @return {undefined}
+     */
+    function _cacheDom() {
+        $_body = $('html, body');
+        $_navigationLinks = $('header').find('a');
     }
 
     /**

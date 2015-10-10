@@ -67,6 +67,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
      */
     function destroy() {
         $_content = null;
+
         _isInitialised = false;
     }
 
