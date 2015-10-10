@@ -352,7 +352,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is empty; otherwise, false
      */
     function isEmpty(value) {
-        if (isNullOrUndefined(value)) {
+        if (isNullOrUndefined(value) || value === 0) {
             return true;
         }
 
