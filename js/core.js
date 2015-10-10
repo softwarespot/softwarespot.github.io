@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/10/08
+ * Modified: 2015/10/09
  * @author softwarespot
  */
 App.core = (function (window, document, $, undefined) {
@@ -27,6 +27,7 @@ App.core = (function (window, document, $, undefined) {
     // Return strings of toString() found on the Object prototype
     // Based on the implementation by lodash inc. is* function as well
     var _objectStrings = {
+        ARGUMENTS: '[object Arguments]',
         BOOLEAN: '[object Boolean]',
         DATE: '[object Date]',
         ERROR: '[object Error]',
@@ -34,8 +35,12 @@ App.core = (function (window, document, $, undefined) {
         GENERATOR: '[object GeneratorFunction]',
         MAP: '[object Map]',
         NUMBER: '[object Number]',
+        PROMISE: '[object Promise]',
         REGEXP: '[object RegExp]',
-        STRING: '[object String]'
+        SET: '[object Set]',
+        STRING: '[object String]',
+        WEAKMAP: '[object WeakMap]',
+        WEAKSET: '[object WeakSet]'
     };
 
     // Store the object prototype
@@ -153,8 +158,10 @@ App.core = (function (window, document, $, undefined) {
      */
     function argumentsToArray(args) {
         var array = [];
-        for (var i = 0, length = args.length; i < length; i++) {
-            array.push(args[i]);
+        if (isArguments(args)) {
+            for (var i = 0, length = args.length; i < length; i++) {
+                array.push(args[i]);
+            }
         }
 
         return args;
@@ -235,6 +242,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is an the array-like arguments object
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is an array-like arguments object; otherwise, false
+     */
+    function isArguments(value) {
+        return _isObjectLike(value) && _objectToString.call(value) === _objectStrings.ARGUMENTS;
+    }
+
+    /**
      * Check if a string contains only alphabetic characters ( A-Z )
      *
      * @param {string} value String to check
@@ -312,7 +329,7 @@ App.core = (function (window, document, $, undefined) {
      * Check if a variable is a Date object
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} True the value is a Date datatype; otherwise, false
+     * @returns {boolean} True the value is a Date object; otherwise, false
      */
     function isDate(value) {
         return _isObjectLike(value) && _objectToString.call(value) === _objectStrings.DATE;
@@ -364,10 +381,10 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Check if a variable is a float datatype
+     * Check if a variable is a floating point datatype
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} True the value is a float; otherwise, false
+     * @returns {boolean} True the value is a floating point; otherwise, false
      */
     function isFloat(value) {
         // Coerce as a string
@@ -443,7 +460,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a Map object; otherwise, false
      */
     function isMap(value) {
-        return isObject(value) && _objectToString.call(value) === _objectStrings.MAP;
+        return _objectToString.call(value) === _objectStrings.MAP;
     }
 
     /**
@@ -557,7 +574,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the value is a promise; otherwise, false
      */
     function isPromise(value) {
-        return isObject(value) && isFunction(value.then);
+        return _objectToString.call(value) === _objectStrings.PROMISE;
     }
 
     /**
@@ -567,7 +584,17 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a RegExp object; otherwise, false
      */
     function isRegExp(value) {
-        return isObject(value) && _objectToString.call(value) === _objectStrings.REGEXP;
+        return _objectToString.call(value) === _objectStrings.REGEXP;
+    }
+
+    /**
+     * Check if a variable is a Set object
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a Set object; otherwise, false
+     */
+    function isSet(value) {
+        return _objectToString.call(value) === _objectStrings.SET;
     }
 
     /**
@@ -581,10 +608,10 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Check if a variable is a string and representing a float
+     * Check if a variable is a string and representing a floating point
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} True the value is representing a float; otherwise, false
+     * @returns {boolean} True the value is representing a floating point; otherwise, false
      */
     function isStringFloat(value) {
         return isString(value) && _regExp.FLOAT.test(value);
@@ -658,6 +685,26 @@ App.core = (function (window, document, $, undefined) {
 
         // Coerce value as a string
         return (new RegExp('\.(?:' + extensions + ')$', 'i')).test('' + value);
+    }
+
+    /**
+     * Check if a variable is a WeakMap object
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a WeakMap object; otherwise, false
+     */
+    function isWeakMap(value) {
+        return _objectToString.call(value) === _objectStrings.WEAKMAP;
+    }
+
+    /**
+     * Check if a variable is a WeakSet object
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a WeakSet object; otherwise, false
+     */
+    function isWeakSet(value) {
+        return _objectToString.call(value) === _objectStrings.WEAKSET;
     }
 
     /**
@@ -774,8 +821,8 @@ App.core = (function (window, document, $, undefined) {
 
         // Iterate through the items replacing the identifiers e.g. {n} with the array item that matches the index value
         items.forEach(function (element, index) {
-            var regexp = new RegExp('\\{' + index + '\\}', 'gi');
-            value = value.replace(regexp, element);
+            var regExp = new RegExp('\\{' + index + '\\}', 'gi');
+            value = value.replace(regExp, element);
         });
 
         return value;
@@ -986,6 +1033,7 @@ App.core = (function (window, document, $, undefined) {
         has: has,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
+        isArguments: isArguments,
         isArray: isArray,
         isASCII: isASCII,
         isBase64: isBase64,
@@ -1014,6 +1062,7 @@ App.core = (function (window, document, $, undefined) {
         isOdd: isOdd,
         isPromise: isPromise,
         isRegExp: isRegExp,
+        isSet: isSet,
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
         isStringFloat: isStringFloat,
@@ -1022,6 +1071,8 @@ App.core = (function (window, document, $, undefined) {
         isStringNumber: isStringNumber,
         isUndefined: isUndefined,
         isValidFileExtension: isValidFileExtension,
+        isWeakMap: isWeakMap,
+        isWeakSet: isWeakSet,
         isWindow: isWindow,
         keys: keys,
         padDigits: padDigits,
