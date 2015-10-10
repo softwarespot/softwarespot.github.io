@@ -718,6 +718,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Gets the current Unix epoch, which is the number of milliseconds that have elapse since 1 January 1970 00:00:00 UTC
+     *
+     * @return {number} Current Unix epoch
+     */
+    function now() {
+        // Could use Date.now()
+        return new Date().getTime();
+    }
+
+    /**
      * Pad a number with leading zeros
      *
      * @param {number} value Value to pad with leading zeros
@@ -1075,6 +1085,7 @@ App.core = (function (window, document, $, undefined) {
         isWeakSet: isWeakSet,
         isWindow: isWindow,
         keys: keys,
+        now: now,
         padDigits: padDigits,
         randomNumber: randomNumber,
         sprintf: stringFormat,
