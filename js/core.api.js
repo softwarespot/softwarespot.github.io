@@ -110,7 +110,6 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         NOT_IMPLEMENTED: 501
     };
 
-
     // SemVer version number of the module
     var VERSION = '1.0.0';
 
@@ -133,7 +132,7 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         if (_isInitialised) {
             return;
         }
@@ -206,6 +205,7 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      *
      * @return {undefined}
      */
+
     // function _cacheDom() {}
 
     // Invoked when the DOM has loaded

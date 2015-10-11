@@ -111,7 +111,7 @@ App.core = (function (window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -879,6 +879,7 @@ App.core = (function (window, document, $, undefined) {
         if (!isNumber(position) || position > value.length) {
             position = value.length;
         }
+
         position -= searchFor.length;
 
         if (isFunction(String.prototype.endsWith)) {
@@ -1001,7 +1002,6 @@ App.core = (function (window, document, $, undefined) {
             return '';
         }
 
-
         return (value[0].toUpperCase()) + value.substr(1);
     }
 
@@ -1023,6 +1023,7 @@ App.core = (function (window, document, $, undefined) {
      *
      * @return {undefined}
      */
+
     // function _cacheDom() {}
 
     // Invoked when the DOM has loaded
@@ -1129,6 +1130,7 @@ App.namespace = function namespace(namespacePath) {
         if (!_this[parts[i]]) {
             _this[parts[i]] = {};
         }
+
         _this = _this[parts[i]];
     }
 

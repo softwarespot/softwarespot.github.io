@@ -37,7 +37,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         if (_isInitialised) {
             return;
         }
@@ -276,6 +276,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      *
      * @return {undefined}
      */
+
     // function _cacheDom() {}
 
     // Invoked when the DOM has loaded

@@ -12,7 +12,7 @@
 App.namespace().github = (function (window, document, $, core, undefined) {
     // Constants
     var API = {
-        get_github_by_user: 'https://api.github.com/users/{username}'
+        getGitHubByUser: 'https://api.github.com/users/{username}'
     };
 
     // SemVer version number of the module
@@ -100,7 +100,7 @@ App.namespace().github = (function (window, document, $, core, undefined) {
     function _load(username) {
         var options = {
             // Replace the '{username}' with the user's username
-            url: API.get_github_by_user.replace('{username}', username),
+            url: API.getGitHubByUser.replace('{username}', username),
             method: 'get',
             dataType: 'jsonp',
             cache: false
@@ -163,6 +163,7 @@ App.namespace().github = (function (window, document, $, core, undefined) {
                 }
             });
         },
+
         destroy: destroy,
         getVersion: getVersion
     };

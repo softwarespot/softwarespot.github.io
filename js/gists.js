@@ -9,8 +9,8 @@
 App.namespace().gists = (function (window, document, $, core, undefined) {
     // Constants
     var API = {
-        get_gists_by_user: 'https://api.github.com/users/{username}/gists',
-        get_gist_by_id: 'https://api.github.com/gists/{id}'
+        getGistsByUser: 'https://api.github.com/users/{username}/gists',
+        getGistById: 'https://api.github.com/gists/{id}'
     };
 
     // SemVer version number of the module
@@ -99,7 +99,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     function _load(username) {
         var options = {
             // Replace the '{username}' with the user's username
-            url: API.get_gists_by_user.replace('{username}', username),
+            url: API.getGistsByUser.replace('{username}', username),
             method: 'get',
             dataType: 'jsonp',
             cache: false
@@ -162,6 +162,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
                 }
             });
         },
+
         destroy: destroy,
         getVersion: getVersion
     };
