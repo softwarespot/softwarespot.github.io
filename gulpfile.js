@@ -20,8 +20,10 @@ var uglifySettings = {
     compress: {
         comparisons: true,
         conditionals: true,
+        /* jscs: disable */
         dead_code: true,
         drop_console: true,
+        /* jscs: enable */
         unsafe: true,
         unused: true
     }
@@ -33,6 +35,7 @@ var Assets = {
         dest: 'css',
         custom: {
             all: [
+
                 // Note: /css/ is the same as Assets.css.dest
 
                 // Select all js file(s) include sub-directories
@@ -41,6 +44,7 @@ var Assets = {
                 // Ignore all css file(s) that have the .min.css prefix
                 '!./css/**/*.min.css'
             ],
+
             // main: 'styles.css',
             minified: 'styles.min.css'
         },
@@ -53,6 +57,7 @@ var Assets = {
         dest: 'js',
         custom: {
             all: [
+
                 // Note: /js/ is the same as Assets.js.dest
 
                 // Select all js file(s) include sub-directories
@@ -61,6 +66,7 @@ var Assets = {
                 // Ignore all js file(s) that have the .min.js prefix
                 '!./js/**/*.min.js'
             ],
+
             // main: 'scripts.js',
             minified: 'scripts.min.js'
         },
@@ -111,6 +117,7 @@ gulp.task('php-server', function () {
         base: '.',
         keepalive: true,
         open: true
+
         // bin: ''
         // ini: ''
     });
