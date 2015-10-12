@@ -150,7 +150,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
 
     // Public API
     return {
-        init: function init() {
+        init: function () {
             init({
                 gists: {
                     username: 'softwarespot',
