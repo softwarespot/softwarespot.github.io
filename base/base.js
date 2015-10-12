@@ -17,6 +17,9 @@ App.namespace().base = (function (window, document, $, core, undefined) {
 
     // Fields
 
+    // Has the events been binded
+    var _isEventsBound = false;
+
     // Store if the module has been initialised
     var _isInitialised = false;
 
@@ -40,6 +43,7 @@ App.namespace().base = (function (window, document, $, core, undefined) {
         $.extend(defaultConfig, config);
 
         _cacheDom();
+        _bindEvents();
 
         _isInitialised = true;
     }
@@ -60,6 +64,32 @@ App.namespace().base = (function (window, document, $, core, undefined) {
      */
     function getVersion() {
         return VERSION;
+    }
+
+    /**
+     * Bind events
+     *
+     * @return {undefined}
+     */
+    function _bindEvents() {
+        if (_isEventsBound) {
+            _unbindEvents();
+        }
+
+        _isEventsBound = true;
+    }
+
+    /**
+     * Unbind events
+     *
+     * @return {undefined}
+     */
+    function _unbindEvents() {
+        if (!_isEventsBound) {
+            return;
+        }
+
+        _isEventsBound = false;
     }
 
     /**
