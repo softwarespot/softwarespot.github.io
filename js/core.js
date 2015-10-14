@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/10/09
+ * Modified: 2015/10/14
  * @author softwarespot
  */
 App.core = (function (window, document, $, undefined) {
@@ -28,6 +28,7 @@ App.core = (function (window, document, $, undefined) {
     // Based on the implementation by lodash inc. is* function as well
     var _objectStrings = {
         ARGUMENTS: '[object Arguments]',
+        ARRAY: '[object Array]',
         BOOLEAN: '[object Boolean]',
         DATE: '[object Date]',
         ERROR: '[object Error]',
@@ -111,7 +112,7 @@ App.core = (function (window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -267,7 +268,28 @@ App.core = (function (window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True the value is an array datatype; otherwise, false
      */
-    var isArray = Array.isArray;
+    function _isArray(value) {
+        return _objectToString.call(value) === _objectStrings.ARRAY;
+    }
+
+    /**
+     * Check if a variable is a function datatype
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a function datatype; otherwise, false
+     */
+    function isFunction(value) {
+        var tag = isObject(value) ? _objectToString.call(value) : '';
+        return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
+    }
+
+    /**
+     * Check if a variable is an array datatype
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is an array datatype; otherwise, false
+     */
+    var isArray = isFunction(Array.isArray) ? Array.isArray : _isArray;
 
     /**
      * Check if a string contains ASCII characters only ( 0-127 or 0-255 if extended is set to true )
@@ -342,7 +364,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is defined; otherwise, false
      */
     function isDefined(value) {
-        return value !== undefined;
+        return !isUndefined(value);
     }
 
     /**
@@ -389,17 +411,6 @@ App.core = (function (window, document, $, undefined) {
     function isFloat(value) {
         // Coerce as a string
         return isNumber(value) && _regExp.FLOAT.test('' + value);
-    }
-
-    /**
-     * Check if a variable is a function datatype
-     *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True the value is a function datatype; otherwise, false
-     */
-    function isFunction(value) {
-        var tag = isObject(value) ? _objectToString.call(value) : '';
-        return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
     }
 
     /**
