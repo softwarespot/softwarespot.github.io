@@ -111,9 +111,9 @@ App.namespace().github = (function (window, document, $, core, undefined) {
 
         // If the request completed successfully
         jqxhr.done(function (response, textStatus, $this) {
-            console.log(response);
-            console.log(textStatus);
-            console.log($this);
+            window.console.log(response);
+            window.console.log(textStatus);
+            window.console.log($this);
 
             // Is the HTTP status code equal to OK (200)?
             var isSuccess = response.meta.status === core.api.HTTP.OK;
@@ -122,9 +122,9 @@ App.namespace().github = (function (window, document, $, core, undefined) {
 
         // If the request failed
         jqxhr.fail(function ($this, textStatus, errorThrown) {
-            console.log($this);
-            console.log(textStatus);
-            console.log(errorThrown);
+            window.console.log($this);
+            window.console.log(textStatus);
+            window.console.log(errorThrown);
 
             _render(false, null);
         });
