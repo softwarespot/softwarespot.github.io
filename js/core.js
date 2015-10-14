@@ -45,7 +45,7 @@ App.core = (function (window, document, $, undefined) {
     };
 
     // Store the object prototype
-    var _objectPrototype = Object.prototype;
+    var _objectPrototype = window.Object.prototype;
 
     // Store the hasOwnProperty method
     var _objectHasOwnProperty = _objectPrototype.hasOwnProperty;
@@ -289,7 +289,7 @@ App.core = (function (window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True the value is an array datatype; otherwise, false
      */
-    var isArray = isFunction(Array.isArray) ? Array.isArray : _isArray;
+    var isArray = isFunction(window.Array.isArray) ? window.Array.isArray : _isArray;
 
     /**
      * Check if a string contains ASCII characters only ( 0-127 or 0-255 if extended is set to true )
@@ -481,7 +481,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the value is not null; otherwise, false
      */
     function isNotNull(value) {
-        return value !== null;
+        return !isNull(value);
     }
 
     /**
@@ -754,7 +754,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
-        return new Array(Math.max(length - value.length + 1, 0)).join('0') + value;
+        return new window.Array(Math.max(length - value.length + 1, 0)).join('0') + value;
     }
 
     /**
@@ -770,7 +770,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // URL: http://www.w3schools.com/jsref/jsref_random.asp
-        return Math.floor((Math.random() * max) + min);
+        return window.Math.floor((window.Math.random() * max) + min);
     }
 
     /**
@@ -821,7 +821,7 @@ App.core = (function (window, document, $, undefined) {
             return false;
         }
 
-        return isFunction(String.prototype.includes) ? value.includes(searchFor) : value.indexOf(searchFor) !== -1;
+        return isFunction(window.String.prototype.includes) ? value.includes(searchFor) : value.indexOf(searchFor) !== -1;
     }
 
     /**
@@ -842,7 +842,7 @@ App.core = (function (window, document, $, undefined) {
 
         // Iterate through the items replacing the identifiers e.g. {n} with the array item that matches the index value
         items.forEach(function forEachFormat(element, index) {
-            var regExp = new RegExp('\\{' + index + '\\}', 'gi');
+            var regExp = new window.RegExp('\\{' + index + '\\}', 'gi');
             value = value.replace(regExp, element);
         });
 
@@ -871,7 +871,7 @@ App.core = (function (window, document, $, undefined) {
             return '';
         }
 
-        return isFunction(String.prototype.repeat) ? value.repeat(count) : (new Array(++count)).join(value);
+        return isFunction(window.String.prototype.repeat) ? value.repeat(count) : (new window.Array(++count)).join(value);
     }
 
     /**
@@ -893,7 +893,7 @@ App.core = (function (window, document, $, undefined) {
 
         position -= searchFor.length;
 
-        if (isFunction(String.prototype.endsWith)) {
+        if (isFunction(window.String.prototype.endsWith)) {
             return value.endsWith(searchFor, position);
         }
 
@@ -920,7 +920,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
-        return isFunction(String.prototype.startsWith) ? value.startsWith(searchFor, position) : value.indexOf(searchFor, position) === position;
+        return isFunction(window.String.prototype.startsWith) ? value.startsWith(searchFor, position) : value.indexOf(searchFor, position) === position;
     }
 
     /**

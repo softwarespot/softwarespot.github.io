@@ -45,7 +45,7 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
             var identifier = '(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+';
 
             // Create a regular expression object to test valid id fragments
-            var reIdentifier = new RegExp('^#' + identifier + '$');
+            var reIdentifier = new window.RegExp('^#' + identifier + '$');
 
             // Only bind if it's a valid anchor link
             if (!reIdentifier.test(href)) {
