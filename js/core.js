@@ -24,8 +24,16 @@ App.core = (function (window, document, $, undefined) {
     // Store if the module has been initialised
     var _isInitialised = false;
 
+    var _numberPrecision = Math.pow(2, 53) - 1;
+
+    // Maximum and minimum integer values that can be stored
+    var _number = {
+        MAX_SAFE_INTEGER: _numberPrecision, // 9007199254740991 or Number.MAX_SAFE_INTEGER
+        MIN_SAFE_INTEGER: -(_numberPrecision) // -9007199254740991 or Number.MIN_SAFE_INTEGER
+    };
+
     // Return strings of toString() found on the Object prototype
-    // Based on the implementation by lodash inc. is* function as well
+    // Based on the implementation by lodash including certain is* function as well
     var _objectStrings = {
         ARGUMENTS: '[object Arguments]',
         ARRAY: '[object Array]',
@@ -263,16 +271,6 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Check if a variable is an array datatype
-     *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True the value is an array datatype; otherwise, false
-     */
-    function _isArray(value) {
-        return _objectToString.call(value) === _objectStrings.ARRAY;
-    }
-
-    /**
      * Check if a variable is a function datatype
      *
      * @param {mixed} value Value to check
@@ -289,7 +287,9 @@ App.core = (function (window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True the value is an array datatype; otherwise, false
      */
-    var isArray = isFunction(window.Array.isArray) ? window.Array.isArray : _isArray;
+    var isArray = isFunction(window.Array.isArray) ? window.Array.isArray : function isArray(value) {
+        return _objectToString.call(value) === _objectStrings.ARRAY;
+    };
 
     /**
      * Check if a string contains ASCII characters only ( 0-127 or 0-255 if extended is set to true )
@@ -399,7 +399,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a Error object; otherwise, false
      */
     function isError(value) {
-        return _isObjectLike(value) && typeof value.message === 'string' && _objectToString.call(value) === _objectStrings.ERROR;
+        return _isObjectLike(value) && isString(value.message) && _objectToString.call(value) === _objectStrings.ERROR;
     }
 
     /**
@@ -599,6 +599,15 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if an integer is a safe integer
+     * @param {number} value Value to check
+     * @return {boolean} True the value is a safe integer; otherwise, false
+     */
+    var isSafeInteger = isFunction(window.Number.isSafeInteger) ? window.Number.isSafeInteger : function isSafeInteger(value) {
+        return isInteger(value) && value >= _number.MIN_SAFE_INTEGER && value <= _number.MAX_SAFE_INTEGER;
+    };
+
+    /**
      * Check if a variable is a Set object
      *
      * @param {mixed} value Value to check
@@ -695,7 +704,7 @@ App.core = (function (window, document, $, undefined) {
         extensions = ('' + extensions).replace(';', '|');
 
         // Coerce value as a string
-        return (new RegExp('\.(?:' + extensions + ')$', 'i')).test('' + value);
+        return (new window.RegExp('\.(?:' + extensions + ')$', 'i')).test('' + value);
     }
 
     /**
@@ -735,7 +744,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function now() {
         // Could use Date.now()
-        return new Date().getTime();
+        return new window.Date().getTime();
     }
 
     /**
@@ -754,7 +763,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
-        return new window.Array(Math.max(length - value.length + 1, 0)).join('0') + value;
+        return new window.Array(window.Math.max(length - value.length + 1, 0)).join('0') + value;
     }
 
     /**
@@ -1084,6 +1093,7 @@ App.core = (function (window, document, $, undefined) {
         isOdd: isOdd,
         isPromise: isPromise,
         isRegExp: isRegExp,
+        isSafeInteger: isSafeInteger,
         isSet: isSet,
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
