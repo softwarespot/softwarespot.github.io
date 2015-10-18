@@ -88,7 +88,7 @@ App.core = (function (window, document, $, undefined) {
         EOL_CHARS: /\r?\n|\r/gm,
 
         // Float values
-        FLOAT: /(?:^-?\d+\.\d+$)/,
+        FLOAT: /(?:^(?!-?0+)-?\d+\.\d+$)/,
 
         // Globally unique identifier
         GUID: /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/,
@@ -97,10 +97,10 @@ App.core = (function (window, document, $, undefined) {
         HEX: /(?:^0[xX][\dA-Fa-f]+$)/,
 
         // Integer values
-        INTEGER: /(?:^-?\d+$)/,
+        INTEGER: /(?:^(?!-?0+)-?\d+$)/,
 
         // Is representing a boolean datatype
-        IS_BOOLEAN: /^(?:(?!0+)[0-9]+|true)$/i,
+        IS_BOOLEAN: /(?:^(?:(?!0+)[0-9]+|true)$)/i,
 
         // EOL line feed
         LINE_FEED: /\n/,
