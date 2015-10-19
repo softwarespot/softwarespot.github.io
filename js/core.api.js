@@ -3,18 +3,24 @@
 /**
  * API module
  *
- * Modified: 2015/10/04
+ * Modified: 2015/10/20
  * @author softwarespot
  */
 App.namespace('core').api = (function (window, document, $, core, undefined) {
     // Constants
+
+    // SemVer version number of the module
+    var VERSION = '1.0.0';
+
+    // Unique global identifier. Internal usage only
+    // var GUID = '8DC11C84-F6C5-45FE-8CFA-63F94A68C291';
 
     /**
      * Common HTTP status codes
      *
      * @type {object}
      */
-    var HTTP = {
+    var httpStatus = {
 
         // Success
 
@@ -37,6 +43,12 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         NO_CONTENT: 204,
 
         // Redirection
+
+        /**
+         * Indicates multiple options for the resource that the client may follow
+         * @type {number}
+         */
+        MULTIPLE_CHOICES: 300,
 
         /**
          * The resource has not been modified since the last request
@@ -110,11 +122,18 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         NOT_IMPLEMENTED: 501
     };
 
-    // SemVer version number of the module
-    var VERSION = '1.0.0';
-
-    // Unique global identifier. Internal usage only
-    // var GUID = '8DC11C84-F6C5-45FE-8CFA-63F94A68C291';
+    /**
+     * Common RESTful methods
+     *
+     * @type {object}
+     */
+    var methods = {
+        DELETE: 'delete',
+        GET: 'get',
+        PATCH: 'patch',
+        POST: 'post',
+        PUT: 'put'
+    };
 
     // Fields
 
@@ -132,7 +151,7 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         if (_isInitialised) {
             return;
         }
@@ -166,6 +185,45 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      */
     function getVersion() {
         return VERSION;
+    }
+
+    /**
+     * Parse a url by replacing segment such as {item}, with the
+     *
+     * @param {string} url Url string to parse
+     * @param {object} object Object literal with one level only. The keys should match the segments in the url
+     * @return {string|null} Parsed string; otherwise, null
+     */
+    function parseUrl(url, object) {
+        // Check if the url is a string and the object parameter is an object literal
+        if (!core.isString(url) || !core.isObjectLiteral(object)) {
+            return url;
+        }
+
+        // Clone the url, so the replaced values, if they contain {}, don't interfere with matching
+        var urlReplace = '' + url;
+
+        // Regular expression to parse items between {} e.g. {username}
+        var reParseURLParts = /{([^\}]+)}/g;
+        while (true) {
+            // Get the matches and check if any were found
+            var match = reParseURLParts.exec(urlReplace);
+            if (core.isNull(match)) {
+                break;
+            }
+
+            // Store the key and check if it exists in the object literal
+            var key = match[1];
+            if (!core.has(object, key) || core.isUndefined(object[key])) {
+                continue;
+            }
+
+            // Replace the url string with the value of the full match
+            var fullMatch = match[0];
+            url = url.replace(fullMatch, object[key]);
+        }
+
+        return url;
     }
 
     /**
@@ -218,6 +276,8 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         init: init,
         destroy: destroy,
         getVersion: getVersion,
-        HTTP: HTTP
+        HTTPStatus: httpStatus,
+        Methods: methods,
+        parseUrl: parseUrl
     };
 })(this, this.document, this.jQuery, this.App.core);

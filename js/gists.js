@@ -3,7 +3,7 @@
 /**
  * Gists module
  *
- * Modified: 2015/10/04
+ * Modified: 2015/10/20
  * @author softwarespot
  */
 App.namespace().gists = (function (window, document, $, core, undefined) {
@@ -115,7 +115,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
             window.console.log($this);
 
             // Is the HTTP status code equal to OK (200)?
-            var isSuccess = response.meta.status === core.api.HTTP.OK;
+            var isSuccess = response.meta.status === core.api.HTTPStatus.OK;
             _render(isSuccess, isSuccess ? response.data : null);
         });
 
