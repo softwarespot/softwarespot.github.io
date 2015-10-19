@@ -818,7 +818,7 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Escape RegExp characters with a prefix backslash
+     * Escape RegExp characters with a prefixed backslash
      *
      * @param {string} value String to escape
      * @return {mixed} Escaped string; otherwise, null if not a string datatype
@@ -1055,7 +1055,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Convert the first character of a string to upper-case
      *
-     * @param {string} value String value to change
+     * @param {string} value String value to coerce
      * @return {string} First character of the string changed to upper-case; otherwise, an empty string
      */
     function stringUCFirst(value) {
@@ -1067,7 +1067,8 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Convert a value to a string. Null or undefined are coerced as an empty string
+     * Coerce a value to a string. Null or undefined are coerced as an empty string
+     *
      * @param {mixed} value Value to convert
      * @return {string} New string value
      */
@@ -1080,7 +1081,7 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Trim characters from the left and righ-hand side of a string. Idea by https://github.com/epeli/underscore.string
+     * Trim characters from the left-hand and right-hand side of a string. Idea by https://github.com/epeli/underscore.string
      *
      * @param {string} value Value to trim
      * @param {string} characters Character set to trim. If null or undefined, then the native String.prototype.trim will be used
