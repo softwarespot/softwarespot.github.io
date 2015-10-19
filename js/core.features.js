@@ -34,21 +34,12 @@ App.namespace('core').features = (function (window, document, $, core, undefined
     /**
      * Initialise the module
      *
-     * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init() {
         if (_isInitialised) {
             return;
         }
-
-        // Default config that can be overwritten by passing through the config variable
-        // var defaultConfig = {};
-
-        // Combine the passed config
-        // $.extend(defaultConfig, config);
-
-        // _cacheDom();
 
         // Initialise the input object literal
         _getInputs();
@@ -74,6 +65,10 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         return VERSION;
     }
 
+    // EVENTS
+    // https://github.com/Modernizr/Modernizr/blob/master/src/hasEvent.js
+    // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/hashchange.js
+
     // HISTORY
 
     /**
@@ -87,6 +82,19 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         var history = window.history;
         return core.isObject(history) &&
             'pushState' in history;
+    }
+
+    // GEOLOCATION
+
+    /**
+     * Check if the geolocation API exists
+     *
+     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/geolocation.js
+     *
+     * @return {boolean} True the feature exists; otherwise, false
+     */
+    function hasGeoLocation() {
+        return core.isObject(window.navigator) && 'geolocation' in window.navigator;
     }
 
     // INPUTS
@@ -104,89 +112,6 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         var hasInputResult = _inputs['' + inputType];
         return core.isUndefined(hasInputResult) ? false : hasInputResult;
     }
-
-    // STORAGE
-
-    /**
-     * Check if the localStorage API exists
-     *
-     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/localstorage.js
-     *
-     * @return {boolean} True the feature exists; otherwise, false
-     */
-    function hasLocalStorage() {
-        return _isStorage(window.localStorage);
-    }
-
-    /**
-     * Check if the sessionStorage API exists
-     *
-     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/sessionstorage.js
-     *
-     * @return {boolean} True the feature exists; otherwise, false
-     */
-    function hasSessionStorage() {
-        return _isStorage(window.sessionStorage);
-    }
-
-    /**
-     * Check if a valid storage object
-     *
-     * @param {type} storage Storage object
-     * @return {boolean} storage True is valid storage object; otherwise, false
-     */
-    function _isStorage(storage) {
-        return core.isObject(storage) &&
-            'key' in storage &&
-            'getItem' in storage &&
-            'setItem' in storage &&
-            'removeItem' in storage &&
-            'clear' in storage;
-    }
-
-    /**
-     * Check if the webStorage API exists
-     *
-     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/
-     *
-     * @return {boolean} True the feature exists; otherwise, false
-     */
-    function hasWebStorage() {
-        return hasLocalStorage() && hasSessionStorage();
-    }
-
-    // PROMISE
-
-    /**
-     * Check if the Promise API exists
-     *
-     * Based on the concept by Modernizr URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/es6/promises.js
-     *
-     * @return {boolean} True the feature exists; otherwise, false
-     */
-    function hasPromise() {
-        var promise = window.Promise;
-        return core.isFunction(promise) &&
-            'all' in promise &&
-            'race' in promise &&
-            'reject' in promise &&
-            'resolve' in promise;
-    }
-
-    // GEOLOCATION
-
-    /**
-     * Check if the geolocation API exists
-     *
-     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/geolocation.js
-     *
-     * @return {boolean} True the feature exists; otherwise, false
-     */
-    function hasGeoLocation() {
-        return core.isObject(window.navigator) && 'geolocation' in window.navigator;
-    }
-
-    // INPUTS
 
     /**
      * Initialise the input object literal
@@ -297,18 +222,73 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         });
     }
 
+    // PROMISE
+
     /**
-     * Initialise all DOM cachable variables
+     * Check if the Promise API exists
      *
-     * @return {undefined}
+     * Based on the concept by Modernizr URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/es6/promises.js
+     *
+     * @return {boolean} True the feature exists; otherwise, false
      */
+    function hasPromise() {
+        var promise = window.Promise;
+        return core.isFunction(promise) &&
+            'all' in promise &&
+            'race' in promise &&
+            'reject' in promise &&
+            'resolve' in promise;
+    }
 
-    // function _cacheDom() {}
+    // STORAGE
 
-    // Invoked when the DOM has loaded
-    $(function () {
-        // init();
-    });
+    /**
+     * Check if the localStorage API exists
+     *
+     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/localstorage.js
+     *
+     * @return {boolean} True the feature exists; otherwise, false
+     */
+    function hasLocalStorage() {
+        return _isStorage(window.localStorage);
+    }
+
+    /**
+     * Check if the sessionStorage API exists
+     *
+     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/sessionstorage.js
+     *
+     * @return {boolean} True the feature exists; otherwise, false
+     */
+    function hasSessionStorage() {
+        return _isStorage(window.sessionStorage);
+    }
+
+    /**
+     * Check if a valid storage object
+     *
+     * @param {type} storage Storage object
+     * @return {boolean} storage True is valid storage object; otherwise, false
+     */
+    function _isStorage(storage) {
+        return core.isObject(storage) &&
+            'key' in storage &&
+            'getItem' in storage &&
+            'setItem' in storage &&
+            'removeItem' in storage &&
+            'clear' in storage;
+    }
+
+    /**
+     * Check if the webStorage API exists
+     *
+     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/
+     *
+     * @return {boolean} True the feature exists; otherwise, false
+     */
+    function hasWebStorage() {
+        return hasLocalStorage() && hasSessionStorage();
+    }
 
     // Public API
     return {
