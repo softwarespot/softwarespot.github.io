@@ -37,7 +37,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         if (_isInitialised) {
             return;
         }
@@ -181,6 +181,13 @@ App.namespace('core').features = (function (window, document, $, core, undefined
             return;
         }
 
+        // Regular expressions
+        var regExp = {
+            EMAIL_NUMBER_URL: /^(?:email|number|url)$/,
+            RANGE: /(?:^range$)/,
+            SEARCH_AND_TEL: /^(?:search|tel)$/
+        };
+
         // Create an empty object literal
         _inputs = {};
 
@@ -223,7 +230,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
             input.style.cssText = cssStyles;
 
             // If a range type
-            if (/^range$/.test(inputType) && input.style.WebkitAppearance !== undefined) {
+            if (regExp.RANGE.test(inputType) && core.isDefined(input.style.WebkitAppearance)) {
 
                 // Append the input element to the current document
                 documentElem.appendChild(input);
@@ -244,7 +251,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
                 documentElem.removeChild(input);
 
                 // If a search or tel type
-            } else if (/^(search|tel)$/.test(inputType)) {
+            } else if (regExp.SEARCH_AND_TEL.test(inputType)) {
                 // Specification doesn't define any special parsing or detectable UI
                 // behaviours so we pass these through as true
 
@@ -252,7 +259,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
                 // even make it here (I doubt anymore!)
 
                 // If a email, number or url type
-            } else if (/^(email|number|url)$/.test(inputType)) {
+            } else if (regExp.EMAIL_NUMBER_URL.test(inputType)) {
 
                 // The following types come with pre-backed validation
                 isValid = input.checkValidity && input.checkValidity() === false;
