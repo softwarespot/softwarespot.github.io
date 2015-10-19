@@ -85,7 +85,8 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      */
     function hasHistory() {
         var history = window.history;
-        return core.isObject(history) && 'pushState' in history;
+        return core.isObject(history) &&
+            'pushState' in history;
     }
 
     // INPUTS
@@ -152,6 +153,24 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      */
     function hasWebStorage() {
         return hasLocalStorage() && hasSessionStorage();
+    }
+
+    // PROMISE
+
+    /**
+     * Check if the Promise API exists
+     *
+     * Based on the concept by Modernizr URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/es6/promises.js
+     *
+     * @return {boolean} True the feature exists; otherwise, false
+     */
+    function hasPromise() {
+        var promise = window.Promise;
+        return core.isFunction(promise) &&
+            'all' in promise &&
+            'race' in promise &&
+            'reject' in promise &&
+            'resolve' in promise;
     }
 
     // GEOLOCATION
@@ -297,6 +316,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         destroy: destroy,
         getVersion: getVersion,
         hasHistory: hasHistory,
+        hasPromise: hasPromise,
         hasInput: hasInput,
         hasLocalStorage: hasLocalStorage,
         hasSessionStorage: hasSessionStorage,
