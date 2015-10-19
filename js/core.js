@@ -109,7 +109,7 @@ App.core = (function (window, document, $, undefined) {
         LINE_FEED_ADD: /\r(?!\n)/,
 
         // Regular expression meta characters
-        REGEXP_ESCAPE: /([\].|*?+(){}^$\\[])/g
+        REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g
     };
 
     // Methods
@@ -419,7 +419,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function isFloat(value) {
         // Coerce as a string
-        return isNumber(value) && _regExp.FLOAT.test('' + value);
+        return isNumber(value) && _regExp.FLOAT.test(toString(value));
     }
 
     /**
@@ -450,7 +450,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function isInteger(value) {
         // Coerce as a string
-        return isNumber(value) && _regExp.INTEGER.test('' + value);
+        return isNumber(value) && _regExp.INTEGER.test(toString(value));
     }
 
     /**
@@ -736,10 +736,10 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Replace semi-colon(s) (;) with pipe(s) (|)
-        extensions = ('' + extensions).replace(';', '|');
+        extensions = toString(extensions).replace(';', '|');
 
         // Coerce value as a string
-        return (new window.RegExp('\.(?:' + extensions + ')$', 'i')).test('' + value);
+        return (new window.RegExp('\.(?:' + extensions + ')$', 'i')).test(toString(value));
     }
 
     /**
@@ -791,7 +791,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function padDigits(value, length) {
         // Coerce as a string
-        value = '' + value;
+        value = toString(value);
 
         if (!isInteger(length) || length <= 0) {
             return value;
@@ -829,7 +829,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Escape RegExp special characters
-        return value.replace(_regExp.REGEXP_ESCAPE, '\$1');
+        return value.replace(_regExp.REGEXP_ESCAPE, '\\$1');
     }
 
     /**
@@ -896,7 +896,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} An empty string; otherwise original string
      */
     function stringNullUndefinedToEmpty(value) {
-        return isNull(value) || isUndefined(value) ? '' : value;
+        return toString(value);
     }
 
     /**
@@ -1067,7 +1067,7 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Convert a value to a string. Null or undefined are an empty string
+     * Convert a value to a string. Null or undefined are coerced as an empty string
      * @param {mixed} value Value to convert
      * @return {string} New string value
      */
@@ -1077,6 +1077,28 @@ App.core = (function (window, document, $, undefined) {
         }
 
         return isNullOrUndefined(value) ? '' : ('' + value);
+    }
+
+    /**
+     * Trim characters from the left and righ-hand side of a string. Idea by https://github.com/epeli/underscore.string
+     *
+     * @param {string} value Value to trim
+     * @param {string} characters Character set to trim. If null or undefined, then the native String.prototype.trim will be used
+     * @return {string} Trimmed string
+     */
+    function trim(value, characters) {
+        // Coerce as a string
+        value = toString(value);
+
+        // If null or undefined, then use the native trim
+        if (isNullOrUndefined(characters)) {
+            return value.trim();
+        }
+
+        // Coerce as a string and escape the meta regular expression characters
+        characters = '[' + escapeRegExChars(toString(characters)) + ']';
+
+        return value.replace(new RegExp('^' + characters + '+|' + characters + '+$', 'g'), '');
     }
 
     /**
@@ -1170,7 +1192,8 @@ App.core = (function (window, document, $, undefined) {
         stringTrimLeft: stringTrimLeft,
         stringTrimRight: stringTrimRight,
         stringUCFirst: stringUCFirst,
-        toString: toString
+        toString: toString,
+        trim: trim
     };
 })(this, this.document, this.jQuery);
 
