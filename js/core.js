@@ -697,6 +697,32 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if the global variable 'undefined' has been set to a value other than 'undefined'
+     *
+     * @returns {boolean} True the global variable has been set; otherwise, false
+     */
+    function isUndefinedAssigned() {
+        var result = false;
+        try {
+            // Store the original value of undefined
+            var original = window.undefined;
+
+            // Set the value of undefined
+            window.undefined = 12345;
+
+            // Check the type is undefined
+            result = isUndefined(window.undefined);
+
+            // Revert back to the original value
+            window.undefined = original;
+        } catch (e) {
+            return false;
+        }
+
+        return result;
+    }
+
+    /**
      * Check if a value is the right file extension
      *
      * @param {string}  value File extension to check
@@ -1107,6 +1133,7 @@ App.core = (function (window, document, $, undefined) {
         isStringNotEmpty: isStringNotEmpty,
         isStringNumber: isStringNumber,
         isUndefined: isUndefined,
+        isUndefinedAssigned: isUndefinedAssigned,
         isValidFileExtension: isValidFileExtension,
         isWeakMap: isWeakMap,
         isWeakSet: isWeakSet,
