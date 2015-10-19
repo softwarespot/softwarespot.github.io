@@ -1090,6 +1090,9 @@ App.core = (function (window, document, $, undefined) {
     function trim(value, characters) {
         // Coerce as a string
         value = toString(value);
+        if (value.length === 0) {
+            return value;
+        }
 
         // If null or undefined, then use the native trim
         if (isNullOrUndefined(characters)) {
