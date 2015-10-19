@@ -163,12 +163,21 @@ App.core = (function (window, document, $, undefined) {
      * Convert the array-like arguments variable used in a closure to an array
      *
      * @param {arguments} args The array-like arguments value
-     * @return {array} An array
+     * @param  {number} start Start position of the array. If undefined or invalid, the default is zero
+     * @return {array} An array of arguments (not array-like); otherwise, an empty array
      */
-    function argumentsToArray(args) {
+    function argumentsToArray(args, start) {
         var array = [];
         if (isArguments(args)) {
-            for (var i = 0, length = args.length; i < length; i++) {
+            var length = args.length;
+
+            // Set the start position of the array to zero if an invalid number
+            if (!isInteger(start) || start < 0 || start >= length) {
+                start = 0;
+            }
+
+            for (var i = start; i < length; i++) {
+                // Push is sometimes faster than array[i - 1]
                 array.push(args[i]);
             }
         }
@@ -738,13 +747,13 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Gets the current Unix epoch, which is the number of milliseconds that have elapse since 1 January 1970 00:00:00 UTC
+     * Gets the current Unix epoch, which is the number of seconds that have elapsed since 1 January 1970 00:00:00 UTC
      *
      * @return {number} Current Unix epoch
      */
     function now() {
         // Could use Date.now()
-        return new window.Date().getTime();
+        return new window.Date().getTime() / 1000; // Number of milliseconds in a second
     }
 
     /**
@@ -843,11 +852,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function stringFormat(value) {
         // Create a temporary arguments array, skipping the first element, as this contains the value
-        var items = [];
-        for (var i = 1, length = arguments.length; i < length; i++) {
-            // Push is sometimes faster than items[i - 1]
-            items.push(arguments[i]);
-        }
+        var items = argumentsToArray(arguments, 1);
 
         // Iterate through the items replacing the identifiers e.g. {n} with the array item that matches the index value
         items.forEach(function forEachFormat(element, index) {
@@ -983,7 +988,7 @@ App.core = (function (window, document, $, undefined) {
             return [];
         }
 
-        // Split to a string array and map each character to the char code
+        // Split to a string array and map each character to the corresponding char code
         return value.split('').map(function mapCharArray(char) {
             return char.charCodeAt();
         });
