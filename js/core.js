@@ -109,7 +109,10 @@ App.core = (function (window, document, $, undefined) {
         LINE_FEED_ADD: /\r(?!\n)/,
 
         // Regular expression meta characters
-        REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g
+        REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g,
+
+        // Strip leading and trailing whitespace
+        TRIM: /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g
     };
 
     // Methods
@@ -836,21 +839,21 @@ App.core = (function (window, document, $, undefined) {
      * Prefix all line-feed characters ( ASCII 10 ) with a carriage return character ( ASCII 13 )
      *
      * @param {string} value Value to replace
-     * @return {string} New string with carriage returns added; otherwise, original string
+     * @return {string} New string with carriage returns added; otherwise, an empty string
      */
     function stringAddCR(value) {
         // Needs testing due to no negative look-behind
-        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN_ADD, '\r\n') : value;
+        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN_ADD, '\r\n') : '';
     }
 
     /**
      * Postfix all carriage return characters ( ASCII 13 ) with a line-feed character ( ASCII 10 )
      *
      * @param {string} value Value to replace
-     * @return {string} New string with line-feeds added; otherwise, original string
+     * @return {string} New string with line-feeds added; otherwise, an empty string
      */
     function stringAddLF(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED_ADD, '\r\n') : value;
+        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED_ADD, '\r\n') : '';
     }
 
     /**
@@ -967,30 +970,44 @@ App.core = (function (window, document, $, undefined) {
      * Strip EOL characters ( ASCII 10 and ASCII 13 ) in a string
      *
      * @param {string} value String value to strip the EOL characters
-     * @return {string} String stripped of EOL characters; otherwise, the original string
+     * @return {string} String stripped of EOL characters; otherwise, an empty string
      */
     function stringStripEOL(value) {
-        return isString(value) ? value.replace(_regExp.EOL_CHARS, '') : value;
+        return isStringNotEmpty(value) ? value.replace(_regExp.EOL_CHARS, '') : '';
     }
 
     /**
      * Strip carriage return characters ( ASCII 10 ) in a string
      *
      * @param {string} value String value to strip
-     * @return {string} New string of stripped carriage returns; otherwise, the original string
+     * @return {string} New string of stripped carriage returns; otherwise, an empty string
      */
     function stringStripCR(value) {
-        return isString(value) ? value.replace(_regExp.CARRIAGE_RETURN, '') : value;
+        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN, '') : '';
     }
 
     /**
      * Strip line-feed characters ( ASCII 13 ) in a string
      *
      * @param {string} value String value to strip
-     * @return {string} New string of stripped line-feeds; otherwise, the original string
+     * @return {string} New string of stripped line-feeds; otherwise, an empty string
      */
     function stringStripLF(value) {
-        return isString(value) ? value.replace(_regExp.LINE_FEED, '') : value;
+        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED, '') : '';
+    }
+
+    /**
+     * Strip leading and trailing whitespace
+     *
+     * @param {string} value String value to strip
+     * @return {string} New string with stripped leading and trailing whitespace; otherwise, an empty string
+     */
+    function stringStripWS(value) {
+        if (!isString(value)) {
+            return '';
+        }
+
+        return isFunction(window.String.prototype.trim) ? value.trim() : value.replace(_regExp.TRIM, '');
     }
 
     /**
@@ -1096,7 +1113,7 @@ App.core = (function (window, document, $, undefined) {
 
         // If null or undefined, then use the native trim
         if (isNullOrUndefined(characters)) {
-            return value.trim();
+            return stringStripWS(value);
         }
 
         // Coerce as a string and escape the meta regular expression characters
@@ -1193,6 +1210,7 @@ App.core = (function (window, document, $, undefined) {
         stringStripCR: stringStripCR,
         stringStripEOL: stringStripEOL,
         stringStripLF: stringStripLF,
+        stringStripWS: stringStripWS,
         stringTrimLeft: stringTrimLeft,
         stringTrimRight: stringTrimRight,
         stringUCFirst: stringUCFirst,
