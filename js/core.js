@@ -994,6 +994,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Converts a string to an array
+     *
+     * @param {string} value String value
+     * @returns {array} An array; otherwise, an empty array
+     */
+    function stringToArray(value) {
+        return isString(value) && value.length > 0 ? value.split('') : []; // Not as elegant as lodash's
+    }
+
+    /**
      * Convert a string to a boolean datatype i.e. non-zero and 'true' (case-insensitive) are true; otherwise, false
      *
      * @param {string} value String value
@@ -1145,6 +1155,7 @@ App.core = (function (window, document, $, undefined) {
         sprintf: stringFormat,
         stringAddCR: stringAddCR,
         stringAddLF: stringAddLF,
+        stringToArray: stringToArray,
         stringToBoolean: stringToBoolean,
         stringToCharArray: stringToCharArray,
         stringContains: stringContains,
