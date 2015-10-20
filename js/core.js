@@ -19,6 +19,9 @@ App.core = (function (window, document, $, undefined) {
     // Unique global identifier. Internal usage only
     // var GUID = 'BF1D7691-79D4-4A89-930B-84C65A309E86';
 
+    // Store an empty string
+    var STRING_EMPTY = '';
+
     // Fields
 
     // Store if the module has been initialised
@@ -289,7 +292,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a function datatype; otherwise, false
      */
     function isFunction(value) {
-        var tag = isObject(value) ? _objectToString.call(value) : '';
+        var tag = isObject(value) ? _objectToString.call(value) : STRING_EMPTY;
         return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
     }
 
@@ -843,7 +846,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function stringAddCR(value) {
         // Needs testing due to no negative look-behind
-        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN_ADD, '\r\n') : '';
+        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN_ADD, '\r\n') : STRING_EMPTY;
     }
 
     /**
@@ -853,7 +856,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string with line-feeds added; otherwise, an empty string
      */
     function stringAddLF(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED_ADD, '\r\n') : '';
+        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED_ADD, '\r\n') : STRING_EMPTY;
     }
 
     /**
@@ -911,7 +914,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function stringRepeat(value, count) {
         if (!isString(value)) {
-            return '';
+            return STRING_EMPTY;
         }
 
         return isFunction(window.String.prototype.repeat) ? value.repeat(count) : (new window.Array(++count)).join(value);
@@ -973,7 +976,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} String stripped of EOL characters; otherwise, an empty string
      */
     function stringStripEOL(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.EOL_CHARS, '') : '';
+        return isStringNotEmpty(value) ? value.replace(_regExp.EOL_CHARS, STRING_EMPTY) : STRING_EMPTY;
     }
 
     /**
@@ -983,7 +986,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string of stripped carriage returns; otherwise, an empty string
      */
     function stringStripCR(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN, '') : '';
+        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN, STRING_EMPTY) : STRING_EMPTY;
     }
 
     /**
@@ -993,7 +996,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string of stripped line-feeds; otherwise, an empty string
      */
     function stringStripLF(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED, '') : '';
+        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED, STRING_EMPTY) : STRING_EMPTY;
     }
 
     /**
@@ -1004,10 +1007,10 @@ App.core = (function (window, document, $, undefined) {
      */
     function stringStripWS(value) {
         if (!isString(value)) {
-            return '';
+            return STRING_EMPTY;
         }
 
-        return isFunction(window.String.prototype.trim) ? value.trim() : value.replace(_regExp.TRIM, '');
+        return isFunction(window.String.prototype.trim) ? value.trim() : value.replace(_regExp.TRIM, STRING_EMPTY);
     }
 
     /**
@@ -1017,7 +1020,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {array} An array; otherwise, an empty array
      */
     function stringToArray(value) {
-        return isString(value) && value.length > 0 ? value.split('') : []; // Not as elegant as lodash's
+        return isString(value) && value.length > 0 ? value.split(STRING_EMPTY) : []; // Not as elegant as lodash's
     }
 
     /**
@@ -1042,7 +1045,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Split to a string array and map each character to the corresponding char code
-        return value.split('').map(function mapCharArray(char) {
+        return value.split(STRING_EMPTY).map(function mapCharArray(char) {
             return char.charCodeAt();
         });
     }
@@ -1055,7 +1058,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} Trimmed string; otherwise, an empty string
      */
     function stringTrimLeft(value, count) {
-        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(count) : '';
+        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(count) : STRING_EMPTY;
     }
 
     /**
@@ -1066,7 +1069,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} Trimmed string; otherwise, an empty string
      */
     function stringTrimRight(value, count) {
-        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(0, value.length - count) : '';
+        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(0, value.length - count) : STRING_EMPTY;
     }
 
     /**
@@ -1077,7 +1080,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function stringUCFirst(value) {
         if (!isString(value)) {
-            return '';
+            return STRING_EMPTY;
         }
 
         return (value[0].toUpperCase()) + value.substr(1);
@@ -1094,7 +1097,7 @@ App.core = (function (window, document, $, undefined) {
             return value;
         }
 
-        return isNullOrUndefined(value) ? '' : ('' + value);
+        return isNullOrUndefined(value) ? STRING_EMPTY : (STRING_EMPTY + value);
     }
 
     /**
@@ -1119,7 +1122,7 @@ App.core = (function (window, document, $, undefined) {
         // Coerce as a string and escape the meta regular expression characters
         characters = '[' + escapeRegExChars(toString(characters)) + ']';
 
-        return value.replace(new RegExp('^' + characters + '+|' + characters + '+$', 'g'), '');
+        return value.replace(new RegExp('^' + characters + '+|' + characters + '+$', 'g'), STRING_EMPTY);
     }
 
     /**
