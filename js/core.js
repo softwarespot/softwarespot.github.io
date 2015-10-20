@@ -90,6 +90,9 @@ App.core = (function (window, document, $, undefined) {
         // Strip EOL characters
         EOL_CHARS: /\r?\n|\r/gm,
 
+        // Empty string
+        EMPTY: /(?:^\s*$)/,
+
         // Float values
         FLOAT: /(?:^(?!-?0+)-?\d+\.\d+$)/,
 
@@ -114,7 +117,7 @@ App.core = (function (window, document, $, undefined) {
         // Regular expression meta characters
         REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g,
 
-        // Strip leading and trailing whitespace
+        // Strip leading and trailing whitespace. Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
         TRIM: /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g
     };
 
@@ -643,6 +646,16 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a string and empty or whitespace
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True the value is a string and empty; otherwise, false
+     */
+    function isStringEmptyOrWhitespace(value) {
+        return isString(value) && (value.length === 0 || _regExp.EMPTY.test(value));
+    }
+
+    /**
      * Check if a variable is a string and representing a floating point
      *
      * @param {mixed} value Value to check
@@ -650,16 +663,6 @@ App.core = (function (window, document, $, undefined) {
      */
     function isStringFloat(value) {
         return isString(value) && _regExp.FLOAT.test(value);
-    }
-
-    /**
-     * Check if a variable is a string and empty or whitespace
-     *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True the value is a string and empty; otherwise, false
-     */
-    function isStringEmptyOrWhitespace(value) {
-        return isString(value) && value.trim().length === 0;
     }
 
     /**
@@ -679,7 +682,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a string and not empty; otherwise, false
      */
     function isStringNotEmpty(value) {
-        return isString(value) && value.length !== 0;
+        return !isStringEmptyOrWhitespace(value);
     }
 
     /**
@@ -871,7 +874,7 @@ App.core = (function (window, document, $, undefined) {
             return false;
         }
 
-        return isFunction(window.String.prototype.includes) ? value.includes(searchFor) : value.indexOf(searchFor) !== -1;
+        return isFunction(window.String.prototype.includes) ? window.String.prototype.includes.call(value, searchFor) : value.indexOf(searchFor) !== -1;
     }
 
     /**
@@ -917,7 +920,7 @@ App.core = (function (window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        return isFunction(window.String.prototype.repeat) ? value.repeat(count) : (new window.Array(++count)).join(value);
+        return isFunction(window.String.prototype.repeat) ? window.String.prototype.repeat.call(value, count) : (new window.Array(++count)).join(value);
     }
 
     /**
@@ -940,7 +943,7 @@ App.core = (function (window, document, $, undefined) {
         position -= searchFor.length;
 
         if (isFunction(window.String.prototype.endsWith)) {
-            return value.endsWith(searchFor, position);
+            return window.String.prototype.endsWith.call(value, searchFor, position);
         }
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
@@ -966,7 +969,7 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
-        return isFunction(window.String.prototype.startsWith) ? value.startsWith(searchFor, position) : value.indexOf(searchFor, position) === position;
+        return isFunction(window.String.prototype.startsWith) ? window.String.prototype.startsWith.call(value, searchFor, position) : value.indexOf(searchFor, position) === position;
     }
 
     /**
@@ -1010,7 +1013,7 @@ App.core = (function (window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        return isFunction(window.String.prototype.trim) ? value.trim() : value.replace(_regExp.TRIM, STRING_EMPTY);
+        return isFunction(window.String.prototype.trim) ? window.String.prototype.trim.call(value) : value.replace(_regExp.TRIM, STRING_EMPTY);
     }
 
     /**
@@ -1094,6 +1097,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function toString(value) {
         if (isString(value)) {
+            // Return the original value
             return value;
         }
 
@@ -1122,7 +1126,7 @@ App.core = (function (window, document, $, undefined) {
         // Coerce as a string and escape the meta regular expression characters
         characters = '[' + escapeRegExChars(toString(characters)) + ']';
 
-        return value.replace(new RegExp('^' + characters + '+|' + characters + '+$', 'g'), STRING_EMPTY);
+        return value.replace(new window.RegExp('^' + characters + '+|' + characters + '+$', 'g'), STRING_EMPTY);
     }
 
     /**
