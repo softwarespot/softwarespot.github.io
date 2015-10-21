@@ -109,7 +109,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         // _getInputs();
 
         // Coerce as a string
-        var hasInputResult = _inputs['' + inputType];
+        var hasInputResult = _inputs[core.toString(inputType)];
         return core.isUndefined(hasInputResult) ? false : hasInputResult;
     }
 

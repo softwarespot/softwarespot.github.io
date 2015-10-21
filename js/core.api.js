@@ -201,7 +201,7 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         }
 
         // Clone the url, so the replaced values, if they contain {}, don't interfere with matching
-        var urlReplace = '' + url;
+        var urlReplace = core.toString(url);
 
         // Regular expression to parse items between {} e.g. {username}
         var reParseURLParts = /{([^\}]+)}/g;
@@ -253,7 +253,7 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         });
 
         // When an ajax request has stopped
-        $_document.ajaxStop(function sjaxStop() {
+        $_document.ajaxStop(function ajaxStop() {
             NProgress.done();
         });
     }

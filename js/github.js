@@ -102,7 +102,9 @@ App.namespace().github = (function (window, document, $, core, undefined) {
     function _load(username) {
         var options = {
             // Replace the '{username}' with the user's username
-            url: _api.GET_GITHUB_BY_USER.replace('{username}', username),
+            url: core.api.parseUrl(_api.GET_GITHUB_BY_USER, {
+                username: username
+            }),
             method: 'get',
             dataType: 'jsonp',
             cache: false
