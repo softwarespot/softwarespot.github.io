@@ -79,7 +79,7 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -116,6 +116,16 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
     }
 
     /**
+     * Initialise all DOM cachable variables
+     *
+     * @return {undefined}
+     */
+    function _cacheDom() {
+        $_body = $('html, body');
+        $_navigationLinks = $('header').find('a');
+    }
+
+    /**
      * Bind events
      *
      * @return {undefined}
@@ -147,20 +157,10 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
     }
 
     /**
-     * Initialise all DOM cachable variables
-     *
-     * @return {undefined}
-     */
-    function _cacheDom() {
-        $_body = $('html, body');
-        $_navigationLinks = $('header').find('a');
-    }
-
-    /**
      * Scroll to an element on the page
      *
-     * @param  {HTMLElement} $element jQuery HTMLElement node object
-     * @param  {number|string} speed Speed at which to scroll the element
+     * @param{HTMLElement} $element jQuery HTMLElement node object
+     * @param{number|string} speed Speed at which to scroll the element
      * @return {undefined}
      */
     function _scrollTo($element, speed) {

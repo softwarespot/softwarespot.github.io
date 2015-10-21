@@ -94,7 +94,7 @@ App.namespace().github = (function (window, document, $, core, undefined) {
     /**
      * Load github for a particular user. Uses API: https://developer.github.com/v3/github/
      *
-     * @param  {object} config Configuration object literal
+     * @param {object} config Configuration object literal
      * @return @return {undefined}
      */
     function _load(username) {

@@ -172,7 +172,7 @@ App.core = (function (window, document, $, undefined) {
      * Convert the array-like arguments variable used in a closure to an array
      *
      * @param {arguments} args The array-like arguments value
-     * @param  {number} start Start position of the array. If undefined or invalid, the default is zero
+     * @param {number} start Start position of the array. If undefined or invalid, the default is zero
      * @return {array} An array of arguments (not array-like); otherwise, an empty array
      */
     function argumentsToArray(args, start) {
@@ -734,8 +734,8 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a value is the right file extension
      *
-     * @param {string}  value File extension to check
-     * @param {string}  extensions Semi-colon separated list e.g. js;html;htm
+     * @param {string} value File extension to check
+     * @param {string} extensions Semi-colon separated list e.g. js;html;htm
      * @return {boolean} True the file extension matches; otherwise, false
      */
     function isValidFileExtension(value, extensions) {
@@ -774,7 +774,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if an object is a window
      *
-     * @param  {object} object Object to check
+     * @param {object} object Object to check
      * @return {boolean} True is a window; otherwise, false
      */
     function isWindow(object) {
