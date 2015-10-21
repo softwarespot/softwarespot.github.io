@@ -889,6 +889,9 @@ App.core = (function (window, document, $, undefined) {
         // Create a temporary arguments array, skipping the first element, as this contains the value
         var items = argumentsToArray(arguments, 1);
 
+        // Coerce as a string
+        value = toString(value);
+
         // Iterate through the items replacing the identifiers e.g. {n} with the array item that matches the index value
         items.forEach(function forEachFormat(element, index) {
             var regExp = new window.RegExp('\\{' + index + '\\}', 'gi');
