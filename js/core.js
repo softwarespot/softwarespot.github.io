@@ -19,6 +19,9 @@ App.core = (function (window, document, $, undefined) {
     // Unique global identifier. Internal usage only
     // var GUID = 'BF1D7691-79D4-4A89-930B-84C65A309E86';
 
+    // Milliseconds in a second
+    var MILLISECONDS_IN_A_SECOND = 1000;
+
     // Store an empty string
     var STRING_EMPTY = '';
 
@@ -739,16 +742,17 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the file extension matches; otherwise, false
      */
     function isValidFileExtension(value, extensions) {
-        value = escapeRegExChars(value);
-        if (isNull(value)) {
+        if (isNullOrUndefined(value)) {
             return false;
         }
+
+        value = escapeRegExChars(value);
 
         // Replace semi-colon(s) (;) with pipe(s) (|)
         extensions = toString(extensions).replace(';', '|');
 
         // Coerce value as a string
-        return (new window.RegExp('\.(?:' + extensions + ')$', 'i')).test(toString(value));
+        return (new window.RegExp('\.(?:' + extensions + ')$', 'i')).test(value);
     }
 
     /**
@@ -788,7 +792,7 @@ App.core = (function (window, document, $, undefined) {
      */
     function now() {
         // Could use Date.now()
-        return new window.Date().getTime() / 1000; // Number of milliseconds in a second
+        return new window.Date().getTime() / MILLISECONDS_IN_A_SECOND; // Number of milliseconds in a second
     }
 
     /**
@@ -799,7 +803,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
-        return stringPad(value, '0', length);
+        return stringPad(value, '0', window.Math.labs(length));
     }
 
     /**
