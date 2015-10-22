@@ -1057,6 +1057,22 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Convert a string to a number datatype. Idea by underscore.string, URL: https://github.com/epeli/underscore.string
+     *
+     * @param {string} value String value
+     * @param {number} precision Precision value
+     * @return {number} Parsed number; otherwise, zero by default
+     */
+    function stringToNumber(value, precision) {
+        if (isNullOrUndefined(value)) {
+            return 0;
+        }
+
+        var factor = window.Math.pow(10, window.isFinite(precision) ? precision : 0);
+        return window.Math.round(value * factor) / factor;
+    }
+
+    /**
      * Trim a number of characters left of a string
      *
      * @param {string} value String value to trim
@@ -1108,7 +1124,7 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Trim characters from the left-hand and right-hand side of a string. Idea by https://github.com/epeli/underscore.string
+     * Trim characters from the left-hand and right-hand side of a string. Idea by underscore.string, URL: https://github.com/epeli/underscore.string
      *
      * @param {string} value Value to trim
      * @param {string} characters Character set to trim. If null or undefined, then the native String.prototype.trim will be used
@@ -1208,9 +1224,6 @@ App.core = (function (window, document, $, undefined) {
         sprintf: stringFormat,
         stringAddCR: stringAddCR,
         stringAddLF: stringAddLF,
-        stringToArray: stringToArray,
-        stringToBoolean: stringToBoolean,
-        stringToCharArray: stringToCharArray,
         stringContains: stringContains,
         stringEndsWith: stringEndsWith,
         stringFormat: stringFormat,
@@ -1221,6 +1234,10 @@ App.core = (function (window, document, $, undefined) {
         stringStripEOL: stringStripEOL,
         stringStripLF: stringStripLF,
         stringStripWS: stringStripWS,
+        stringToArray: stringToArray,
+        stringToBoolean: stringToBoolean,
+        stringToCharArray: stringToCharArray,
+        stringToNumber: stringToNumber,
         stringTrimLeft: stringTrimLeft,
         stringTrimRight: stringTrimRight,
         stringUCFirst: stringUCFirst,
