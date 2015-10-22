@@ -952,7 +952,7 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
-     * Pad a string either left or right with a padded string
+     * Pad a string either left or right with a padded string. To pad to the left, length should be positive and negative for right padding
      *
      * @param {string} value Value to pad out
      * @param {string} padding Padding value to pre-append or append to the string value
@@ -1048,7 +1048,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {array} An array; otherwise, an empty array
      */
     function stringToArray(value) {
-        return isString(value) && value.length > 0 ? value.split(STRING_EMPTY) : []; // Not as elegant as lodash's
+        return !isString(value) || value.length === 0 ? [] : value.split(STRING_EMPTY); // Not as elegant as lodash's
     }
 
     /**
@@ -1068,12 +1068,8 @@ App.core = (function (window, document, $, undefined) {
      * @return {array} UTF-16 char array; otherwise, an empty array
      */
     function stringToCharArray(value) {
-        if (!isString(value) || value.length === 0) {
-            return [];
-        }
-
         // Split to a string array and map each character to the corresponding char code
-        return value.split(STRING_EMPTY).map(function mapCharArray(char) {
+        return stringToArray(value).map(function mapCharArray(char) {
             return char.charCodeAt();
         });
     }
@@ -1127,7 +1123,8 @@ App.core = (function (window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        return (value[0].toUpperCase()) + value.substr(1);
+        var index = 0;
+        return (value[index++].toUpperCase()) + value.substr(index);
     }
 
     /**
