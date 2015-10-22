@@ -799,15 +799,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
-        // Coerce as a string
-        value = toString(value);
-
-        if (!isInteger(length) || length <= 0) {
-            return value;
-        }
-
-        // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
-        return new window.Array(window.Math.max(length - value.length + 1, 0)).join('0') + value;
+        return stringPad(value, '0', length);
     }
 
     /**
@@ -870,11 +862,14 @@ App.core = (function (window, document, $, undefined) {
      * @return {boolean} True the string is found; otherwise, false
      */
     function stringContains(value, searchFor) {
+
         if (!isString(value)) {
             return false;
         }
 
-        return isFunction(window.String.prototype.includes) ? window.String.prototype.includes.call(value, searchFor) : value.indexOf(searchFor) !== -1;
+        return isFunction(window.String.prototype.includes) ?
+            window.String.prototype.includes.call(value, searchFor) :
+            value.indexOf(searchFor) !== -1;
     }
 
     /**
@@ -923,7 +918,9 @@ App.core = (function (window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        return isFunction(window.String.prototype.repeat) ? window.String.prototype.repeat.call(value, count) : (new window.Array(++count)).join(value);
+        return isFunction(window.String.prototype.repeat) ?
+            window.String.prototype.repeat.call(value, count) :
+            (new window.Array(++count)).join(value);
     }
 
     /**
@@ -955,6 +952,27 @@ App.core = (function (window, document, $, undefined) {
     }
 
     /**
+     * Pad a string either left or right with a padded string
+     *
+     * @param {string} value Value to pad out
+     * @param {string} padding Padding value to pre-append or append to the string value
+     * @param {number} length Maximum length of the string value
+     * @return {string} New padded string; otherwise, original value coerced as string
+     */
+    function stringPad(value, padding, length) {
+        // Coerce as a string
+        value = toString(value);
+
+        if (!isInteger(length) || value === 0) {
+            return value;
+        }
+
+        // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
+        padding = new window.Array(window.Math.max(window.Math.abs(length) - value.length + 1, 0)).join(toString(padding));
+        return length > 0 ? padding + value : value + padding;
+    }
+
+    /**
      * Check if a string starts with a certain string
      *
      * @param {string} value Value to check
@@ -972,7 +990,9 @@ App.core = (function (window, document, $, undefined) {
         }
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
-        return isFunction(window.String.prototype.startsWith) ? window.String.prototype.startsWith.call(value, searchFor, position) : value.indexOf(searchFor, position) === position;
+        return isFunction(window.String.prototype.startsWith) ?
+            window.String.prototype.startsWith.call(value, searchFor, position) :
+            value.indexOf(searchFor, position) === position;
     }
 
     /**
@@ -1016,7 +1036,9 @@ App.core = (function (window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        return isFunction(window.String.prototype.trim) ? window.String.prototype.trim.call(value) : value.replace(_regExp.TRIM, STRING_EMPTY);
+        return isFunction(window.String.prototype.trim) ?
+            window.String.prototype.trim.call(value) :
+            value.replace(_regExp.TRIM, STRING_EMPTY);
     }
 
     /**
@@ -1228,6 +1250,7 @@ App.core = (function (window, document, $, undefined) {
         stringEndsWith: stringEndsWith,
         stringFormat: stringFormat,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
+        stringPad: stringPad,
         stringRepeat: stringRepeat,
         stringStartsWith: stringStartsWith,
         stringStripCR: stringStripCR,
