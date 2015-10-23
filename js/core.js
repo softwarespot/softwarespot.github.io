@@ -803,7 +803,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
-        return stringPad(value, '0', window.Math.labs(length));
+        return stringPad(value, '0', window.Math.abs(length));
     }
 
     /**
@@ -865,16 +865,10 @@ App.core = (function (window, document, $, undefined) {
      * @param {string} searchFor Value to search for
      * @return {boolean} True the string is found; otherwise, false
      */
-    function stringContains(value, searchFor) {
-
-        if (!isString(value)) {
-            return false;
-        }
-
-        return isFunction(window.String.prototype.includes) ?
-            window.String.prototype.includes.call(value, searchFor) :
-            value.indexOf(searchFor) !== -1;
-    }
+    var stringContains = isFunction(window.String.prototype.includes) ?
+        window.String.prototype.includes.call : function stringContains(value, searchFor) {
+            return toString(value).indexOf(searchFor) !== -1;
+        };
 
     /**
      * String format. Similar to the C# implementation
@@ -918,9 +912,12 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} Repeated string; otherwise, empty string on error
      */
     function stringRepeat(value, count) {
-        if (!isString(value)) {
+        if (!isInteger(count) || count <= 0) {
             return STRING_EMPTY;
         }
+
+        // Coerce as a string
+        value = toString(value);
 
         return isFunction(window.String.prototype.repeat) ?
             window.String.prototype.repeat.call(value, count) :
