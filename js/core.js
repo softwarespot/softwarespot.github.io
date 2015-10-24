@@ -264,7 +264,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string contains only alphanumeric characters ( 0-9 and A-Z )
      *
-     * @param {string} value String to check
+     * @param {string} value String value to check
      * @return {boolean} True the string contains alphanumeric characters only; otherwise, false
      */
     function isAlNum(value) {
@@ -284,7 +284,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string contains only alphabetic characters ( A-Z )
      *
-     * @param {string} value String to check
+     * @param {string} value String value to check
      * @return {boolean} True the string contains alphabetic characters only; otherwise, false
      */
     function isAlpha(value) {
@@ -315,7 +315,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string contains ASCII characters only ( 0-127 or 0-255 if extended is set to true )
      *
-     * @param {string} value String to check
+     * @param {string} value String value to check
      * @param {boolean} extended True to use the extended character set i.e. 0-255; otherwise default is false ( 0-127 )
      * @return {boolean} True the string contains ASCII characters only; otherwise, false
      */
@@ -330,7 +330,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string is base64 encoded
      *
-     * @param {string} value String to check
+     * @param {string} value String value to check
      * @return {boolean} True the value is a base64 encoded string; otherwise, false
      */
     function isBase64(value) {
@@ -360,7 +360,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string is a char
      *
-     * @param {string} value String to check
+     * @param {string} value String value to check
      * @return {boolean} True the string is a char; otherwise, false
      */
     function isChar(value) {
@@ -430,14 +430,13 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is a floating point; otherwise, false
      */
     function isFloat(value) {
-        // Coerce as a string
         return isNumber(value) && _regExp.FLOAT.test(toString(value));
     }
 
     /**
      * Check if a string is a GUID
      *
-     * @param {string} value String to check
+     * @param {string} value String value to check
      * @return {boolean} True the string is a GUID; otherwise, false
      */
     function isGUID(value) {
@@ -447,7 +446,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string is hexadecimal
      *
-     * @param {string} value String to check
+     * @param {string} value String value to check
      * @return {boolean} True the string is hexadecimal; otherwise, false
      */
     function isHex(value) {
@@ -461,7 +460,6 @@ App.core = (function (window, document, $, undefined) {
      * @returns {boolean} True the value is an integer; otherwise, false
      */
     function isInteger(value) {
-        // Coerce as a string
         return isNumber(value) && _regExp.INTEGER.test(toString(value));
     }
 
@@ -751,7 +749,6 @@ App.core = (function (window, document, $, undefined) {
         // Replace semi-colon(s) (;) with pipe(s) (|)
         extensions = toString(extensions).replace(';', '|');
 
-        // Coerce value as a string
         return (new window.RegExp('\.(?:' + extensions + ')$', 'i')).test(value);
     }
 
@@ -825,7 +822,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Escape RegExp characters with a prefixed backslash
      *
-     * @param {string} value String to escape
+     * @param {string} value String value to escape
      * @return {mixed} Escaped string; otherwise, null if not a string datatype
      */
     function escapeRegExChars(value) {
@@ -840,7 +837,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Prefix all line-feed characters ( ASCII 10 ) with a carriage return character ( ASCII 13 )
      *
-     * @param {string} value Value to replace
+     * @param {string} value String value to replace
      * @return {string} New string with carriage returns added; otherwise, an empty string
      */
     function stringAddCR(value) {
@@ -851,7 +848,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Postfix all carriage return characters ( ASCII 13 ) with a line-feed character ( ASCII 10 )
      *
-     * @param {string} value Value to replace
+     * @param {string} value String value to replace
      * @return {string} New string with line-feeds added; otherwise, an empty string
      */
     function stringAddLF(value) {
@@ -861,14 +858,17 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string contains another string
      *
-     * @param {string} value Value to search in
+     * @param {string} value String value to search in
      * @param {string} searchFor Value to search for
      * @return {boolean} True the string is found; otherwise, false
      */
-    var stringContains = isFunction(window.String.prototype.includes) ?
-        window.String.prototype.includes.call : function stringContains(value, searchFor) {
-            return toString(value).indexOf(searchFor) !== -1;
-        };
+    function stringContains(value, searchFor) {
+        value = toString(value);
+
+        return isFunction(window.String.prototype.includes) ?
+            window.String.prototype.includes.call(value, searchFor) :
+            value.indexOf(searchFor) !== -1;
+    }
 
     /**
      * String format. Similar to the C# implementation
@@ -882,7 +882,6 @@ App.core = (function (window, document, $, undefined) {
         // Create a temporary arguments array, skipping the first element, as this contains the value
         var items = argumentsToArray(arguments, 1);
 
-        // Coerce as a string
         value = toString(value);
 
         // Iterate through the items replacing the identifiers e.g. {n} with the array item that matches the index value
@@ -897,7 +896,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Convert a null/undefined string to an empty string
      *
-     * @param {string} value Value to convert
+     * @param {string} value String value to convert
      * @return {string} An empty string; otherwise original string
      */
     function stringNullUndefinedToEmpty(value) {
@@ -916,7 +915,6 @@ App.core = (function (window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        // Coerce as a string
         value = toString(value);
 
         return isFunction(window.String.prototype.repeat) ?
@@ -927,7 +925,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string ends with a certain string
      *
-     * @param {string} value Value to check
+     * @param {string} value String value to check
      * @param {string} searchFor Value to search for
      * @param {number} position Position to start searching. Default is start at the end of the string
      * @return {boolean} True the string ends with a certain string; otherwise, false
@@ -955,13 +953,12 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Pad a string either left or right with a padded string. To pad to the left, length should be positive and negative for right padding
      *
-     * @param {string} value Value to pad out
+     * @param {string} value String value to pad out
      * @param {string} padding Padding value to pre-append or append to the string value
      * @param {number} length Maximum length of the string value
      * @return {string} New padded string; otherwise, original value coerced as string
      */
     function stringPad(value, padding, length) {
-        // Coerce as a string
         value = toString(value);
 
         if (!isInteger(length) || value === 0) {
@@ -976,7 +973,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Check if a string starts with a certain string
      *
-     * @param {string} value Value to check
+     * @param {string} value String value to check
      * @param {string} searchFor Value to search for
      * @param {number} position Position to start searching. Default is start at the beginning of the string
      * @return {boolean} True the string starts with a certain string; otherwise, false
@@ -1116,7 +1113,7 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Convert the first character of a string to upper-case
      *
-     * @param {string} value String value to coerce
+     * @param {string} value String value
      * @return {string} First character of the string changed to upper-case; otherwise, an empty string
      */
     function stringUCFirst(value) {
@@ -1146,12 +1143,11 @@ App.core = (function (window, document, $, undefined) {
     /**
      * Trim characters from the left-hand and right-hand side of a string. Idea by underscore.string, URL: https://github.com/epeli/underscore.string
      *
-     * @param {string} value Value to trim
+     * @param {string} value String value to trim
      * @param {string} characters Character set to trim. If null or undefined, then the native String.prototype.trim will be used
      * @return {string} Trimmed string
      */
     function trim(value, characters) {
-        // Coerce as a string
         value = toString(value);
         if (value.length === 0) {
             return value;
