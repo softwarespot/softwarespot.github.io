@@ -788,8 +788,9 @@ App.core = (function (window, document, $, undefined) {
      * @return {number} Current Unix epoch
      */
     function now() {
-        // Could use Date.now()
-        return new window.Date().getTime() / MILLISECONDS_IN_A_SECOND; // Number of milliseconds in a second
+        var timstamp = isFunction(Date.now) ? Date.now() : new window.Date().getTime();
+
+        return timstamp / MILLISECONDS_IN_A_SECOND;
     }
 
     /**
@@ -841,7 +842,6 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} New string with carriage returns added; otherwise, an empty string
      */
     function stringAddCR(value) {
-        // Needs testing due to no negative look-behind
         return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN_ADD, '\r\n') : STRING_EMPTY;
     }
 
@@ -879,7 +879,7 @@ App.core = (function (window, document, $, undefined) {
      * @return {string} Formatted string, with {n} identifiers replaced with the passed arguments
      */
     function stringFormat(value) {
-        // Create a temporary arguments array, skipping the first element, as this contains the value
+        // Create a temporary arguments array, skipping the first element, as this contains the string value
         var items = argumentsToArray(arguments, 1);
 
         value = toString(value);
@@ -1046,7 +1046,7 @@ App.core = (function (window, document, $, undefined) {
      * @returns {array} An array; otherwise, an empty array
      */
     function stringToArray(value) {
-        return !isString(value) || value.length === 0 ? [] : value.split(STRING_EMPTY); // Not as elegant as lodash's
+        return !isString(value) || value.length === 0 ? [] : value.split(STRING_EMPTY); // Not as elegant as lodash's version
     }
 
     /**
