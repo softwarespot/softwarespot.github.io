@@ -268,7 +268,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
      * Check if a valid storage object
      *
      * @param {type} storage Storage object
-     * @return {boolean} storage True is valid storage object; otherwise, false
+     * @return {boolean} storage True, is valid storage object; otherwise, false
      */
     function _isStorage(storage) {
         return core.isObject(storage) &&
