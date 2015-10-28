@@ -1,4 +1,4 @@
-/* global App, NProgress */
+/* global App */
 
 /**
  * API module
@@ -242,19 +242,19 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      */
     function _setAjaxGlobal() {
         // Disable showing the spinner in the top right hand corner
-        NProgress.configure({
+        window.NProgress.configure({
             minimum: 0.1,
             showSpinner: false
         });
 
         // When an ajax request is started
         $_document.ajaxStart(function ajaxStart() {
-            NProgress.start();
+            window.NProgress.start();
         });
 
         // When an ajax request has stopped
         $_document.ajaxStop(function ajaxStop() {
-            NProgress.done();
+            window.NProgress.done();
         });
     }
 
