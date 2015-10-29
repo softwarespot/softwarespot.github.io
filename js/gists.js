@@ -27,7 +27,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     var _isInitialised = false;
 
     // Store the jQuery selector object to add the gists data
-    var $_content = null;
+    var _$content = null;
 
     // Template string selectors
     var _templateDone = '';
@@ -68,7 +68,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function destroy() {
-        $_content = null;
+        _$content = null;
 
         _isInitialised = false;
     }
@@ -89,7 +89,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function _cacheDom(content) {
-        $_content = $(content);
+        _$content = $(content);
     }
 
     /**
@@ -141,7 +141,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function _render(isSuccess, data) {
-        $_content.handlebars('add', isSuccess ? _templateDone : _templateFail, data, {
+        _$content.handlebars('add', isSuccess ? _templateDone : _templateFail, data, {
             remove_type: 'same',
             validate: isSuccess
         });

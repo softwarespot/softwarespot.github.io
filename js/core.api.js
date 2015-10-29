@@ -141,7 +141,7 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
     var _isInitialised = false;
 
     // Store the document jQuery selector object
-    var $_document = null;
+    var _$document = null;
 
     // Methods
 
@@ -174,7 +174,7 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function destroy() {
-        $_document = null;
+        _$document = null;
         _isInitialised = false;
     }
 
@@ -232,7 +232,7 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
      * @return {undefined}
      */
     function _cacheDom() {
-        $_document = $(document);
+        _$document = $(document);
     }
 
     /**
@@ -248,12 +248,12 @@ App.namespace('core').api = (function (window, document, $, core, undefined) {
         });
 
         // When an ajax request is started
-        $_document.ajaxStart(function ajaxStart() {
+        _$document.ajaxStart(function ajaxStart() {
             window.NProgress.start();
         });
 
         // When an ajax request has stopped
-        $_document.ajaxStop(function ajaxStop() {
+        _$document.ajaxStop(function ajaxStop() {
             window.NProgress.done();
         });
     }
