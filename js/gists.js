@@ -45,19 +45,17 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
         core.api.init();
 
         // Default config that can be overwritten by passing through the config variable
-        var defaultConfig = {
-            gists: null
-        };
+        var defaultConfig = {};
 
         // Combine the passed config
         $.extend(defaultConfig, config);
 
         // Store the template strings
-        _templateDone = config.gists.templates.done;
-        _templateFail = config.gists.templates.fail;
+        _templateDone = config.templates.done;
+        _templateFail = config.templates.fail;
 
-        _cacheDom(config.gists.content);
-        _load(config.gists.username);
+        _cacheDom(config.dom);
+        _load(config.username);
 
         _isInitialised = true;
     }
@@ -85,11 +83,11 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     /**
      * Initialise all DOM cachable variables
      *
-     * {string} content Content to add the gists data to
+     * @param {object} dom Object literal containing strings to locate the DOM nodes
      * @return {undefined}
      */
-    function _cacheDom(content) {
-        _$content = $(content);
+    function _cacheDom(dom) {
+        _$content = $(dom.html);
     }
 
     /**
@@ -156,14 +154,15 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     return {
         init: function () {
             init({
-                gists: {
-                    username: 'softwarespot',
-                    content: '#gists-section',
-                    templates: {
-                        fail: '#template-gists-error',
-                        done: '#template-gists'
-                    }
-                }
+                dom: {
+                    // Required property
+                    html: '#gists-section'
+                },
+                templates: {
+                    fail: '#template-gists-error',
+                    done: '#template-gists'
+                },
+                username: 'softwarespot'
             });
         },
 

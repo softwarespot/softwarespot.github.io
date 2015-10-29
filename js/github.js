@@ -47,19 +47,17 @@ App.namespace().github = (function (window, document, $, core, undefined) {
         core.api.init();
 
         // Default config that can be overwritten by passing through the config variable
-        var defaultConfig = {
-            github: null
-        };
+        var defaultConfig = {};
 
         // Combine the passed config
         $.extend(defaultConfig, config);
 
         // Store the template strings
-        _templateDone = config.github.templates.done;
-        _templateFail = config.github.templates.fail;
+        _templateDone = config.templates.done;
+        _templateFail = config.templates.fail;
 
-        _cacheDom(config.github.content);
-        _load(config.github.username);
+        _cacheDom(config.dom);
+        _load(config.username);
 
         _isInitialised = true;
     }
@@ -86,11 +84,11 @@ App.namespace().github = (function (window, document, $, core, undefined) {
     /**
      * Initialise all DOM cachable variables
      *
-     * {string} content Content to add the github data
+     * @param {object} dom Object literal containing strings to locate the DOM nodes
      * @return {undefined}
      */
-    function _cacheDom(content) {
-        _$content = $(content);
+    function _cacheDom(dom) {
+        _$content = $(dom.html);
     }
 
     /**
@@ -157,14 +155,15 @@ App.namespace().github = (function (window, document, $, core, undefined) {
     return {
         init: function () {
             init({
-                github: {
-                    username: 'softwarespot',
-                    content: '#github-section',
-                    templates: {
-                        fail: '#template-github-error',
-                        done: '#template-github'
-                    }
-                }
+                dom: {
+                    // Required property
+                    html: '#github-section'
+                },
+                templates: {
+                    fail: '#template-github-error',
+                    done: '#template-github'
+                },
+                username: 'softwarespot'
             });
         },
 
