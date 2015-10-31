@@ -11,7 +11,7 @@
  * Modified: 2015/10/20
  * @author softwarespot
  */
-App.namespace('core').features = (function (window, document, $, core, undefined) {
+App.namespace('core').features = (function featuresModule(window, document, $, core, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -129,7 +129,7 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         var regExp = {
             EMAIL_NUMBER_URL: /^(?:email|number|url)$/,
             RANGE: /(?:^range$)/,
-            SEARCH_AND_TEL: /^(?:search|tel)$/
+            SEARCH_AND_TEL: /^(?:search|tel)$/,
         };
 
         // Create an empty object literal
@@ -301,6 +301,6 @@ App.namespace('core').features = (function (window, document, $, core, undefined
         hasLocalStorage: hasLocalStorage,
         hasSessionStorage: hasSessionStorage,
         hasWebStorage: hasWebStorage,
-        hasGeoLocation: hasGeoLocation
+        hasGeoLocation: hasGeoLocation,
     };
-})(this, this.document, this.jQuery, this.App.core);
+})(window, window.document, window.jQuery, window.App.core);

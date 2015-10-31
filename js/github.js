@@ -9,7 +9,7 @@
  * Modified: 2015/10/20
  * @author softwarespot
  */
-App.namespace().github = (function (window, document, $, core, undefined) {
+App.namespace().github = (function githubModule(window, document, $, core, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -20,7 +20,7 @@ App.namespace().github = (function (window, document, $, core, undefined) {
 
     // API resource URIs
     var _api = {
-        GET_GITHUB_BY_USER: 'https://api.github.com/users/{username}'
+        GET_GITHUB_BY_USER: 'https://api.github.com/users/{username}',
     };
 
     // Fields
@@ -43,7 +43,7 @@ App.namespace().github = (function (window, document, $, core, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(config) {
+    function _init(config) {
         core.api.init();
 
         // Default config that can be overwritten by passing through the config variable
@@ -101,18 +101,18 @@ App.namespace().github = (function (window, document, $, core, undefined) {
         var options = {
             // Replace the '{username}' with the user's username
             url: core.api.parseUrl(_api.GET_GITHUB_BY_USER, {
-                username: username
+                username: username,
             }),
             method: 'get',
             dataType: 'jsonp',
-            cache: false
+            cache: false,
         };
 
         // Store the jQuery XHR object reference
         var jqxhr = $.ajax(options);
 
         // If the request completed successfully
-        jqxhr.done(function (response, textStatus, $this) {
+        jqxhr.done(function(response, textStatus, $this) {
             window.console.log(response);
             window.console.log(textStatus);
             window.console.log($this);
@@ -123,7 +123,7 @@ App.namespace().github = (function (window, document, $, core, undefined) {
         });
 
         // If the request failed
-        jqxhr.fail(function ($this, textStatus, errorThrown) {
+        jqxhr.fail(function($this, textStatus, errorThrown) {
             window.console.log($this);
             window.console.log(textStatus);
             window.console.log(errorThrown);
@@ -142,32 +142,32 @@ App.namespace().github = (function (window, document, $, core, undefined) {
     function _render(isSuccess, data) {
         _$content.handlebars('add', isSuccess ? _templateDone : _templateFail, data, {
             remove_type: 'same',
-            validate: isSuccess
+            validate: isSuccess,
         });
     }
 
     // Invoked when the DOM has loaded
-    $(function () {
+    $(function githubReady() {
         // init();
     });
 
     // Public API
     return {
-        init: function () {
-            init({
+        init: function init() {
+            _init({
                 dom: {
                     // Required property
-                    html: '#github-section'
+                    html: '#github-section',
                 },
                 templates: {
                     fail: '#template-github-error',
-                    done: '#template-github'
+                    done: '#template-github',
                 },
-                username: 'softwarespot'
+                username: 'softwarespot',
             });
         },
 
         destroy: destroy,
-        getVersion: getVersion
+        getVersion: getVersion,
     };
-})(this, this.document, this.jQuery, this.App.core);
+})(window, window.document, window.jQuery, window.App.core);

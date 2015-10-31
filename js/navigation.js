@@ -6,7 +6,7 @@
  * Modified: 2015/10/20
  * @author softwarespot
  */
-App.namespace().navigation = (function (window, document, $, core, undefined) {
+App.namespace().navigation = (function navigationModule(window, document, $, core, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -68,7 +68,7 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
 
             // Fallback to prevent jitter
             return false;
-        }
+        },
     };
 
     // Methods
@@ -79,7 +79,7 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -170,12 +170,12 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
 
         // Animate from the body to the top of the element's offset position
         _$body.animate({
-            scrollTop: $element.offset().top
+            scrollTop: $element.offset().top,
         }, speed);
     }
 
     // Initialise the module
-    $(function () {
+    $(function navigationReady() {
         // init();
     });
 
@@ -183,6 +183,6 @@ App.namespace().navigation = (function (window, document, $, core, undefined) {
     return {
         init: init,
         destroy: destroy,
-        getVersion: getVersion
+        getVersion: getVersion,
     };
-})(this, this.document, this.jQuery, this.App.core);
+})(window, window.document, window.jQuery, window.App.core);

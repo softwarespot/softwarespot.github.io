@@ -7,7 +7,7 @@ var App = App || {};
  * Modified: 2015/10/20
  * @author softwarespot
  */
-App.core = (function (window, document, $, undefined) {
+App.core = (function coreModule(window, document, $, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -30,12 +30,12 @@ App.core = (function (window, document, $, undefined) {
     // Store if the module has been initialised
     var _isInitialised = false;
 
-    var _numberPrecision = Math.pow(2, 53) - 1;
+    var _numberPrecision = window.Math.pow(2, 53) - 1;
 
     // Maximum and minimum integer values that can be stored
     var _number = {
         MAX_SAFE_INTEGER: _numberPrecision, // 9007199254740991 or Number.MAX_SAFE_INTEGER
-        MIN_SAFE_INTEGER: -(_numberPrecision) // -9007199254740991 or Number.MIN_SAFE_INTEGER
+        MIN_SAFE_INTEGER: -(_numberPrecision), // -9007199254740991 or Number.MIN_SAFE_INTEGER
     };
 
     // Return strings of toString() found on the Object prototype
@@ -55,7 +55,7 @@ App.core = (function (window, document, $, undefined) {
         SET: '[object Set]',
         STRING: '[object String]',
         WEAKMAP: '[object WeakMap]',
-        WEAKSET: '[object WeakSet]'
+        WEAKSET: '[object WeakSet]',
     };
 
     // Store the object prototype
@@ -121,7 +121,7 @@ App.core = (function (window, document, $, undefined) {
         REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g,
 
         // Strip leading and trailing whitespace. Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
-        TRIM: /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g
+        TRIM: /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
     };
 
     // Methods
@@ -132,7 +132,7 @@ App.core = (function (window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -1173,7 +1173,7 @@ App.core = (function (window, document, $, undefined) {
     // function _cacheDom() {}
 
     // Invoked when the DOM has loaded
-    $(function () {
+    $(function coreReady() {
         destroy();
         init();
     });
@@ -1259,9 +1259,9 @@ App.core = (function (window, document, $, undefined) {
         stringTrimRight: stringTrimRight,
         stringUCFirst: stringUCFirst,
         toString: toString,
-        trim: trim
+        trim: trim,
     };
-})(this, this.document, this.jQuery);
+})(window, window.document, window.jQuery);
 
 /**
  * Create a namespace. Idea based on the work by Nikolas C. Zakas from Maintainable JavaScript

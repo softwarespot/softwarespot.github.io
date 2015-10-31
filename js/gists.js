@@ -6,7 +6,7 @@
  * Modified: 2015/10/20
  * @author softwarespot
  */
-App.namespace().gists = (function (window, document, $, core, undefined) {
+App.namespace().gists = (function gistsModule(window, document, $, core, undefined) {
     // Constants
 
     // SemVer version number of the module
@@ -18,7 +18,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     // API resource URIs
     var _api = {
         GET_GISTS_BY_USER: 'https://api.github.com/users/{username}/gists',
-        GET_GIST_BY_ID: 'https://api.github.com/gists/{id}'
+        GET_GIST_BY_ID: 'https://api.github.com/gists/{id}',
     };
 
     // Fields
@@ -41,7 +41,7 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(config) {
+    function _init(config) {
         core.api.init();
 
         // Default config that can be overwritten by passing through the config variable
@@ -100,11 +100,11 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
         var options = {
             // Replace the '{username}' with the user's username
             url: core.api.parseUrl(_api.GET_GISTS_BY_USER, {
-                username: username
+                username: username,
             }),
             method: 'get',
             dataType: 'jsonp',
-            cache: false
+            cache: false,
         };
 
         // Store the jQuery XHR object reference
@@ -141,32 +141,32 @@ App.namespace().gists = (function (window, document, $, core, undefined) {
     function _render(isSuccess, data) {
         _$content.handlebars('add', isSuccess ? _templateDone : _templateFail, data, {
             remove_type: 'same',
-            validate: isSuccess
+            validate: isSuccess,
         });
     }
 
     // Invoked when the DOM has loaded
-    $(function () {
+    $(function gistsReady() {
         // init();
     });
 
     // Public API
     return {
-        init: function () {
-            init({
+        init: function init() {
+            _init({
                 dom: {
                     // Required property
-                    html: '#gists-section'
+                    html: '#gists-section',
                 },
                 templates: {
                     fail: '#template-gists-error',
-                    done: '#template-gists'
+                    done: '#template-gists',
                 },
-                username: 'softwarespot'
+                username: 'softwarespot',
             });
         },
 
         destroy: destroy,
-        getVersion: getVersion
+        getVersion: getVersion,
     };
-})(this, this.document, this.jQuery, this.App.core);
+})(window, window.document, window.jQuery, window.App.core);
