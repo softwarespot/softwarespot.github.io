@@ -141,7 +141,7 @@ App.namespace().github = (function githubModule(window, document, $, core, undef
      */
     function _render(isSuccess, data) {
         _$content.handlebars('add', isSuccess ? _templateDone : _templateFail, data, {
-            remove_type: 'same',
+            removeType: 'same',
             validate: isSuccess,
         });
     }

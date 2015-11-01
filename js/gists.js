@@ -140,7 +140,7 @@ App.namespace().gists = (function gistsModule(window, document, $, core, undefin
      */
     function _render(isSuccess, data) {
         _$content.handlebars('add', isSuccess ? _templateDone : _templateFail, data, {
-            remove_type: 'same',
+            removeType: 'same',
             validate: isSuccess,
         });
     }
