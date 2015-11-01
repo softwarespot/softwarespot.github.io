@@ -434,6 +434,16 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a generator function
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True, the value is a generator; otherwise, false
+     */
+    function isGenerator(value) {
+        return _objectToString.call(value) === _objectStrings.GENERATOR;
+    }
+
+    /**
      * Check if a string is a GUID
      *
      * @param {string} value String value to check
@@ -1204,6 +1214,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         isEven: isEven,
         isFloat: isFloat,
         isFunction: isFunction,
+        isGenerator: isGenerator,
         isGUID: isGUID,
         isHex: isHex,
         isInteger: isInteger,
