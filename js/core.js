@@ -30,6 +30,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Store if the module has been initialised
     var _isInitialised = false;
 
+    // Programatically calculate the maximum possible number
     var _numberPrecision = window.Math.pow(2, 53) - 1;
 
     // Maximum and minimum integer values that can be stored
@@ -67,6 +68,21 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Store the toString method
     var _objectToString = _objectPrototype.toString;
 
+    // Escaped characters and their HTML entity equivalents
+    var _escapeChars = {
+        '¢': 'cent',
+        '£': 'pound',
+        '¥': 'yen',
+        '€': 'euro',
+        '©': 'copy',
+        '®': 'reg',
+        '<': 'lt',
+        '>': 'gt',
+        '"': 'quot',
+        '&': 'amp',
+        '\'': '#39',
+    };
+
     // Regular expressions
     var _regExp = {
         // Alphanumeric characters
@@ -90,11 +106,11 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Carriage return append
         CARRIAGE_RETURN_ADD: /(?!\r)\n/,
 
-        // Strip EOL characters
-        EOL_CHARS: /\r?\n|\r/gm,
-
         // Empty string
         EMPTY: /(?:^\s*$)/,
+
+        // Strip EOL characters
+        EOL_CHARS: /\r?\n|\r/gm,
 
         // Float values
         FLOAT: /(?:^(?!-?0+)-?\d+\.\d+$)/,
@@ -104,6 +120,9 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Hex string ( ASCII A-F, a-f, 0-9 )
         HEX: /(?:^0[xX][\dA-Fa-f]+$)/,
+
+        // Escape HTML characters
+        HTML_ESCAPE: new window.RegExp('([' + window.Object.keys(_escapeChars).join(STRING_EMPTY) + '])', 'g'),
 
         // Integer values
         INTEGER: /(?:^(?!-?0+)-?\d+$)/,
@@ -122,6 +141,9 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Regular expression meta characters
         REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g,
+
+        // Parse items between {} e.g. {username}
+        SUPPLANT: /(?:{([^{}]*)})/g,
 
         // Strip leading and trailing whitespace. Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
         TRIM: /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
@@ -895,20 +917,20 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     /**
      * Escape HTML special characters with their entity equivalents.
-     * Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
+     * Idea by underscore.string, URL: https://github.com/epeli/underscore.string
      *
      * @param {string} value String to escape
-     * @return {string} Escaped string
+     * @return {string} Escaped string; otherwise, empty string
      */
     function stringEscapeHTML(value) {
-        return toString(value).replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+        return toString(value).replace(_regExp.HTML_ESCAPE, function stringEscapeHTML(fullMatch) {
+            return '&' + _escapeChars[fullMatch] + ';';
+        });
     }
 
     /**
      * String format. Similar to the C# implementation
-     * URL: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format. User: @Filipiz
+     * Idea from StackOverflow, URL: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format. User: @Filipiz
      *
      * @param {string} value String value to replace
      * @param {arguments} arguments Arguments to replace the string identifiers with e.g. stringFormat('Some string like {0}', 'this')
@@ -1075,7 +1097,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             value.replace(_regExp.TRIM, STRING_EMPTY);
     }
 
-     /**
+    /**
      * Parse a string value by supplementing segments such as {keyItem}, with the object literal key value e.g. object.keyItem.
      * Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
      *
@@ -1089,9 +1111,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return value;
         }
 
-        // Regular expression to parse items between {} e.g. {username}
-        var reParseKeys = /{([^{}]*)}/g;
-        return core.toString(value).replace(reParseKeys, function parseKeys(defaultMatch, key) {
+        return core.toString(value).replace(_regExp.SUPPLANT, function parseKeys(defaultMatch, key) {
             return core.has(object, key) && !core.isUndefined(object[key]) ? object[key] : defaultMatch;
         });
     }
