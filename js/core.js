@@ -109,7 +109,10 @@ App.core = (function coreModule(window, document, $, undefined) {
         INTEGER: /(?:^(?!-?0+)-?\d+$)/,
 
         // Is representing a boolean datatype
-        IS_BOOLEAN: /(?:^(?:(?!0+)[0-9]+|true)$)/i,
+        IS_BOOLEAN: /(?:^false|true$)/i,
+
+        // Is representing a boolean datatype of true
+        IS_BOOLEAN_TRUE: /(?:^(?:[-+]?(?!0+)[0-9]+|true)$)/i,
 
         // EOL line feed
         LINE_FEED: /\n/,
@@ -667,6 +670,16 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a string and representing a boolean (case-insensitive)
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True, the value is representing a boolean; otherwise, false
+     */
+    function isStringBoolean(value) {
+        return isString(value) && _regExp.BOOLEAN.test(value);
+    }
+
+    /**
      * Check if a variable is a string and representing a floating point
      *
      * @param {mixed} value Value to check
@@ -1066,7 +1079,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True; otherwise, false
      */
     function stringToBoolean(value) {
-        return _regExp.IS_BOOLEAN.test(value);
+        return _regExp.IS_BOOLEAN_TRUE.test(value);
     }
 
     /**
@@ -1234,6 +1247,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         isSet: isSet,
         isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
+        isStringBoolean: isStringBoolean,
         isStringFloat: isStringFloat,
         isStringInteger: isStringInteger,
         isStringNotEmpty: isStringNotEmpty,
