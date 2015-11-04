@@ -1188,6 +1188,28 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     *  Override the default behaviour of typeof, by returning 'null' or a null value or 'array' for an array datatype.
+     *  Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
+     *
+     * @param {mixed} value Variable to check
+     * @return {string} Datatype of the variable. See, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof
+     */
+    function typeOf(value) {
+        var type = typeof value;
+
+        // Override the default return value of an object that is either am array or null
+        if (type === 'object') {
+            if (isNull(value)) {
+                type = 'null';
+            } else if (isArray(value)) {
+                type = 'array';
+            }
+        }
+
+        return type;
+    }
+
+    /**
      * Initialise all DOM cachable variables
      *
      * @return {undefined}
@@ -1285,6 +1307,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringUCFirst: stringUCFirst,
         toString: toString,
         trim: trim,
+        typeOf: typeOf,
     };
 })(window, window.document, window.jQuery);
 
