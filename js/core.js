@@ -794,7 +794,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Replace semi-colon(s) (;) with pipe(s) (|)
         extensions = toString(extensions).replace(';', '|');
 
-        return (new window.RegExp('\.(?:' + extensions + ')$', 'i')).test(value);
+        return (new window.RegExp('(?:\.(?:' + extensions + ')$)', 'i')).test(value);
     }
 
     /**
@@ -833,7 +833,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {number} Current Unix epoch
      */
     function now() {
-        var timstamp = isFunction(Date.now) ? Date.now() : new window.Date().getTime();
+        var timstamp = isFunction(window.Date.now) ? window.Date.now() : new window.Date().getTime();
 
         return timstamp / MILLISECONDS_IN_A_SECOND;
     }
@@ -1123,7 +1123,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {array} An array; otherwise, an empty array
      */
     function stringToArray(value) {
-        return !isString(value) || value.length === 0 ? [] : value.split(STRING_EMPTY); // Not as elegant as lodash's version
+        return isString(value) && value.length > 0 ? value.split(STRING_EMPTY) : []; // Not as elegant as lodash's version
     }
 
     /**
@@ -1214,7 +1214,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return value;
         }
 
-        return isNullOrUndefined(value) ? STRING_EMPTY : (STRING_EMPTY + value);
+        return isNullOrUndefined(value) || isObjectLiteral(value) ? STRING_EMPTY : (STRING_EMPTY + value);
     }
 
     /**
