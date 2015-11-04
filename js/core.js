@@ -894,6 +894,19 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Escape HTML special characters with their entity equivalents.
+     * Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
+     *
+     * @param {string} value String to escape
+     * @return {string} Escaped string
+     */
+    function stringEscapeHTML(value) {
+        return toString(value).replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    /**
      * String format. Similar to the C# implementation
      * URL: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format. User: @Filipiz
      *
@@ -1060,6 +1073,27 @@ App.core = (function coreModule(window, document, $, undefined) {
         return isFunction(window.String.prototype.trim) ?
             window.String.prototype.trim.call(value) :
             value.replace(_regExp.TRIM, STRING_EMPTY);
+    }
+
+     /**
+     * Parse a string value by supplementing segments such as {keyItem}, with the object literal key value e.g. object.keyItem.
+     * Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
+     *
+     * @param {string} vslue String value to supplement
+     * @param {object} object Object literal with one level only. The keys should match the segments in the string value
+     * @return {string} Parsed string; otherwise, empty string
+     */
+    function stringSupplant(value, object) {
+        // Check if the value is a string and the object parameter is an object literal
+        if (!core.isString(value) || !core.isObjectLiteral(object)) {
+            return value;
+        }
+
+        // Regular expression to parse items between {} e.g. {username}
+        var reParseKeys = /{([^{}]*)}/g;
+        return core.toString(value).replace(reParseKeys, function parseKeys(defaultMatch, key) {
+            return core.has(object, key) && !core.isUndefined(object[key]) ? object[key] : defaultMatch;
+        });
     }
 
     /**
@@ -1289,6 +1323,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringAddLF: stringAddLF,
         stringContains: stringContains,
         stringEndsWith: stringEndsWith,
+        stringEscapeHTML: stringEscapeHTML,
         stringFormat: stringFormat,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
         stringPad: stringPad,
@@ -1298,6 +1333,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringStripEOL: stringStripEOL,
         stringStripLF: stringStripLF,
         stringStripWS: stringStripWS,
+        stringSupplant: stringSupplant,
         stringToArray: stringToArray,
         stringToBoolean: stringToBoolean,
         stringToCharArray: stringToCharArray,

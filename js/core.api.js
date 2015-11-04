@@ -188,42 +188,14 @@ App.namespace('core').api = (function apiModule(window, document, $, core, undef
     }
 
     /**
-     * Parse a url by replacing segment such as {item}, with the
+     * Parse a url by replacing segments such as {item}, with the object literal key value e.g. object.item
      *
      * @param {string} url Url string to parse
      * @param {object} object Object literal with one level only. The keys should match the segments in the url
-     * @return {string|null} Parsed string; otherwise, null
+     * @return {string} Parsed string; otherwise, empty string
      */
     function parseUrl(url, object) {
-        // Check if the url is a string and the object parameter is an object literal
-        if (!core.isString(url) || !core.isObjectLiteral(object)) {
-            return url;
-        }
-
-        // Clone the url, so the replaced values, if they contain {}, don't interfere with matching
-        var urlReplace = core.toString(url);
-
-        // Regular expression to parse items between {} e.g. {username}
-        var reParseURLParts = /{([^\}]+)}/g;
-        while (true) {
-            // Get the matches and check if any were found
-            var match = reParseURLParts.exec(urlReplace);
-            if (core.isNull(match)) {
-                break;
-            }
-
-            // Store the key and check if it exists in the object literal
-            var key = match[1];
-            if (!core.has(object, key) || core.isUndefined(object[key])) {
-                continue;
-            }
-
-            // Replace the url string with the value of the full match
-            var fullMatch = match[0];
-            url = url.replace(fullMatch, object[key]);
-        }
-
-        return url;
+        return core.stringSupplant(url, object);
     }
 
     /**
