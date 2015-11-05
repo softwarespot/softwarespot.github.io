@@ -219,7 +219,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             }
         }
 
-        return args;
+        return array;
     }
 
     /**
@@ -276,14 +276,14 @@ App.core = (function coreModule(window, document, $, undefined) {
             return [];
         }
 
-        var keysArray = [];
+        var array = [];
         for (var key in object) {
             if (has(object, key)) {
-                keysArray.push(key);
+                array.push(key);
             }
         }
 
-        return keysArray;
+        return array;
     }
 
     /**
@@ -303,7 +303,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is an array-like arguments object; otherwise, false
      */
     function isArguments(value) {
-        return _isObjectLike(value) && _objectToString.call(value) === _objectStrings.ARGUMENTS;
+        return _objectToString.call(value) === _objectStrings.ARGUMENTS;
     }
 
     /**
@@ -370,7 +370,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a boolean datatype; otherwise, false
      */
     function isBoolean(value) {
-        return value === true || value === false || (_isObjectLike(value) && _objectToString.call(value) === _objectStrings.BOOLEAN);
+        return value === true || value === false || _objectToString.call(value) === _objectStrings.BOOLEAN;
     }
 
     /**
@@ -400,7 +400,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a Date object; otherwise, false
      */
     function isDate(value) {
-        return _isObjectLike(value) && _objectToString.call(value) === _objectStrings.DATE;
+        return _objectToString.call(value) === _objectStrings.DATE;
     }
 
     /**
@@ -445,7 +445,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a Error object; otherwise, false
      */
     function isError(value) {
-        return _isObjectLike(value) && isString(value.message) && _objectToString.call(value) === _objectStrings.ERROR;
+        return _objectToString.call(value) === _objectStrings.ERROR && isString(value.message);
     }
 
     /**
@@ -565,7 +565,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a number datatype; otherwise, false
      */
     function isNumber(value) {
-        return typeof value === 'number' || (_isObjectLike(value) && _objectToString.call(value) === _objectStrings.NUMBER);
+        return typeof value === 'number' || _objectToString.call(value) === _objectStrings.NUMBER;
     }
 
     /**
