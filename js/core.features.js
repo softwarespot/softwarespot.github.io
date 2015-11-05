@@ -8,7 +8,7 @@
  * @link http://caniuse.com/
  * @link https://github.com/NielsLeenheer/html5test/
  *
- * Modified: 2015/10/20
+ * Modified: 2015/11/05
  * @author softwarespot
  */
 App.namespace('core').features = (function featuresModule(window, document, $, core, undefined) {
