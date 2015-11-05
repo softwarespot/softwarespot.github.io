@@ -937,13 +937,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Formatted string, with {n} identifiers replaced with the passed arguments
      */
     function stringFormat(value) {
-        // Create a temporary arguments array, skipping the first element, as this contains the string value
-        var items = argumentsToArray(arguments, 1);
-
         value = toString(value);
 
-        // Iterate through the items replacing the identifiers e.g. {n} with the array item that matches the index value
-        items.forEach(function forEachFormat(element, index) {
+        // Iterate through the arguments replacing the identifiers e.g. {n} with the array item that matches the index value
+        argumentsToArray(arguments, 1).forEach(function forEachFormat(element, index) {
             var regExp = new window.RegExp('\\{' + index + '\\}', 'gi');
             value = value.replace(regExp, element);
         });
@@ -1107,7 +1104,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function stringSupplant(value, object) {
         return toString(value).replace(_regExp.SUPPLANT, function parseKeys(defaultMatch, key) {
-            return isUndefined(object[key]) ? defaultMatch : object[key];
+            return has(object, key) ? object[key] : defaultMatch;
         });
     }
 
