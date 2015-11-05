@@ -1106,13 +1106,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Parsed string; otherwise, empty string
      */
     function stringSupplant(value, object) {
-        // Check if the value is a string and the object parameter is an object literal
-        if (!core.isString(value) || !core.isObjectLiteral(object)) {
-            return value;
-        }
-
-        return core.toString(value).replace(_regExp.SUPPLANT, function parseKeys(defaultMatch, key) {
-            return core.has(object, key) && !core.isUndefined(object[key]) ? object[key] : defaultMatch;
+        return toString(value).replace(_regExp.SUPPLANT, function parseKeys(defaultMatch, key) {
+            return isUndefined(object[key]) ? defaultMatch : object[key];
         });
     }
 
