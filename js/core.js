@@ -30,13 +30,31 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Store if the module has been initialised
     var _isInitialised = false;
 
+    // Escaped characters and their HTML entity equivalents
+    var _htmlEscapeChars = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        '\'': '&#39;',
+        '`': '&#96;',
+        // '¢': '&cent;',
+        // '£': '&pound;',
+        // '¥': '&yen;',
+        // '€': '&euro;',
+        // '©': '&copy;',
+        // '®': '&reg;',
+    };
+
     // Programatically calculate the maximum possible number
     var _numberPrecision = window.Math.pow(2, 53) - 1;
 
     // Maximum and minimum integer values that can be stored
     var _number = {
+        INFINITY: 1 / 0,
         MAX_SAFE_INTEGER: _numberPrecision, // 9007199254740991 or Number.MAX_SAFE_INTEGER
         MIN_SAFE_INTEGER: -(_numberPrecision), // -9007199254740991 or Number.MIN_SAFE_INTEGER
+        NAN: 0 / 0,
     };
 
     // Return strings of toString() found on the Object prototype
@@ -67,21 +85,6 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // Store the toString method
     var _objectToString = _objectPrototype.toString;
-
-    // Escaped characters and their HTML entity equivalents
-    var _escapeChars = {
-        '¢': 'cent',
-        '£': 'pound',
-        '¥': 'yen',
-        '€': 'euro',
-        '©': 'copy',
-        '®': 'reg',
-        '<': 'lt',
-        '>': 'gt',
-        '"': 'quot',
-        '&': 'amp',
-        '\'': '#39',
-    };
 
     // Regular expressions
     var _regExp = {
@@ -122,7 +125,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         HEX: /(?:^0[xX][\dA-Fa-f]+$)/,
 
         // Escape HTML characters
-        HTML_ESCAPE: new window.RegExp('([' + window.Object.keys(_escapeChars).join(STRING_EMPTY) + '])', 'g'),
+        HTML_ESCAPE: new window.RegExp('([' + keys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g'),
 
         // Integer values
         INTEGER: /(?:^(?!-?0+)-?\d+$)/,
@@ -142,6 +145,9 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Regular expression meta characters
         REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g,
 
+        // Parse item between {} that are an integer
+        STRING_FORMAT: /(?:{(\d+)})/g,
+
         // Parse items between {} e.g. {username}
         SUPPLANT: /(?:{([^{}]*)})/g,
 
@@ -157,7 +163,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -197,24 +203,25 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Convert the array-like arguments variable used in a closure to an array
+     * Convert the array-like arguments object variable used in a closure to an array
      *
-     * @param {arguments} args The array-like arguments value
+     * @param {arguments} args The array-like arguments object
      * @param {number} start Start position of the array. If undefined or invalid, the default is zero
      * @return {array} An array of arguments (not array-like); otherwise, an empty array
      */
     function argumentsToArray(args, start) {
         var array = [];
+
         if (isArguments(args)) {
             var length = args.length;
 
-            // Set the start position of the array to zero if an invalid number
+            // Set the start position of the array to zero if an invalid integer or start position
             if (!isInteger(start) || start < 0 || start >= length) {
                 start = 0;
             }
 
             for (var i = start; i < length; i++) {
-                // Push is sometimes faster than array[i - 1]
+                // Push is considered sometimes faster than array[i - 1] = ?
                 array.push(args[i]);
             }
         }
@@ -230,7 +237,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function arrayClear(array) {
         // If not an array then don't continue
-        if (!isArray(array)) {
+        if (!isArray(array) || array.length === 0) {
             return;
         }
 
@@ -241,7 +248,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Look at the last item in the array
+     * Peek at the last item in the array
      *
      * @param {array} array The array to peek at
      * @return {mixed|undefined} The last item pushed onto the array; otherwise, undefined
@@ -252,6 +259,21 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         return array[array.length - 1];
+    }
+
+    /**
+     * Escape RegExp characters with a prefixed backslash
+     *
+     * @param {string} value String value to escape
+     * @return {mixed} Escaped string; otherwise, null if not a string datatype
+     */
+    function escapeRegExChars(value) {
+        if (!isString(value)) {
+            return null;
+        }
+
+        // Escape RegExp special characters
+        return value.replace(_regExp.REGEXP_ESCAPE, '\\$1');
     }
 
     /**
@@ -276,7 +298,12 @@ App.core = (function coreModule(window, document, $, undefined) {
             return [];
         }
 
+        if (isFunction(window.Object.keys)) {
+            return window.Object.keys(object);
+        }
+
         var array = [];
+
         for (var key in object) {
             if (has(object, key)) {
                 array.push(key);
@@ -323,7 +350,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a function datatype; otherwise, false
      */
     function isFunction(value) {
-        var tag = isObject(value) ? _objectToString.call(value) : STRING_EMPTY;
+        var tag = isObject(value) ? _objectToString.call(value) : null;
         return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
     }
 
@@ -338,10 +365,10 @@ App.core = (function coreModule(window, document, $, undefined) {
     };
 
     /**
-     * Check if a string contains ASCII characters only ( 0-127 or 0-255 if extended is set to true )
+     * Check if a string contains ASCII characters only ( 0-127 or 0-255 if the extended argument is set to true )
      *
      * @param {string} value String value to check
-     * @param {boolean} extended True to use the extended character set i.e. 0-255; otherwise default is false ( 0-127 )
+     * @param {boolean} extended True to use the extended character set (0-255); otherwise default is false ( 0-127 )
      * @return {boolean} True, the string contains ASCII characters only; otherwise, false
      */
     function isASCII(value, extended) {
@@ -389,7 +416,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the string is a char; otherwise, false
      */
     function isChar(value) {
-        // Well there is no 'char' datatype is JavaScript, but this is close as it gets
+        // Well there is no 'char' datatype in JavaScript, but this is close as it gets
         return isString(value) && value.length === 1;
     }
 
@@ -406,11 +433,11 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is defined
      *
-     * @param {object} value Value to check
+     * @param {mixed} value Value to check
      * @returns {boolean} True, the value is defined; otherwise, false
      */
     function isDefined(value) {
-        return !isUndefined(value);
+        return value !== undefined;
     }
 
     /**
@@ -499,23 +526,23 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Check if a value is an instance of jQuery
+     * Check if a variable is an instance of jQuery
      *
-     * @param {mixed} $value Value to check
-     * @return {boolean} true is an instance of jQuery; otherwise, false
+     * @param {mixed} $element Element to check
+     * @return {boolean} True is an instance of jQuery; otherwise, false
      */
-    function isjQuery($value) {
-        return $value instanceof $;
+    function isjQuery($element) {
+        return $element instanceof $;
     }
 
     /**
-     * Check if a value is an instance of jQuery and contains element nodes
+     * Check if a variable is an instance of jQuery and contains at least one element node
      *
-     * @param {mixed} $value Value to check
-     * @return {boolean} true is an instance of jQuery and contains element nodes; otherwise, false
+     * @param {mixed} $element Element to check
+     * @return {boolean} True is an instance of jQuery and contains at least one element node; otherwise, false
      */
-    function isjQueryNotEmpty($value) {
-        return isjQuery($value) && $value.length !== 0;
+    function isjQueryNotEmpty($element) {
+        return isjQuery($element) && $element.length > 0;
     }
 
     /**
@@ -535,7 +562,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the value is not null; otherwise, false
      */
     function isNotNull(value) {
-        return !isNull(value);
+        return value !== null;
     }
 
     /**
@@ -584,16 +611,6 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Check if a variable is an object
-     *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True, the value is an object; otherwise, false
-     */
-    function _isObjectLike(value) {
-        return !!value && typeof value === 'object';
-    }
-
-    /**
      * Check if a variable is an object literal
      *
      * @param {mixed} value Value to check
@@ -633,10 +650,10 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Check if a promise
+     * Check if a variable is a Promise object
      *
      * @param {promise} value Value to check
-     * @return {boolean} True, the value is a promise; otherwise, false
+     * @return {boolean} True, the value is a Promise object; otherwise, false
      */
     function isPromise(value) {
         return _objectToString.call(value) === _objectStrings.PROMISE;
@@ -654,6 +671,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     /**
      * Check if an integer is a safe integer
+     *
      * @param {number} value Value to check
      * @return {boolean} True, the value is a safe integer; otherwise, false
      */
@@ -744,7 +762,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is undefined
      *
-     * @param {object} value Value to check
+     * @param {mixed} value Value to check
      * @returns {boolean} True, the value is undefined; otherwise, false
      */
     function isUndefined(value) {
@@ -757,7 +775,6 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the global variable has been set; otherwise, false
      */
     function isUndefinedAssigned() {
-        var result = false;
         try {
             // Store the original value of undefined
             var original = window.undefined;
@@ -766,15 +783,15 @@ App.core = (function coreModule(window, document, $, undefined) {
             window.undefined = 12345;
 
             // Check the type is undefined
-            result = isUndefined(window.undefined);
+            var result = isUndefined(window.undefined);
 
             // Revert back to the original value
             window.undefined = original;
+
+            return result;
         } catch (e) {
             return false;
         }
-
-        return result;
     }
 
     /**
@@ -866,21 +883,6 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Escape RegExp characters with a prefixed backslash
-     *
-     * @param {string} value String value to escape
-     * @return {mixed} Escaped string; otherwise, null if not a string datatype
-     */
-    function escapeRegExChars(value) {
-        if (!isString(value)) {
-            return null;
-        }
-
-        // Escape RegExp special characters
-        return value.replace(_regExp.REGEXP_ESCAPE, '\\$1');
-    }
-
-    /**
      * Prefix all line-feed characters ( ASCII 10 ) with a carriage return character ( ASCII 13 )
      *
      * @param {string} value String value to replace
@@ -916,36 +918,43 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Escape HTML special characters with their entity equivalents.
+     * Escape HTML special characters with their entity equivalents
      * Idea by underscore.string, URL: https://github.com/epeli/underscore.string
      *
-     * @param {string} value String to escape
+     * @param {string} value String value to escape
      * @return {string} Escaped string; otherwise, empty string
      */
     function stringEscapeHTML(value) {
-        return toString(value).replace(_regExp.HTML_ESCAPE, function stringEscapeHTML(fullMatch) {
-            return '&' + _escapeChars[fullMatch] + ';';
-        });
+        value = toString(value);
+
+        return value && _regExp.HTML_ESCAPE.test(value) ? value.replace(_regExp.HTML_ESCAPE, _htmlEscapeChar) : value;
     }
 
-    /**
+        /**
      * String format. Similar to the C# implementation
      * Idea from StackOverflow, URL: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format. User: @Filipiz
      *
-     * @param {string} value String value to replace
+     * @param {string} value String value to format
      * @param {arguments} arguments Arguments to replace the string identifiers with e.g. stringFormat('Some string like {0}', 'this')
      * @return {string} Formatted string, with {n} identifiers replaced with the passed arguments
      */
     function stringFormat(value) {
+        // Coerce as a string and check if a valid length
         value = toString(value);
+        if (value.length === 0) {
+            return value;
+        }
 
-        // Iterate through the arguments replacing the identifiers e.g. {n} with the array item that matches the index value
-        argumentsToArray(arguments, 1).forEach(function forEachFormat(element, index) {
-            var regExp = new window.RegExp('\\{' + index + '\\}', 'gi');
-            value = value.replace(regExp, element);
+        // Convert the arguments array-like object to an array
+        var args = argumentsToArray(arguments, 1);
+
+        return value.replace(_regExp.STRING_FORMAT, function stringFormatKeys(fullMatch, index) {
+            // Coerce as a number and get the value at the index position in the arguments array
+            index = +index;
+            var value = args[index];
+
+            return isUndefined(value) ? fullMatch : value;
         });
-
-        return value;
     }
 
     /**
@@ -1006,12 +1015,13 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Pad a string either left or right with a padded string. To pad to the left, length should be positive and negative for right padding
+     * Pad a string either left or right with a padded string. To pad to the left, length should be a positive
+     * integer; otherwise, a negative integer for right padding
      *
-     * @param {string} value String value to pad out
+     * @param {string} value String value to pad
      * @param {string} padding Padding value to pre-append or append to the string value
      * @param {number} length Maximum length of the string value
-     * @return {string} New padded string; otherwise, original value coerced as string
+     * @return {string} Padded string; otherwise, original value coerced as string
      */
     function stringPad(value, padding, length) {
         value = toString(value);
@@ -1103,8 +1113,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Parsed string; otherwise, empty string
      */
     function stringSupplant(value, object) {
-        return toString(value).replace(_regExp.SUPPLANT, function parseKeys(defaultMatch, key) {
-            return has(object, key) ? object[key] : defaultMatch;
+        return toString(value).replace(_regExp.SUPPLANT, function stringSupplantKeys(fullMatch, key) {
+            return has(object, key) ? object[key] : fullMatch;
         });
     }
 
@@ -1253,6 +1263,26 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         return type;
+    }
+
+    /**
+     * Convert a character to a HTML entity
+     *
+     * @param {string} char Character to convert
+     * @return {string} HTML entity character
+     */
+    function _htmlEscapeChar(char) {
+        return _htmlEscapeChars[char];
+    }
+
+    /**
+     * Check if a variable is an object
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True, the value is an object; otherwise, false
+     */
+    function _isObjectLike(value) {
+        return !!value && typeof value === 'object';
     }
 
     /**
