@@ -38,6 +38,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         '"': '&quot;',
         '\'': '&#39;',
         '`': '&#96;',
+
         // '¢': '&cent;',
         // '£': '&pound;',
         // '¥': '&yen;',
@@ -221,7 +222,6 @@ App.core = (function coreModule(window, document, $, undefined) {
             }
 
             for (var i = start; i < length; i++) {
-                // Push is considered sometimes faster than array[i - 1] = ?
                 array.push(args[i]);
             }
         }
@@ -237,13 +237,13 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function arrayClear(array) {
         // If not an array then don't continue
-        if (!isArray(array) || array.length === 0) {
+        if (!isArray(array)) {
             return;
         }
 
-        // Pop all items on the array until empty
-        while (array.length > 0) {
-            array.pop();
+        var length = array.length;
+        if (length > 0) {
+            array.splice(0, length);
         }
     }
 
@@ -255,24 +255,27 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function arrayPeek(array) {
         if (!isArray(array) || array.length === 0) {
-            return undefined;
+            return;
         }
 
-        return array[array.length - 1];
+        var length = array.length;
+        if (length > 0) {
+            return array[length - 1];
+        }
     }
 
     /**
      * Escape RegExp characters with a prefixed backslash
      *
      * @param {string} value String value to escape
-     * @return {mixed} Escaped string; otherwise, null if not a string datatype
+     * @return {string} Escaped string; otherwise, an empty string
      */
     function escapeRegExChars(value) {
-        if (!isString(value)) {
-            return null;
+        if (!isString(value) || value.length === 0) {
+            return STRING_EMPTY;
         }
 
-        // Escape RegExp special characters
+        // Escape RegExp special characters only
         return value.replace(_regExp.REGEXP_ESCAPE, '\\$1');
     }
 
@@ -930,7 +933,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         return value && _regExp.HTML_ESCAPE.test(value) ? value.replace(_regExp.HTML_ESCAPE, _htmlEscapeChar) : value;
     }
 
-        /**
+    /**
      * String format. Similar to the C# implementation
      * Idea from StackOverflow, URL: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format. User: @Filipiz
      *
