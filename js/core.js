@@ -848,6 +848,15 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Empty function declaration
+     *
+     * @return {undefined}
+     */
+    function noop() {
+        // Empty
+    }
+
+    /**
      * Gets the current Unix epoch, which is the number of seconds that have elapsed since 1 January 1970 00:00:00 UTC
      *
      * @return {number} Current Unix epoch
@@ -1360,6 +1369,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         isWeakSet: isWeakSet,
         isWindow: isWindow,
         keys: keys,
+        noop: noop,
         now: now,
         padDigits: padDigits,
         randomNumber: randomNumber,
