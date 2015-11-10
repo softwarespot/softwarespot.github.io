@@ -164,7 +164,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -868,6 +868,32 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Call a function only once
+     * Idea by David Walsh, URL: https://davidwalsh.name/essential-javascript-functions
+     *
+     * @param {function} fn Function to call only once
+     * @param {object|undefined} context Current context
+     * @return {mixed} Return value of the fn argument. If once is called more than once, then the cached result is returned
+     */
+    function once(fn, context) {
+        // Cache the fn result, as the fn will be destroyed when called once
+        var result;
+
+        return function onceApply() {
+            if (fn) {
+                // If the context is undefined then use 'this'
+                context = context || this;
+                result = fn.apply(context, arguments);
+
+                // Destroy the fn reference
+                fn = null;
+            }
+
+            return result;
+        };
+    }
+
+    /**
      * Pad a number with leading zeros
      *
      * @param {number} value Value to pad with leading zeros
@@ -995,6 +1021,24 @@ App.core = (function coreModule(window, document, $, undefined) {
         return isFunction(window.String.prototype.repeat) ?
             window.String.prototype.repeat.call(value, count) :
             (new window.Array(++count)).join(value);
+    }
+
+    /**
+     * Reverse a string value
+     *
+     * @param {string} value String value to reverse
+     * @return {string} Reversed string
+     */
+    function stringReverse(value) {
+        var array = stringToArray(value);
+
+        for (var length = value.length, i = 0, j = length - 1, iteration = length / 2; i < iteration; i++, j--) {
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+
+        return array.join('');
     }
 
     /**
@@ -1370,6 +1414,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         keys: keys,
         noop: noop,
         now: now,
+        once: once,
         padDigits: padDigits,
         randomNumber: randomNumber,
         sprintf: stringFormat,
@@ -1382,6 +1427,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
         stringPad: stringPad,
         stringRepeat: stringRepeat,
+        stringReverse: stringReverse,
         stringStartsWith: stringStartsWith,
         stringStripCR: stringStripCR,
         stringStripEOL: stringStripEOL,
