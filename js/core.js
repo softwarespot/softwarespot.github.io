@@ -962,8 +962,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return value.replace(_regExp.STRING_FORMAT, function stringFormatKeys(fullMatch, index) {
             // Coerce as a number and get the value at the index position in the arguments array
-            index = +index;
-            var value = args[index];
+            var value = args[+index];
 
             return isUndefined(value) ? fullMatch : value;
         });
@@ -1038,7 +1037,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     function stringPad(value, padding, length) {
         value = toString(value);
 
-        if (!isInteger(length) || value === 0) {
+        if (!isInteger(length) || value.length === 0) {
             return value;
         }
 
