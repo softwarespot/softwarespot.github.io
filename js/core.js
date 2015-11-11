@@ -1032,7 +1032,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     function stringReverse(value) {
         var array = stringToArray(value);
 
-        for (var length = value.length, i = 0, j = length - 1, iteration = length / 2; i < iteration; i++, j--) {
+        for (var length = value.length, i = 0, j = length - 1, halfLength = length / 2; i < halfLength; i++, j--) {
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
@@ -1086,7 +1086,9 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
-        padding = new window.Array(window.Math.max(window.Math.abs(length) - value.length + 1, 0)).join(toString(padding));
+        padding = toString(padding);
+        padding = new window.Array(window.Math.max(window.Math.abs(length) - value.length + 1, 0)).join(padding);
+
         return length > 0 ? padding + value : value + padding;
     }
 
