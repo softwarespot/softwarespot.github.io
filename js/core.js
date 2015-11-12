@@ -868,11 +868,48 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Call a function after a timed delay
+     *
+     * @param {function} fn Function to call after a timed delay
+     * @param {function} delay Delay before calling the function. If not a number then defaults to zero
+     * @param {object|undefined} context Current context. If undefined then 'this' is used
+     * @return {undefined}
+     */
+    function debounce(fn, delay, context) {
+        // Cache the timer handle
+        var timer = null;
+
+        delay = isNumber(delay) ? delay : 0;
+
+        return function debounceApply() {
+            if (!isFunction(fn)) {
+                return;
+            }
+
+            if (!isNull(timer)) {
+                window.clearTimeout(timer);
+            }
+
+            // Cache the arguments object-like array
+            var args = arguments;
+
+            // If the context is undefined then use 'this'
+            context = context || this;
+
+            timer = window.setTimeout(function setTimeout() {
+                fn.apply(_this, args);
+            }, delay);
+        };
+    }
+
+    // https://remysharp.com/2010/07/21/throttling-function-calls
+
+    /**
      * Call a function only once
      * Idea by David Walsh, URL: https://davidwalsh.name/essential-javascript-functions
      *
      * @param {function} fn Function to call only once
-     * @param {object|undefined} context Current context
+     * @param {object|undefined} context Current context. If undefined then 'this' is used
      * @return {mixed} Return value of the fn argument. If once is called more than once, then the cached result is returned
      */
     function once(fn, context) {
@@ -880,7 +917,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         var result;
 
         return function onceApply() {
-            if (fn) {
+            if (isFunction(fn)) {
                 // If the context is undefined then use 'this'
                 context = context || this;
                 result = fn.apply(context, arguments);
@@ -1365,6 +1402,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         argumentsToArray: argumentsToArray,
         arrayClear: arrayClear,
         arrayPeek: arrayPeek,
+        debounce: debounce,
         has: has,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
