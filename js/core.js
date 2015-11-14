@@ -22,6 +22,9 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Milliseconds in a second
     var MILLISECONDS_IN_A_SECOND = 1000;
 
+    // Value of indexOf when a value isn't found
+    var NOT_FOUND = 1;
+
     // Store an empty string
     var STRING_EMPTY = '';
 
@@ -29,6 +32,17 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // Store if the module has been initialised
     var _isInitialised = false;
+
+    // Programatically calculate the maximum possible number
+    var _numberPrecision = window.Math.pow(2, 53) - 1;
+
+    // Maximum and minimum integer values that can be stored
+    var _number = {
+        INFINITY: 1 / 0,
+        MAX_SAFE_INTEGER: _numberPrecision, // 9007199254740991 or Number.MAX_SAFE_INTEGER
+        MIN_SAFE_INTEGER: -(_numberPrecision), // -9007199254740991 or Number.MIN_SAFE_INTEGER
+        NAN: 0 / 0,
+    };
 
     // Escaped characters and their HTML entity equivalents
     var _htmlEscapeChars = {
@@ -45,17 +59,6 @@ App.core = (function coreModule(window, document, $, undefined) {
         // '€': '&euro;',
         // '©': '&copy;',
         // '®': '&reg;',
-    };
-
-    // Programatically calculate the maximum possible number
-    var _numberPrecision = window.Math.pow(2, 53) - 1;
-
-    // Maximum and minimum integer values that can be stored
-    var _number = {
-        INFINITY: 1 / 0,
-        MAX_SAFE_INTEGER: _numberPrecision, // 9007199254740991 or Number.MAX_SAFE_INTEGER
-        MIN_SAFE_INTEGER: -(_numberPrecision), // -9007199254740991 or Number.MIN_SAFE_INTEGER
-        NAN: 0 / 0,
     };
 
     // Return strings of toString() found on the Object prototype
@@ -154,6 +157,9 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Strip leading and trailing whitespace. Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
         TRIM: /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
+
+        // Parsing the native toString() return value e.g. [object Object]
+        TYPEOF: /(?:^\[object\s([A-Za-z]+)\]$)/,
     };
 
     // Methods
@@ -248,6 +254,16 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Convert a list of arguments to an array
+     *
+     * @param {arguments} arguments Arguments passed to the arrayOf
+     * @return {array} An array of arguments passed to arrayOf; otherwise, an empty array
+     */
+    var arrayOf = isFunction(window.Array.of) ? window.Array.of : function arrayOf() {
+        return argumentsToArray(arguments, 0);
+    };
+
+    /**
      * Peek at the last item in the array
      *
      * @param {array} array The array to peek at
@@ -261,6 +277,24 @@ App.core = (function coreModule(window, document, $, undefined) {
         var length = array.length;
         if (length > 0) {
             return array[length - 1];
+        }
+    }
+
+    /**
+     * Remove a value from an array
+     *
+     * @param {array} array The array to remove from
+     * @param {mixed} value Value to remove
+     * @return {undefined}
+     */
+    function arrayRemove(array, value) {
+        if (!isArray(array) || array.length === 0) {
+            return;
+        }
+
+        var index = array.indexOf(value);
+        if (index !== NOT_FOUND) {
+            array.splice(index, 1);
         }
     }
 
@@ -459,7 +493,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is defined; otherwise, false
      */
     function isDefined(value) {
-        return value !== undefined;
+        return !isUndefined(value);
     }
 
     /**
@@ -513,7 +547,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a generator; otherwise, false
      */
-    function isGenerator(value) {
+    function isGeneratorFunction(value) {
         return _objectToString.call(value) === _objectStrings.GENERATOR;
     }
 
@@ -584,7 +618,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the value is not null; otherwise, false
      */
     function isNotNull(value) {
-        return value !== null;
+        return !isNull(value);
     }
 
     /**
@@ -890,7 +924,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Call a function after a timed delay
      *
      * @param {function} fn Function to call after a timed delay
-     * @param {function} delay Delay before calling the function. If not a number then defaults to zero
+     * @param {number} delay Delay before calling the function. If not a number then defaults to zero
      * @param {object|undefined} context Current context. If undefined then 'this' is used
      * @return {undefined}
      */
@@ -1008,7 +1042,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return isFunction(window.String.prototype.includes) ?
             window.String.prototype.includes.call(value, searchFor) :
-            value.indexOf(searchFor) !== -1;
+            value.indexOf(searchFor) !== NOT_FOUND;
     }
 
     /**
@@ -1122,7 +1156,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
         var lastIndex = value.indexOf(searchFor, position);
-        return lastIndex !== -1 && lastIndex === position;
+        return lastIndex !== NOT_FOUND && lastIndex === position;
     }
 
     /**
@@ -1357,7 +1391,21 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Override the default behaviour of typeof, by returning 'null' or a null value or 'array' for an array datatype.
+     * [type description]
+     * Idea by JavaScript Weblog, URL: https://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
+     *
+     * @param {mixed} value Variable to check
+     * @return {string|null} String value of the datatype e.g. 'array', 'date', 'null', 'string'; otherwise, undefined on error
+     */
+    function type(value) {
+        var FIRST_MATCH = 1;
+        var type = _objectToString.call(value).match(_regExp.TYPEOF);
+
+        return type ? type[FIRST_MATCH].toLowerCase() : undefined;
+    }
+
+    /**
+     * Override the default behaviour of typeof, by returning 'null' for a null value or 'array' for an array datatype.
      * Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
      *
      * @param {mixed} value Variable to check
@@ -1368,10 +1416,10 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Override the default return value of an object that is either am array or null
         if (type === 'object') {
-            if (isNull(value)) {
-                type = 'null';
-            } else if (isArray(value)) {
+            if (isArray(value)) {
                 type = 'array';
+            } else if (isNull(value)) {
+                type = 'null';
             }
         }
 
@@ -1413,63 +1461,78 @@ App.core = (function coreModule(window, document, $, undefined) {
     });
 
     // Public API
-    return {
+    var _publicAPI = {
         getAppName: getAppName,
         getVersion: getVersion,
         escapeRegExChars: escapeRegExChars,
         functionExists: isFunction,
         argumentsToArray: argumentsToArray,
         arrayClear: arrayClear,
+        arrayOf: arrayOf,
         arrayPeek: arrayPeek,
+        arrayRemove: arrayRemove,
         debounce: debounce,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
-        isArguments: isArguments,
+
+        // isArguments: isArguments,
         isArray: isArray,
         isASCII: isASCII,
         isBase64: isBase64,
-        isBoolean: isBoolean,
+
+        // isBoolean: isBoolean,
         isBrowser: isBrowser,
         isChar: isChar,
-        isDate: isDate,
+
+        // isDate: isDate,
         isDefined: isDefined,
         isEmpty: isEmpty,
-        isError: isError,
+
+        // isError: isError,
         isEven: isEven,
         isFloat: isFloat,
         isFunction: isFunction,
-        isGenerator: isGenerator,
+
+        // isGeneratorFunction: isGeneratorFunction,
         isGUID: isGUID,
         isHex: isHex,
         isInteger: isInteger,
         isjQuery: isjQuery,
         isjQueryNotEmpty: isjQueryNotEmpty,
-        isMap: isMap,
+
+        // isMap: isMap,
         isNotNull: isNotNull,
-        isNull: isNull,
+
+        // isNull: isNull,
         isNullOrUndefined: isNullOrUndefined,
-        isNumber: isNumber,
+
+        // isNumber: isNumber,
+
         isObject: isObject,
         isObjectLiteral: isObjectLiteral,
         isOdd: isOdd,
-        isPromise: isPromise,
-        isRegExp: isRegExp,
+
+        // isPromise: isPromise,
+        // isRegExp: isRegExp,
         isSafeInteger: isSafeInteger,
-        isSet: isSet,
-        isString: isString,
+
+        // isSet: isSet,
+        // isString: isString,
         isStringEmptyOrWhitespace: isStringEmptyOrWhitespace,
         isStringBoolean: isStringBoolean,
         isStringFloat: isStringFloat,
         isStringInteger: isStringInteger,
         isStringNotEmpty: isStringNotEmpty,
         isStringNumber: isStringNumber,
-        isUndefined: isUndefined,
+
+        // isUndefined: isUndefined,
         isUndefinedAssigned: isUndefinedAssigned,
         isValidFileExtension: isValidFileExtension,
-        isWeakMap: isWeakMap,
-        isWeakSet: isWeakSet,
+
+        // isWeakMap: isWeakMap,
+        // isWeakSet: isWeakSet,
         isWindow: isWindow,
         keys: keys,
         noop: noop,
@@ -1503,8 +1566,52 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringUCFirst: stringUCFirst,
         toString: toString,
         trim: trim,
+        type: type,
         typeOf: typeOf,
     };
+
+    /**
+     * isType module
+     * Idea by YourJS, URL: http://yourjs.com/snippets
+     *
+     * @param {object} publicAPI Public API to extend with the following isType functions
+     * @return {undefined}
+     */
+    (function isTypeModule(publicAPI) {
+        var typeNames = [
+            'Arguments',
+            'Array',
+            'Boolean',
+            'Date',
+            'Error',
+            'Function',
+            'GeneratorFunction',
+            'Map',
+            'Null',
+            'Number',
+            'Object',
+            'Promise',
+            'RegExp',
+            'Set',
+            'String',
+            'Undefined',
+            'WeakMap',
+            'WeakSet',
+        ];
+
+        typeNames.forEach(function forEachTypeName(typeName) {
+            var typeNameMatch = typeName.toLowerCase();
+            var isType = 'is' + typeName;
+
+            // Extend if a function doesn't exist on the public API already
+            publicAPI[isType] = publicAPI[isType] || function isTypeNameMatch(value) {
+                return type(value) === typeNameMatch;
+            };
+        });
+
+    })(_publicAPI);
+
+    return _publicAPI;
 })(window, window.document, window.jQuery);
 
 /**
