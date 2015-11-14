@@ -212,6 +212,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     /**
      * Convert the array-like arguments object variable used in a closure to an array
+     * Leaking arguments, URL: https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments
      *
      * @param {arguments} args The array-like arguments object
      * @param {number} start Start position of the array. If undefined or invalid, the default is zero
