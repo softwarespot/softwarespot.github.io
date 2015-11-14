@@ -280,6 +280,25 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Get the outerHTML of a specific jQuery selector object element
+     *
+     * @param {jQuery} $element jQuery selector object
+     * @param {number} index A zero-based integer indicating which element to retrieve
+     * @return {string|null} Stringified contents of the DOM element; otherwise, null
+     */
+    function getjQueryOuterHTML($element, index) {
+        if (!isjQuery($element)) {
+            return null;
+        }
+
+        index = isNumber(index) ? index : 0;
+        var outerHTML = $element.eq(index)
+            .prop('outerHTML');
+
+        return outerHTML ? outerHTML : null;
+    }
+
+    /**
      * Check if an object contains a key
      *
      * @param {object} object Object to check
@@ -1403,6 +1422,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         arrayClear: arrayClear,
         arrayPeek: arrayPeek,
         debounce: debounce,
+        getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
