@@ -77,6 +77,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         REGEXP: '[object RegExp]',
         SET: '[object Set]',
         STRING: '[object String]',
+        SYMBOL: '[object Symbol]',
         WEAKMAP: '[object WeakMap]',
         WEAKSET: '[object WeakSet]',
     };
@@ -1594,6 +1595,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             'RegExp',
             'Set',
             'String',
+            'Symbol',
             'Undefined',
             'WeakMap',
             'WeakSet',
