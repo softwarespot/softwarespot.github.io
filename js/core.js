@@ -1338,8 +1338,8 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     *  Override the default behaviour of typeof, by returning 'null' or a null value or 'array' for an array datatype.
-     *  Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
+     * Override the default behaviour of typeof, by returning 'null' or a null value or 'array' for an array datatype.
+     * Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
      *
      * @param {mixed} value Variable to check
      * @return {string} Datatype of the variable. See, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof
