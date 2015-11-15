@@ -1377,12 +1377,12 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         return date.getUTCFullYear() + '-' +
-            stringPad(date.getUTCMonth() + 1, 2) + '-' +
-            stringPad(date.getUTCDate(), 2) + 'T' +
-            stringPad(date.getUTCHours(), 2) + ':' +
-            stringPad(date.getUTCMinutes(), 2) + ':' +
-            stringPad(date.getUTCSeconds(), 2) + '.' +
-            stringPad(date.getUTCMilliseconds(), 3) + 'Z';
+            stringPad(date.getUTCMonth() + 1, '0', 2) + '-' +
+            stringPad(date.getUTCDate(), '0', 2) + 'T' +
+            stringPad(date.getUTCHours(), '0', 2) + ':' +
+            stringPad(date.getUTCMinutes(), '0', 2) + ':' +
+            stringPad(date.getUTCSeconds(), '0', 2) + '.' +
+            stringPad(date.getUTCMilliseconds(), '0', 3) + 'Z';
     }
 
     /**
