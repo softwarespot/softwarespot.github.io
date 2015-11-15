@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/11/05
+ * Modified: 2015/11/15
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $, undefined) {
@@ -73,6 +73,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         GENERATOR: '[object GeneratorFunction]',
         MAP: '[object Map]',
         NUMBER: '[object Number]',
+        OBJECT: '[object Object]',
         PROMISE: '[object Promise]',
         REGEXP: '[object RegExp]',
         SET: '[object Set]',
@@ -256,6 +257,17 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a function datatype
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True, the value is a function datatype; otherwise, false
+     */
+    function isFunction(value) {
+        var tag = isObject(value) ? _objectToString.call(value) : null;
+        return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
+    }
+
+    /**
      * Convert a list of arguments to an array
      *
      * @param {arguments} arguments Arguments passed to the arrayOf
@@ -329,7 +341,9 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         index = isNumber(index) ? index : 0;
         var outerHTML = $element.eq(index)
-            .prop('outerHTML');
+
+        // outerHTML is not available on very old browsers
+        .prop('outerHTML');
 
         return outerHTML ? outerHTML : null;
     }
@@ -399,17 +413,6 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function isAlpha(value) {
         return isString(value) && _regExp.ALPHA.test(value);
-    }
-
-    /**
-     * Check if a variable is a function datatype
-     *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True, the value is a function datatype; otherwise, false
-     */
-    function isFunction(value) {
-        var tag = isObject(value) ? _objectToString.call(value) : null;
-        return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
     }
 
     /**
@@ -529,9 +532,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a Error object; otherwise, false
      */
-    function isError(value) {
-        return _objectToString.call(value) === _objectStrings.ERROR && isString(value.message);
-    }
+
+    // function isError(value) {
+    //     return _objectToString.call(value) === _objectStrings.ERROR && isString(value.message);
+    // }
 
     /**
      * Check if a variable is a floating point datatype
@@ -549,9 +553,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a generator; otherwise, false
      */
-    function isGeneratorFunction(value) {
-        return _objectToString.call(value) === _objectStrings.GENERATOR;
-    }
+
+    // function isGeneratorFunction(value) {
+    //     return _objectToString.call(value) === _objectStrings.GENERATOR;
+    // }
 
     /**
      * Check if a string is a GUID
@@ -609,9 +614,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a Map object; otherwise, false
      */
-    function isMap(value) {
-        return _objectToString.call(value) === _objectStrings.MAP;
-    }
+
+    // function isMap(value) {
+    //     return _objectToString.call(value) === _objectStrings.MAP;
+    // }
 
     /**
      * Check if a variable is not null
@@ -713,9 +719,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {promise} value Value to check
      * @return {boolean} True, the value is a Promise object; otherwise, false
      */
-    function isPromise(value) {
-        return _objectToString.call(value) === _objectStrings.PROMISE;
-    }
+
+    // function isPromise(value) {
+    //     return _objectToString.call(value) === _objectStrings.PROMISE;
+    // }
 
     /**
      * Check if a variable is a RegExp object
@@ -723,9 +730,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a RegExp object; otherwise, false
      */
-    function isRegExp(value) {
-        return _objectToString.call(value) === _objectStrings.REGEXP;
-    }
+
+    // function isRegExp(value) {
+    //     return _objectToString.call(value) === _objectStrings.REGEXP;
+    // }
 
     /**
      * Check if an integer is a safe integer
@@ -743,9 +751,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a Set object; otherwise, false
      */
-    function isSet(value) {
-        return _objectToString.call(value) === _objectStrings.SET;
-    }
+
+    // function isSet(value) {
+    //     return _objectToString.call(value) === _objectStrings.SET;
+    // }
 
     /**
      * Check if a variable is a string datatype
@@ -878,9 +887,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a WeakMap object; otherwise, false
      */
-    function isWeakMap(value) {
-        return _objectToString.call(value) === _objectStrings.WEAKMAP;
-    }
+
+    // function isWeakMap(value) {
+    //     return _objectToString.call(value) === _objectStrings.WEAKMAP;
+    // }
 
     /**
      * Check if a variable is a WeakSet object
@@ -888,9 +898,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a WeakSet object; otherwise, false
      */
-    function isWeakSet(value) {
-        return _objectToString.call(value) === _objectStrings.WEAKSET;
-    }
+
+    // function isWeakSet(value) {
+    //     return _objectToString.call(value) === _objectStrings.WEAKSET;
+    // }
 
     /**
      * Check if an object is a window
@@ -952,7 +963,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             context = context || this;
 
             timer = window.setTimeout(function setTimeout() {
-                fn.apply(_this, args);
+                fn.apply(context, args);
             }, delay);
         };
     }
@@ -1124,10 +1135,10 @@ App.core = (function coreModule(window, document, $, undefined) {
     function stringReverse(value) {
         var array = stringToArray(value);
 
-        for (var length = value.length, i = 0, j = length - 1, halfLength = length / 2; i < halfLength; i++, j--) {
+        for (var length = value.length, i = 0, j = length - 1, halfLength = length / 2; i < halfLength;) {
             var temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
+            array[i++] = array[j];
+            array[j--] = temp;
         }
 
         return array.join('');
@@ -1354,6 +1365,27 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Create an ISO-8601 date and time formatted string
+     * Idea by inexorabletash, URL: https://github.com/inexorabletash/polyfill/blob/master/es5.js
+     *
+     * @param {date} date Date object to create an ISO-8601 formatted string
+     * @return {string|null} ISO-8601 string format; otherwise, null
+     */
+    function toISOString(date) {
+        if (!isDate(date)) {
+            return null;
+        }
+
+        return date.getUTCFullYear() + '-' +
+            stringPad(date.getUTCMonth() + 1, 2) + '-' +
+            stringPad(date.getUTCDate(), 2) + 'T' +
+            stringPad(date.getUTCHours(), 2) + ':' +
+            stringPad(date.getUTCMinutes(), 2) + ':' +
+            stringPad(date.getUTCSeconds(), 2) + '.' +
+            stringPad(date.getUTCMilliseconds(), 3) + 'Z';
+    }
+
+    /**
      * Coerce a value to a string. Null or undefined are coerced as an empty string
      *
      * @param {mixed} value Value to convert
@@ -1393,17 +1425,17 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * [type description]
+     * An advanced variation of typeOf, that returns the classname instead of the primitive datatype e.g. 'array', 'date', 'null', 'regexp', string'
      * Idea by JavaScript Weblog, URL: https://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
      *
      * @param {mixed} value Variable to check
-     * @return {string|null} String value of the datatype e.g. 'array', 'date', 'null', 'string'; otherwise, undefined on error
+     * @return {string|null} Classname of the value; otherwise, undefined on error
      */
     function type(value) {
         var FIRST_MATCH = 1;
-        var type = _objectToString.call(value).match(_regExp.TYPEOF);
+        var tag = _objectToString.call(value).match(_regExp.TYPEOF);
 
-        return type ? type[FIRST_MATCH].toLowerCase() : undefined;
+        return tag ? tag[FIRST_MATCH].toLowerCase() : undefined;
     }
 
     /**
@@ -1445,7 +1477,9 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is an object; otherwise, false
      */
     function _isObjectLike(value) {
-        return !!value && typeof value === 'object';
+        return _objectToString.call(value) === _objectStrings.OBJECT;
+
+        // return !!value && typeof value === 'object';
     }
 
     /**
@@ -1566,6 +1600,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringTrimLeft: stringTrimLeft,
         stringTrimRight: stringTrimRight,
         stringUCFirst: stringUCFirst,
+        toISOString: toISOString,
         toString: toString,
         trim: trim,
         type: type,
