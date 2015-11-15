@@ -122,7 +122,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         EOL_CHARS: /\r?\n|\r/gm,
 
         // Float values
-        FLOAT: /(?:^(?!-?0+)-?\d+\.\d+$)/,
+        FLOAT: /(?:^-?(?!0+)\d+\.\d+$)/,
 
         // Globally unique identifier
         GUID: /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/,
@@ -134,7 +134,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         HTML_ESCAPE: new window.RegExp('([' + keys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g'),
 
         // Integer values
-        INTEGER: /(?:^(?!-?0+)-?\d+$)/,
+        INTEGER: /(?:^-?(?!0+)\d+$)/,
 
         // Is representing a boolean datatype
         IS_BOOLEAN: /(?:^false|true$)/i,
