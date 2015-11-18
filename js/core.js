@@ -34,13 +34,13 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _isInitialised = false;
 
     // Programatically calculate the maximum possible number
-    var _numberPrecision = window.Math.pow(2, 53) - 1;
+    var _maxSafeInteger = window.Math.pow(2, 53) - 1;
 
     // Maximum and minimum integer values that can be stored
     var _number = {
         INFINITY: 1 / 0,
-        MAX_SAFE_INTEGER: _numberPrecision, // 9007199254740991 or Number.MAX_SAFE_INTEGER
-        MIN_SAFE_INTEGER: -(_numberPrecision), // -9007199254740991 or Number.MIN_SAFE_INTEGER
+        MAX_SAFE_INTEGER: _maxSafeInteger, // 9007199254740991 or Number.MAX_SAFE_INTEGER
+        MIN_SAFE_INTEGER: -(_maxSafeInteger), // -9007199254740991 or Number.MIN_SAFE_INTEGER
         NAN: 0 / 0,
     };
 
@@ -1370,6 +1370,26 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Coerce a value to an integer
+     * Idea by MDN, URL: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+     *
+     * @param {mixed} value Value to convert
+     * @return {number} New integer value
+     */
+    function toInteger(value) {
+        value = window.Number(value);
+        if (window.isNaN(value)) {
+            return 0;
+        }
+
+        if (value === 0 || !window.isFinite(value)) {
+            return value;
+        }
+
+        return (value > 0 ? 1 : -1) * window.Math.floor(window.Math.abs(value));
+    }
+
+    /**
      * Create an ISO-8601 date and time formatted string
      * Idea by inexorabletash, URL: https://github.com/inexorabletash/polyfill/blob/master/es5.js
      *
@@ -1388,6 +1408,19 @@ App.core = (function coreModule(window, document, $, undefined) {
             stringPad(date.getUTCMinutes(), '0', 2) + ':' +
             stringPad(date.getUTCSeconds(), '0', 2) + '.' +
             stringPad(date.getUTCMilliseconds(), '0', 3) + 'Z';
+    }
+
+    /**
+     * Coerce a value to a safe length value
+     * Idea by MDN, URL: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+     *
+     * @param {mixed} value Value to convert
+     * @return {number} New length value
+     */
+    function toLength(value) {
+        value = toInteger(value);
+
+        return window.Math.min(window.Math.max(value, 0), _number.MAX_SAFE_INTEGER);
     }
 
     /**
@@ -1526,6 +1559,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // isBoolean: isBoolean,
         isBrowser: isBrowser,
+        isCallable: isFunction,
         isChar: isChar,
 
         // isDate: isDate,
@@ -1606,7 +1640,9 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringTrimLeft: stringTrimLeft,
         stringTrimRight: stringTrimRight,
         stringUCFirst: stringUCFirst,
+        toInteger: toInteger,
         toISOString: toISOString,
+        toLength: toLength,
         toString: toString,
         trim: trim,
         type: type,
