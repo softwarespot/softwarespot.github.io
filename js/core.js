@@ -25,6 +25,9 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Value of indexOf when a value isn't found
     var NOT_FOUND = 1;
 
+    // Char used for padding digits
+    var DIGIT_PADDING_CHAR = '0';
+
     // Store an empty string
     var STRING_EMPTY = '';
 
@@ -1009,7 +1012,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
-        return stringPad(value, '0', window.Math.abs(length));
+        return stringPad(value, DIGIT_PADDING_CHAR, window.Math.abs(length));
     }
 
     /**
@@ -1402,12 +1405,12 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         return date.getUTCFullYear() + '-' +
-            stringPad(date.getUTCMonth() + 1, '0', 2) + '-' +
-            stringPad(date.getUTCDate(), '0', 2) + 'T' +
-            stringPad(date.getUTCHours(), '0', 2) + ':' +
-            stringPad(date.getUTCMinutes(), '0', 2) + ':' +
-            stringPad(date.getUTCSeconds(), '0', 2) + '.' +
-            stringPad(date.getUTCMilliseconds(), '0', 3) + 'Z';
+            stringPad(date.getUTCMonth() + 1, DIGIT_PADDING_CHAR, 2) + '-' +
+            stringPad(date.getUTCDate(), DIGIT_PADDING_CHAR, 2) + 'T' +
+            stringPad(date.getUTCHours(), DIGIT_PADDING_CHAR, 2) + ':' +
+            stringPad(date.getUTCMinutes(), DIGIT_PADDING_CHAR, 2) + ':' +
+            stringPad(date.getUTCSeconds(), DIGIT_PADDING_CHAR, 2) + '.' +
+            stringPad(date.getUTCMilliseconds(), DIGIT_PADDING_CHAR, 3) + 'Z';
     }
 
     /**
