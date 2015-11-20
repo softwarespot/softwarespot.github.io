@@ -151,6 +151,9 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Line feed append
         LINE_FEED_ADD: /\r(?!\n)/,
 
+        // Octal values
+        OCTAL: /(?:^0o[0-7]+$)/i;
+
         // Regular expression meta characters
         REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g,
 
@@ -767,7 +770,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is a string datatype
      *
-     * @param {mixed} value Value to check
+     * @param {string} value Value to check
      * @returns {boolean} True, the value is a string datatype; otherwise, false
      */
     function isString(value) {
@@ -777,7 +780,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is a string and empty or whitespace
      *
-     * @param {mixed} value Value to check
+     * @param {string} value Value to check
      * @returns {boolean} True, the value is a string and empty; otherwise, false
      */
     function isStringEmptyOrWhitespace(value) {
@@ -787,7 +790,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is a string and representing a boolean (case-insensitive)
      *
-     * @param {mixed} value Value to check
+     * @param {string} value Value to check
      * @returns {boolean} True, the value is representing a boolean; otherwise, false
      */
     function isStringBoolean(value) {
@@ -797,7 +800,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is a string and representing a floating point
      *
-     * @param {mixed} value Value to check
+     * @param {string} value Value to check
      * @returns {boolean} True, the value is representing a floating point; otherwise, false
      */
     function isStringFloat(value) {
@@ -807,7 +810,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is a string and representing an integer
      *
-     * @param {mixed} value Value to check
+     * @param {string} value Value to check
      * @returns {boolean} True, the value is representing an integer; otherwise, false
      */
     function isStringInteger(value) {
@@ -817,7 +820,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is a string and not empty
      *
-     * @param {mixed} value Value to check
+     * @param {string} value Value to check
      * @returns {boolean} True, the value is a string and not empty; otherwise, false
      */
     function isStringNotEmpty(value) {
@@ -827,11 +830,21 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Check if a variable is a string and representing a number
      *
-     * @param {mixed} value Value to check
+     * @param {string} value Value to check
      * @returns {boolean} True, the value is representing a number; otherwise, false
      */
     function isStringNumber(value) {
         return isString(value) && (_regExp.FLOAT.test(value) || _regExp.INTEGER.test(value));
+    }
+
+    /**
+     * Check if a variable is a string and representing an octal
+     *
+     * @param {string} value Value to check
+     * @returns {boolean} True, the value is representing an octal; otherwise, false
+     */
+    function isStringOctal(value) {
+        return isString(value) && _regExp.OCTAL(value);
     }
 
     /**
@@ -1589,6 +1602,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // isNumber: isNumber,
 
+        isStringOctal: isStringOctal,
         isObject: isObject,
         isObjectLiteral: isObjectLiteral,
         isOdd: isOdd,
