@@ -959,7 +959,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @returns {boolean} True, the global variable has been set; otherwise, false
      */
-    function isUndefinedAssigned() {
+    function isUndefinedAssignable() {
         try {
             // Store the original value of undefined
             var original = window.undefined;
@@ -1650,8 +1650,6 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _publicAPI = {
         getAppName: getAppName,
         getVersion: getVersion,
-        escapeRegExChars: escapeRegExChars,
-        functionExists: isFunction,
         argumentsToArray: argumentsToArray,
         arrayClear: arrayClear,
         arrayIncludes: arrayIncludes,
@@ -1659,6 +1657,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         arrayPeek: arrayPeek,
         arrayRemove: arrayRemove,
         debounce: debounce,
+        escapeRegExChars: escapeRegExChars,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
         isAlNum: isAlNum,
@@ -1720,7 +1719,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         isStringNumber: isStringNumber,
 
         // isUndefined: isUndefined,
-        isUndefinedAssigned: isUndefinedAssigned,
+        isUndefinedAssignable: isUndefinedAssignable,
         isValidFileExtension: isValidFileExtension,
 
         // isWeakMap: isWeakMap,
