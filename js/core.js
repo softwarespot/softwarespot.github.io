@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/11/15
+ * Modified: 2015/11/21
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $, undefined) {
@@ -36,15 +36,48 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Store if the module has been initialised
     var _isInitialised = false;
 
-    // Programatically calculate the maximum possible number
-    var _maxSafeInteger = window.Math.pow(2, 53) - 1;
+    // Native functions
+    var _nativeArray = {
+        ARRAY_OF: window.Array.of,
+        IS_ARRAY: window.Array.isArray,
+    };
 
-    // Maximum and minimum integer values that can be stored
-    var _number = {
+    var _nativeDate = {
+        NOW: window.Date.now,
+    };
+
+    var _nativeMath = {
+        ABS: window.Math.abs,
+        FLOOR: window.Math.floor,
+        MAX: window.Math.max,
+        MIN: window.Math.min,
+        POW: window.Math.pow,
+        RANDOM: window.Math.random,
+        ROUND: window.Math.round,
+    };
+
+    // Programatically calculate the maximum possible number
+    var _maxSafeInteger = _nativeMath.POW(2, 53) - 1;
+    var _nativeNumber = {
         INFINITY: 1 / 0,
+        IS_FINITE: window.Number.isFinite,
+        IS_NAN: window.Number.isNaN,
+        IS_SAFE_INTEGER: window.Number.isSafeInteger,
         MAX_SAFE_INTEGER: _maxSafeInteger, // 9007199254740991 or Number.MAX_SAFE_INTEGER
         MIN_SAFE_INTEGER: -(_maxSafeInteger), // -9007199254740991 or Number.MIN_SAFE_INTEGER
         NAN: 0 / 0,
+    };
+
+    var _nativeObject = {
+        KEYS: window.Object.keys,
+    };
+
+    var _nativeString = {
+        ENDS_WITH: window.String.prototype.endsWith,
+        INCLUDES: window.String.prototype.includes,
+        REPEAT: window.String.prototype.repeat,
+        STARTS_WITH: window.String.prototype.startsWith,
+        TRIM: window.String.prototype.trim,
     };
 
     // Escaped characters and their HTML entity equivalents
@@ -152,12 +185,12 @@ App.core = (function coreModule(window, document, $, undefined) {
         LINE_FEED_ADD: /\r(?!\n)/,
 
         // Octal values
-        OCTAL: /(?:^0o[0-7]+$)/i;
+        OCTAL: /(?:^0o[0-7]+$)/i,
 
         // Regular expression meta characters
         REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g,
 
-        // Parse item between {} that are an integer
+        // Parse item between {} that are of an integer value
         STRING_FORMAT: /(?:{(\d+)})/g,
 
         // Parse items between {} e.g. {username}
@@ -218,6 +251,17 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is a function datatype
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True, the value is a function datatype; otherwise, false
+     */
+    function isFunction(value) {
+        var tag = isObject(value) ? _objectToString.call(value) : null;
+        return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
+    }
+
+    /**
      * Convert the array-like arguments object variable used in a closure to an array
      * Leaking arguments, URL: https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments
      *
@@ -263,14 +307,52 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Check if a variable is a function datatype
+     * Search through an array to determine whether a value exists in the array
+     * Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
      *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True, the value is a function datatype; otherwise, false
+     * @param {array} array The array to search in
+     * @param {mixed} searchFor The value to search for
+     * @param {number} position Position to start searching from. A positive value searches from the left and a negative value searches from the right.
+     * The default is zero
+     * @return {boolean} True, the value exists in the array; otherwise, false
      */
-    function isFunction(value) {
-        var tag = isObject(value) ? _objectToString.call(value) : null;
-        return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
+    function arrayIncludes(array, searchFor, position) {
+        if (!isArray(array)) {
+            return false;
+        }
+
+        var length = array.length;
+        if (length === 0) {
+            return false;
+        }
+
+        if (!isInteger(position)) {
+            position = 0;
+        }
+
+        var incrementer = position;
+        if (position < 0) {
+            incrementer = length + position;
+            if (incrementer < 0) {
+                incrementer = 0;
+            }
+        }
+
+        // Cache whether the search value is a NaN
+        var isSearchNaN = isNaN(searchFor);
+
+        // Loop through the array searching for the value or if the value and element are not equal to themselves i.e. NaN
+        for (; incrementer < length; incrementer++) {
+            var element = array[incrementer];
+            if (searchFor === element ||
+
+                // Unique approach to searching for NaN
+                (isSearchNaN && element !== element)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -279,7 +361,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {arguments} arguments Arguments passed to the arrayOf
      * @return {array} An array of arguments passed to arrayOf; otherwise, an empty array
      */
-    var arrayOf = isFunction(window.Array.of) ? window.Array.of : function arrayOf() {
+    var arrayOf = isFunction(_nativeArray.ARRAY_OF) ? _nativeArray.ARRAY_OF : function arrayOf() {
         return argumentsToArray(arguments, 0);
     };
 
@@ -348,10 +430,10 @@ App.core = (function coreModule(window, document, $, undefined) {
         index = isNumber(index) ? index : 0;
         var outerHTML = $element.eq(index)
 
-        // outerHTML is not available on very old browsers
+        // outerHTML is not available on older browsers
         .prop('outerHTML');
 
-        return outerHTML ? outerHTML : null;
+        return isUndefined(outerHTML) ? null : outerHTML;
     }
 
     /**
@@ -376,8 +458,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             return [];
         }
 
-        if (isFunction(window.Object.keys)) {
-            return window.Object.keys(object);
+        if (isFunction(_nativeObject.KEYS)) {
+            return _nativeObject.KEYS(object);
         }
 
         var array = [];
@@ -427,7 +509,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is an array datatype; otherwise, false
      */
-    var isArray = isFunction(window.Array.isArray) ? window.Array.isArray : function isArray(value) {
+    var isArray = isFunction(_nativeArray.IS_ARRAY) ? _nativeArray.IS_ARRAY : function isArray(value) {
         return _objectToString.call(value) === _objectStrings.ARRAY;
     };
 
@@ -544,6 +626,26 @@ App.core = (function coreModule(window, document, $, undefined) {
     // }
 
     /**
+     * Check is an integer is even
+     *
+     * @param {number} value Value to check
+     * @return {boolean} True, the integer is even; otherwise, false
+     */
+    function isEven(value) {
+        return isInteger(value) && value % 2 === 0;
+    }
+
+    /**
+     * Check if a variable is finite
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True, the value is finite; otherwise, false
+     */
+    var isFinite = isFunction(_nativeNumber.IS_FINITE) ? _nativeNumber.IS_FINITE : function isFinite(value) {
+        return isNumber(value) && window.isFinite(value);
+    };
+
+    /**
      * Check if a variable is a floating point datatype
      *
      * @param {mixed} value Value to check
@@ -626,6 +728,16 @@ App.core = (function coreModule(window, document, $, undefined) {
     // }
 
     /**
+     * Check if a variable is a NaN
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True, the value is NaN; otherwise, false
+     */
+    var isNaN = isFunction(_nativeNumber.IS_NAN) ? _nativeNumber.IS_NAN : function isNaN(value) {
+        return isNumber(value) && window.isNaN(value);
+    };
+
+    /**
      * Check if a variable is not null
      *
      * @param {mixed} value Value to check
@@ -700,16 +812,6 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Check is an integer is even
-     *
-     * @param {number} value Value to check
-     * @return {boolean} True, the integer is even; otherwise, false
-     */
-    function isEven(value) {
-        return isInteger(value) && value % 2 === 0;
-    }
-
-    /**
      * Check is an integer is odd
      *
      * @param {number} value Value to check
@@ -747,8 +849,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {number} value Value to check
      * @return {boolean} True, the value is a safe integer; otherwise, false
      */
-    var isSafeInteger = isFunction(window.Number.isSafeInteger) ? window.Number.isSafeInteger : function isSafeInteger(value) {
-        return isInteger(value) && value >= _number.MIN_SAFE_INTEGER && value <= _number.MAX_SAFE_INTEGER;
+    var isSafeInteger = isFunction(_nativeNumber.IS_SAFE_INTEGER) ? _nativeNumber.IS_SAFE_INTEGER : function isSafeInteger(value) {
+        return isInteger(value) && value >= _nativeNumber.MIN_SAFE_INTEGER && value <= _nativeNumber.MAX_SAFE_INTEGER;
     };
 
     /**
@@ -944,7 +1046,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {number} Current Unix epoch
      */
     function now() {
-        var timstamp = isFunction(window.Date.now) ? window.Date.now() : new window.Date().getTime();
+        var timstamp = isFunction(_nativeDate.NOW) ? _nativeDate.NOW() : new window.Date().getTime();
 
         return timstamp / MILLISECONDS_IN_A_SECOND;
     }
@@ -1020,7 +1122,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
-        return stringPad(value, DIGIT_PADDING_CHAR, window.Math.abs(length));
+        return stringPad(value, DIGIT_PADDING_CHAR, _nativeMath.ABS(length));
     }
 
     /**
@@ -1036,7 +1138,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         // URL: http://www.w3schools.com/jsref/jsref_random.asp
-        return window.Math.floor((window.Math.random() * max) + min);
+        return _nativeMath.FLOOR((_nativeMath.RANDOM() * max) + min);
     }
 
     /**
@@ -1069,8 +1171,8 @@ App.core = (function coreModule(window, document, $, undefined) {
     function stringContains(value, searchFor) {
         value = toString(value);
 
-        return isFunction(window.String.prototype.includes) ?
-            window.String.prototype.includes.call(value, searchFor) :
+        return isFunction(_nativeString.INCLUDES) ?
+            _nativeString.INCLUDES.call(value, searchFor) :
             value.indexOf(searchFor) !== NOT_FOUND;
     }
 
@@ -1137,8 +1239,8 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         value = toString(value);
 
-        return isFunction(window.String.prototype.repeat) ?
-            window.String.prototype.repeat.call(value, count) :
+        return isFunction(_nativeString.REPEAT) ?
+            _nativeString.REPEAT.call(value, count) :
             (new window.Array(++count)).join(value);
     }
 
@@ -1165,7 +1267,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {string} value String value to check
      * @param {string} searchFor Value to search for
-     * @param {number} position Position to start searching. Default is start at the end of the string
+     * @param {number} position Position to start searching from. Default is start at the end of the string
      * @return {boolean} True, the string ends with a certain string; otherwise, false
      */
     function stringEndsWith(value, searchFor, position) {
@@ -1179,8 +1281,8 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         position -= searchFor.length;
 
-        if (isFunction(window.String.prototype.endsWith)) {
-            return window.String.prototype.endsWith.call(value, searchFor, position);
+        if (isFunction(_nativeString.ENDS_WITH)) {
+            return _nativeString.ENDS_WITH.call(value, searchFor, position);
         }
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
@@ -1206,7 +1308,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
         padding = toString(padding);
-        padding = new window.Array(window.Math.max(window.Math.abs(length) - value.length + 1, 0)).join(padding);
+        padding = new window.Array(_nativeMath.MAX(_nativeMath.ABS(length) - value.length + 1, 0)).join(padding);
 
         return length > 0 ? padding + value : value + padding;
     }
@@ -1216,7 +1318,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {string} value String value to check
      * @param {string} searchFor Value to search for
-     * @param {number} position Position to start searching. Default is start at the beginning of the string
+     * @param {number} position Position to start searching from. Default is start at the beginning of the string
      * @return {boolean} True, the string starts with a certain string; otherwise, false
      */
     function stringStartsWith(value, searchFor, position) {
@@ -1229,8 +1331,8 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
-        return isFunction(window.String.prototype.startsWith) ?
-            window.String.prototype.startsWith.call(value, searchFor, position) :
+        return isFunction(_nativeString.STARTS_WITH) ?
+            _nativeString.STARTS_WITH.call(value, searchFor, position) :
             value.indexOf(searchFor, position) === position;
     }
 
@@ -1275,8 +1377,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        return isFunction(window.String.prototype.trim) ?
-            window.String.prototype.trim.call(value) :
+        return isFunction(_nativeString.TRIM) ?
+            _nativeString.TRIM.call(value) :
             value.replace(_regExp.TRIM, STRING_EMPTY);
     }
 
@@ -1339,8 +1441,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             return 0;
         }
 
-        var factor = window.Math.pow(10, window.isFinite(precision) ? precision : 0);
-        return window.Math.round(value * factor) / factor;
+        var factor = _nativeMath.POW(10, window.isFinite(precision) ? precision : 0);
+        return _nativeMath.ROUND(value * factor) / factor;
     }
 
     /**
@@ -1389,15 +1491,15 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function toInteger(value) {
         value = window.Number(value);
-        if (window.isNaN(value)) {
+        if (isNaN(value)) {
             return 0;
         }
 
-        if (value === 0 || !window.isFinite(value)) {
+        if (value === 0 || !isFinite(value)) {
             return value;
         }
 
-        return (value > 0 ? 1 : -1) * window.Math.floor(window.Math.abs(value));
+        return (value > 0 ? 1 : -1) * _nativeMath.FLOOR(_nativeMath.ABS(value));
     }
 
     /**
@@ -1431,7 +1533,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     function toLength(value) {
         value = toInteger(value);
 
-        return window.Math.min(window.Math.max(value, 0), _number.MAX_SAFE_INTEGER);
+        return _nativeMath.MIN(_nativeMath.MAX(value, 0), _nativeNumber.MAX_SAFE_INTEGER);
     }
 
     /**
@@ -1446,14 +1548,15 @@ App.core = (function coreModule(window, document, $, undefined) {
             return value;
         }
 
-        return isNullOrUndefined(value) || isObjectLiteral(value) ? STRING_EMPTY : (STRING_EMPTY + value);
+        return isNullOrUndefined(value) || _isObjectLike(value) ? STRING_EMPTY : (STRING_EMPTY + value);
     }
 
     /**
-     * Trim characters from the left-hand and right-hand side of a string. Idea by underscore.string, URL: https://github.com/epeli/underscore.string
+     * Trim characters from the left-hand and right-hand side of a string.
+     * Idea by underscore.string, URL: https://github.com/epeli/underscore.string
      *
      * @param {string} value String value to trim
-     * @param {string} characters Character set to trim. If null or undefined, then the native String.prototype.trim will be used
+     * @param {string} characters Character set to trim. If null or undefined, then the native String.prototype.trim will be used instead
      * @return {string} Trimmed string
      */
     function trim(value, characters) {
@@ -1481,10 +1584,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string|null} Classname of the value; otherwise, undefined on error
      */
     function type(value) {
-        var FIRST_MATCH = 1;
+        var TYPE_MATCH = 1;
         var tag = _objectToString.call(value).match(_regExp.TYPEOF);
 
-        return tag ? tag[FIRST_MATCH].toLowerCase() : undefined;
+        return isNull(tag) ? undefined : tag[TYPE_MATCH].toLowerCase();
     }
 
     /**
@@ -1497,7 +1600,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     function typeOf(value) {
         var type = typeof value;
 
-        // Override the default return value of an object that is either am array or null
+        // Override the default return value of an object that is either an array or null
         if (type === 'object') {
             if (isArray(value)) {
                 type = 'array';
@@ -1527,8 +1630,6 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function _isObjectLike(value) {
         return _objectToString.call(value) === _objectStrings.OBJECT;
-
-        // return !!value && typeof value === 'object';
     }
 
     /**
@@ -1553,6 +1654,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         functionExists: isFunction,
         argumentsToArray: argumentsToArray,
         arrayClear: arrayClear,
+        arrayIncludes: arrayIncludes,
         arrayOf: arrayOf,
         arrayPeek: arrayPeek,
         arrayRemove: arrayRemove,
@@ -1578,6 +1680,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // isError: isError,
         isEven: isEven,
+        isFinite: isFinite,
         isFloat: isFloat,
         isFunction: isFunction,
 
@@ -1589,6 +1692,8 @@ App.core = (function coreModule(window, document, $, undefined) {
         isjQueryNotEmpty: isjQueryNotEmpty,
 
         // isMap: isMap,
+        isNaN: isNaN,
+        isNil: isNullOrUndefined,
         isNotNull: isNotNull,
 
         // isNull: isNull,
@@ -1634,6 +1739,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringEndsWith: stringEndsWith,
         stringEscapeHTML: stringEscapeHTML,
         stringFormat: stringFormat,
+        stringIncludes: stringContains,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
         stringPad: stringPad,
         stringRepeat: stringRepeat,
