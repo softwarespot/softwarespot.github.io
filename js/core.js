@@ -273,11 +273,6 @@ App.core = (function coreModule(window, document, $, undefined) {
         return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
     }
 
-    // @TODO: Complete the following function using URL: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/from
-    var arrayFrom = isFunction(window.Array.from) ? window.Array.from : function arrayFrom(arrayLike) {
-        return arrayLike;
-    };
-
     /**
      * Convert a list of arguments to an array
      *
@@ -1558,7 +1553,6 @@ App.core = (function coreModule(window, document, $, undefined) {
         functionExists: isFunction,
         argumentsToArray: argumentsToArray,
         arrayClear: arrayClear,
-        arrayFrom: arrayFrom,
         arrayOf: arrayOf,
         arrayPeek: arrayPeek,
         arrayRemove: arrayRemove,
