@@ -112,9 +112,9 @@ App.namespace().gists = (function gistsModule(window, document, $, core, undefin
 
         // If the request completed successfully
         jqxhr.done(function done(response, textStatus, $this) {
-            window.console.log(response);
-            window.console.log(textStatus);
-            window.console.log($this);
+            // window.console.log(response);
+            // window.console.log(textStatus);
+            // window.console.log($this);
 
             // Is the HTTP status code equal to OK (200)?
             var isSuccess = response.meta.status === core.api.HTTPStatus.OK;
@@ -123,9 +123,9 @@ App.namespace().gists = (function gistsModule(window, document, $, core, undefin
 
         // If the request failed
         jqxhr.fail(function fail($this, textStatus, errorThrown) {
-            window.console.log($this);
-            window.console.log(textStatus);
-            window.console.log(errorThrown);
+            // window.console.log($this);
+            // window.console.log(textStatus);
+            // window.console.log(errorThrown);
 
             _render(false, null);
         });
