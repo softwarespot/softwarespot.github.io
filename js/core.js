@@ -129,82 +129,81 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _objectToString = _objectPrototype.toString;
 
     // Regular expressions
-    var _regExp = {
-        // Alphanumeric characters
-        ALNUM: /(?:^[0-9A-Za-z]+$)/,
 
-        // Alphabet characters
-        ALPHA: /(?:^[A-Za-z]+$)/,
+    // Alphanumeric characters
+    var _reAlNum = /(?:^[0-9A-Za-z]+$)/;
 
-        // ASCII characters ( ASCII 0 - 127 )
-        ASCII: /(?:^[\x00-\x7F]*$)/,
+    // Alphabet characters
+    var _reAlpha = /(?:^[A-Za-z]+$)/;
 
-        // Extended ASCII characters ( ASCII 0 - 255 )
-        ASCII_EXTENDED: /(?:^[\x00-\xFF]*$)/,
+    // ASCII characters ( ASCII 0 - 127 )
+    var _reASCII = /(?:^[\x00-\x7F]*$)/;
 
-        // Base64
-        BASE_64: /(?:^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$)/,
+    // Extended ASCII characters ( ASCII 0 - 255 )
+    var _reASCIIExtended = /(?:^[\x00-\xFF]*$)/;
 
-        // EOL carriage return
-        CARRIAGE_RETURN: /\r/,
+    // Base64
+    var _reBase64 = /(?:^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$)/;
 
-        // Carriage return append
-        CARRIAGE_RETURN_ADD: /(?!\r)\n/,
+    // Is representing a boolean datatype
+    var _reBoolean = /(?:^false|true$)/i;
 
-        // Empty string
-        EMPTY: /(?:^\s*$)/,
+    // Is representing a boolean datatype of true
+    var _reBooleanTrue = /(?:^(?:[-+]?(?!0+)[0-9]+|true)$)/i;
 
-        // Strip EOL characters
-        EOL_CHARS: /\r?\n|\r/gm,
+    // EOL carriage return
+    var _reCarriageReturn = /\r/;
 
-        // Regular expression flags
-        FLAGS: /([gimuy]*$)/,
+    // Carriage return append
+    var _reCarriageReturnAdd = /(?!\r)\n/;
 
-        // Float values
-        FLOAT: /(?:^-?(?!0+)\d+\.\d+$)/,
+    // Empty string
+    var _reEmpty = /(?:^\s*$)/;
 
-        // Globally unique identifier
-        GUID: /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/,
+    // Strip EOL characters
+    var _reEOLChars = /\r?\n|\r/gm;
 
-        // Hex string ( ASCII A-F, a-f, 0-9 )
-        HEX: /(?:^0[xX][\dA-Fa-f]+$)/,
+    // Float values
+    var _reFloat = /(?:^-?(?!0+)\d+\.\d+$)/;
 
-        // Escape HTML characters
-        HTML_ESCAPE: new window.RegExp('([' + keys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g'),
+    // Globally unique identifier
+    var _reGUID = /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/;
 
-        // Integer values
-        INTEGER: /(?:^-?(?!0+)\d+$)/,
+    // Hex string ( ASCII A-F, a-f, 0-9 )
+    var _reHex = /(?:^0[xX][\dA-Fa-f]+$)/;
 
-        // Is representing a boolean datatype
-        IS_BOOLEAN: /(?:^false|true$)/i,
+    // Escape HTML characters
+    var _reHTMLEscape = new window.RegExp('([' + keys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g');
 
-        // Is representing a boolean datatype of true
-        IS_BOOLEAN_TRUE: /(?:^(?:[-+]?(?!0+)[0-9]+|true)$)/i,
+    // Integer values
+    var _reInteger = /(?:^-?(?!0+)\d+$)/;
 
-        // EOL line feed
-        LINE_FEED: /\n/,
+    // EOL line feed
+    var _reLineFeed = /\n/;
 
-        // Line feed append
-        LINE_FEED_ADD: /\r(?!\n)/,
+    // Line feed append
+    var _reLineFeedAdd = /\r(?!\n)/;
 
-        // Octal values
-        OCTAL: /(?:^0o[0-7]+$)/i,
+    // Octal values
+    var _reOctal = /(?:^0o[0-7]+$)/i;
 
-        // Regular expression meta characters
-        REGEXP_ESCAPE: /([\].|*?+(){}^$\\:=[])/g,
+    // Regular expression meta characters
+    var _reRegExpEscape = /([\].|*?+(){}^$\\:=[])/g;
 
-        // Parse item between {} that are of an integer value
-        STRING_FORMAT: /(?:{(\d+)})/g,
+    // Regular expression flags
+    var _reRegExpFlags = /([gimuy]*$)/;
 
-        // Parse items between {} e.g. {username}
-        SUPPLANT: /(?:{([^{}]*)})/g,
+    // Parse item between {} that are of an integer value
+    var _reStringFormat = /(?:{(\d+)})/g;
 
-        // Strip leading and trailing whitespace. Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
-        TRIM: /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
+    // Parse items between {} e.g. {username}
+    var _reSupplant = /(?:{([^{}]*)})/g;
 
-        // Parsing the native toString() return value e.g. [object Object]
-        TYPEOF: /(?:^\[object\s([A-Za-z]+)\]$)/,
-    };
+    // Strip leading and trailing whitespace. Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+    var _reTrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+
+    // Parsing the native toString() return value e.g. [object Object]
+    var _reTypeOf = /(?:^\[object\s([A-Za-z]+)\]$)/;
 
     // Methods
 
@@ -214,7 +213,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -468,7 +467,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the string contains alphanumeric characters only; otherwise, false
      */
     function isAlNum(value) {
-        return isString(value) && _regExp.ALNUM.test(value);
+        return isString(value) && _reAlNum.test(value);
     }
 
     /**
@@ -488,7 +487,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the string contains alphabetic characters only; otherwise, false
      */
     function isAlpha(value) {
-        return isString(value) && _regExp.ALPHA.test(value);
+        return isString(value) && _reAlpha.test(value);
     }
 
     /**
@@ -513,7 +512,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             extended = false;
         }
 
-        return isString(value) && (extended ? _regExp.ASCII_EXTENDED : _regExp.ASCII).test(value);
+        return isString(value) && (extended ? _reASCIIExtended : _reASCII).test(value);
     }
 
     /**
@@ -524,7 +523,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function isBase64(value) {
         // URL: http://stackoverflow.com/a/475217
-        return isString(value) && _regExp.BASE_64.test(value);
+        return isString(value) && _reBase64.test(value);
     }
 
     /**
@@ -640,7 +639,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a floating point; otherwise, false
      */
     function isFloat(value) {
-        return isNumber(value) && _regExp.FLOAT.test(toString(value));
+        return isNumber(value) && _reFloat.test(toString(value));
     }
 
     /**
@@ -661,7 +660,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the string is a GUID; otherwise, false
      */
     function isGUID(value) {
-        return isString(value) && _regExp.GUID.test(value);
+        return isString(value) && _reGUID.test(value);
     }
 
     /**
@@ -671,7 +670,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the string is hexadecimal; otherwise, false
      */
     function isHex(value) {
-        return isString(value) && _regExp.HEX.test(value);
+        return isString(value) && _reHex.test(value);
     }
 
     /**
@@ -681,7 +680,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is an integer; otherwise, false
      */
     function isInteger(value) {
-        return isNumber(value) && _regExp.INTEGER.test(toString(value));
+        return isNumber(value) && _reInteger.test(toString(value));
     }
 
     /**
@@ -869,7 +868,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a string and empty; otherwise, false
      */
     function isStringEmptyOrWhitespace(value) {
-        return isString(value) && (value.length === 0 || _regExp.EMPTY.test(value));
+        return isString(value) && (value.length === 0 || _reEmpty.test(value));
     }
 
     /**
@@ -879,7 +878,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is representing a boolean; otherwise, false
      */
     function isStringBoolean(value) {
-        return isString(value) && _regExp.BOOLEAN.test(value);
+        return isString(value) && _reBoolean.test(value);
     }
 
     /**
@@ -889,7 +888,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is representing a floating point; otherwise, false
      */
     function isStringFloat(value) {
-        return isString(value) && _regExp.FLOAT.test(value);
+        return isString(value) && _reFloat.test(value);
     }
 
     /**
@@ -899,7 +898,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is representing an integer; otherwise, false
      */
     function isStringInteger(value) {
-        return isString(value) && _regExp.INTEGER.test(value);
+        return isString(value) && _reInteger.test(value);
     }
 
     /**
@@ -919,7 +918,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is representing a number; otherwise, false
      */
     function isStringNumber(value) {
-        return isString(value) && (_regExp.FLOAT.test(value) || _regExp.INTEGER.test(value));
+        return isString(value) && (_reFloat.test(value) || _reInteger.test(value));
     }
 
     /**
@@ -929,7 +928,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is representing an octal; otherwise, false
      */
     function isStringOctal(value) {
-        return isString(value) && _regExp.OCTAL(value);
+        return isString(value) && _reOctal(value);
     }
 
     /**
@@ -1142,7 +1141,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Escape RegExp special characters only
         // $& => Last match, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastMatch
-        return value.replace(_regExp.REGEXP_ESCAPE, '\\$&');
+        return value.replace(_reRegExpEscape, '\\$&');
     }
 
     /**
@@ -1157,7 +1156,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        return toString(regExp).match(_regExp.FLAGS)[0];
+        return toString(regExp).match(_reRegExpFlags)[0];
     }
 
     /**
@@ -1167,7 +1166,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} New string with carriage returns added; otherwise, an empty string
      */
     function stringAddCR(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN_ADD, '\r\n') : STRING_EMPTY;
+        return isStringNotEmpty(value) ? value.replace(_reCarriageReturnAdd, '\r\n') : STRING_EMPTY;
     }
 
     /**
@@ -1177,7 +1176,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} New string with line-feeds added; otherwise, an empty string
      */
     function stringAddLF(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED_ADD, '\r\n') : STRING_EMPTY;
+        return isStringNotEmpty(value) ? value.replace(_reLineFeedAdd, '\r\n') : STRING_EMPTY;
     }
 
     /**
@@ -1205,7 +1204,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     function stringEscapeHTML(value) {
         value = toString(value);
 
-        return value && _regExp.HTML_ESCAPE.test(value) ? value.replace(_regExp.HTML_ESCAPE, _htmlEscapeChar) : value;
+        return value && _reHTMLEscape.test(value) ? value.replace(_reHTMLEscape, _htmlEscapeChar) : value;
     }
 
     /**
@@ -1226,7 +1225,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Convert the arguments array-like object to an array
         var args = argumentsToArray(arguments, 1);
 
-        return value.replace(_regExp.STRING_FORMAT, function stringFormatKeys(fullMatch, index) {
+        return value.replace(_reStringFormat, function stringFormatKeys(fullMatch, index) {
             // Coerce as a number and get the value at the index position in the arguments array
             var value = args[+index];
 
@@ -1362,7 +1361,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} String stripped of EOL characters; otherwise, an empty string
      */
     function stringStripEOL(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.EOL_CHARS, STRING_EMPTY) : STRING_EMPTY;
+        return isStringNotEmpty(value) ? value.replace(_reEOLChars, STRING_EMPTY) : STRING_EMPTY;
     }
 
     /**
@@ -1372,7 +1371,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} New string of stripped carriage returns; otherwise, an empty string
      */
     function stringStripCR(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.CARRIAGE_RETURN, STRING_EMPTY) : STRING_EMPTY;
+        return isStringNotEmpty(value) ? value.replace(_reCarriageReturn, STRING_EMPTY) : STRING_EMPTY;
     }
 
     /**
@@ -1382,7 +1381,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} New string of stripped line-feeds; otherwise, an empty string
      */
     function stringStripLF(value) {
-        return isStringNotEmpty(value) ? value.replace(_regExp.LINE_FEED, STRING_EMPTY) : STRING_EMPTY;
+        return isStringNotEmpty(value) ? value.replace(_reLineFeed, STRING_EMPTY) : STRING_EMPTY;
     }
 
     /**
@@ -1398,7 +1397,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return isFunction(_nativeString.TRIM) ?
             _nativeString.TRIM.call(value) :
-            value.replace(_regExp.TRIM, STRING_EMPTY);
+            value.replace(_reTrim, STRING_EMPTY);
     }
 
     /**
@@ -1410,7 +1409,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Parsed string; otherwise, empty string
      */
     function stringSupplant(value, object) {
-        return toString(value).replace(_regExp.SUPPLANT, function stringSupplantKeys(fullMatch, key) {
+        return toString(value).replace(_reSupplant, function stringSupplantKeys(fullMatch, key) {
             return has(object, key) ? object[key] : fullMatch;
         });
     }
@@ -1432,7 +1431,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True; otherwise, false
      */
     function stringToBoolean(value) {
-        return _regExp.IS_BOOLEAN_TRUE.test(value);
+        return _reBooleanTrue.test(value);
     }
 
     /**
@@ -1604,7 +1603,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function type(value) {
         var TYPE_MATCH = 1;
-        var tag = _objectToString.call(value).match(_regExp.TYPEOF);
+        var tag = _objectToString.call(value).match(_reTypeOf);
 
         return isNull(tag) ? undefined : tag[TYPE_MATCH].toLowerCase();
     }
