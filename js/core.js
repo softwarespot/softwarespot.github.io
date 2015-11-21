@@ -157,6 +157,9 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Strip EOL characters
         EOL_CHARS: /\r?\n|\r/gm,
 
+        // Regular expression flags
+        FLAGS: /([gimuy]*$)/,
+
         // Float values
         FLOAT: /(?:^-?(?!0+)\d+\.\d+$)/,
 
@@ -398,21 +401,6 @@ App.core = (function coreModule(window, document, $, undefined) {
         if (index !== NOT_FOUND) {
             array.splice(index, 1);
         }
-    }
-
-    /**
-     * Escape RegExp characters with a prefixed backslash
-     *
-     * @param {string} value String value to escape
-     * @return {string} Escaped string; otherwise, an empty string
-     */
-    function escapeRegExChars(value) {
-        if (!isString(value) || value.length === 0) {
-            return STRING_EMPTY;
-        }
-
-        // Escape RegExp special characters only
-        return value.replace(_regExp.REGEXP_ESCAPE, '\\$1');
     }
 
     /**
@@ -991,7 +979,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return false;
         }
 
-        value = escapeRegExChars(value);
+        value = regExpEscape(value);
 
         // Replace semi-colon(s) (;) with pipe(s) (|)
         extensions = toString(extensions).replace(';', '|');
@@ -1139,6 +1127,37 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // URL: http://www.w3schools.com/jsref/jsref_random.asp
         return _nativeMath.FLOOR((_nativeMath.RANDOM() * max) + min);
+    }
+
+    /**
+     * Escape RegExp characters with a prefixed backslash
+     *
+     * @param {string} value String value to escape
+     * @return {string} Escaped string; otherwise, an empty string
+     */
+    function regExpEscape(value) {
+        if (!isString(value) || value.length === 0) {
+            return STRING_EMPTY;
+        }
+
+        // Escape RegExp special characters only
+        // $& => Last match, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastMatch
+        return value.replace(_regExp.REGEXP_ESCAPE, '\\$&');
+    }
+
+    /**
+     * Get the flags of a regular expression
+     * Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/flags
+     *
+     * @param {RegExp} regExp Regular expression object
+     * @return {string}
+     */
+    function regExpFlags(regExp) {
+        if (!isRegExp(regExp)) {
+            return STRING_EMPTY;
+        }
+
+        return toString(regExp).match(_regExp.FLAGS)[0];
     }
 
     /**
@@ -1571,7 +1590,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         // Coerce as a string and escape the meta regular expression characters
-        characters = '[' + escapeRegExChars(toString(characters)) + ']';
+        characters = '[' + regExpEscape(toString(characters)) + ']';
 
         return value.replace(new window.RegExp('^' + characters + '+|' + characters + '+$', 'g'), STRING_EMPTY);
     }
@@ -1657,7 +1676,6 @@ App.core = (function coreModule(window, document, $, undefined) {
         arrayPeek: arrayPeek,
         arrayRemove: arrayRemove,
         debounce: debounce,
-        escapeRegExChars: escapeRegExChars,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
         isAlNum: isAlNum,
@@ -1729,6 +1747,8 @@ App.core = (function coreModule(window, document, $, undefined) {
         noop: noop,
         now: now,
         once: once,
+        regExpEscape: regExpEscape,
+        regExpFlags: regExpFlags,
         padDigits: padDigits,
         randomNumber: randomNumber,
         sprintf: stringFormat,
