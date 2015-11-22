@@ -80,6 +80,10 @@ App.core = (function coreModule(window, document, $, undefined) {
         TRIM: window.String.prototype.trim,
     };
 
+    var _nativeStringTrim = window.String.prototype.trim;
+    var _nativeStringTrimLeft = window.String.prototype.trimLeft;
+    var _nativeStringTrimRight = window.String.prototype.trimRight;
+
     // Escaped characters and their HTML entity equivalents
     var _htmlEscapeChars = {
         '&': '&amp;',
@@ -193,14 +197,21 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Regular expression flags
     var _reRegExpFlags = /([gimuy]*$)/;
 
-    // Parse item between {} that are of an integer value
+    // Parse items between {} that are of an integer value
     var _reStringFormat = /(?:{(\d+)})/g;
 
     // Parse items between {} e.g. {username}
     var _reSupplant = /(?:{([^{}]*)})/g;
 
-    // Strip leading and trailing whitespace. Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
-    var _reTrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+    // Strip leading whitespace
+    var _reTrimLeft = /^[\s\uFEFF\xA0]+/;
+
+    // Strip trailing whitespace
+    var _reTrimRight = /[\s\uFEFF\xA0]+$/;
+
+    // Strip leading and trailing whitespace
+    // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+    var _reTrim = new window.RegExp(_reTrimLeft.source + '|' + _reTrimRight.source, 'g');
 
     // Parsing the native toString() return value e.g. [object Object]
     var _reTypeOf = /(?:^\[object\s([A-Za-z]+)\]$)/;
@@ -213,7 +224,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -825,10 +836,9 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is a RegExp object; otherwise, false
      */
-
-    // function isRegExp(value) {
-    //     return _objectToString.call(value) === _objectStrings.REGEXP;
-    // }
+    function isRegExp(value) {
+        return _objectToString.call(value) === _objectStrings.REGEXP;
+    }
 
     /**
      * Check if an integer is a safe integer
@@ -1163,7 +1173,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Prefix all line-feed characters ( ASCII 10 ) with a carriage return character ( ASCII 13 )
      *
      * @param {string} value String value to replace
-     * @return {string} New string with carriage returns added; otherwise, an empty string
+     * @return {string} New string with carriage returns added; otherwise, an empty string on error
      */
     function stringAddCR(value) {
         return isStringNotEmpty(value) ? value.replace(_reCarriageReturnAdd, '\r\n') : STRING_EMPTY;
@@ -1173,7 +1183,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Postfix all carriage return characters ( ASCII 13 ) with a line-feed character ( ASCII 10 )
      *
      * @param {string} value String value to replace
-     * @return {string} New string with line-feeds added; otherwise, an empty string
+     * @return {string} New string with line-feeds added; otherwise, an empty string on error
      */
     function stringAddLF(value) {
         return isStringNotEmpty(value) ? value.replace(_reLineFeedAdd, '\r\n') : STRING_EMPTY;
@@ -1187,7 +1197,9 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the string is found; otherwise, false
      */
     function stringContains(value, searchFor) {
-        value = toString(value);
+        if (!isString(value)) {
+            return false;
+        }
 
         return isFunction(_nativeString.INCLUDES) ?
             _nativeString.INCLUDES.call(value, searchFor) :
@@ -1199,12 +1211,14 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Idea by underscore.string, URL: https://github.com/epeli/underscore.string
      *
      * @param {string} value String value to escape
-     * @return {string} Escaped string; otherwise, empty string
+     * @return {string} Escaped string; otherwise, an empty string on error
      */
     function stringEscapeHTML(value) {
-        value = toString(value);
+        if (!isString(value)) {
+            return STRING_EMPTY;
+        }
 
-        return value && _reHTMLEscape.test(value) ? value.replace(_reHTMLEscape, _htmlEscapeChar) : value;
+        return value.length && _reHTMLEscape.test(value) ? value.replace(_reHTMLEscape, _htmlEscapeChar) : value;
     }
 
     /**
@@ -1213,11 +1227,13 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {string} value String value to format
      * @param {arguments} arguments Arguments to replace the string identifiers with e.g. stringFormat('Some string like {0}', 'this')
-     * @return {string} Formatted string, with {n} identifiers replaced with the passed arguments
+     * @return {string} Formatted string, with {n} identifiers replaced with the passed arguments; otherwise, an empty string on error
      */
     function stringFormat(value) {
-        // Coerce as a string and check if a valid length
-        value = toString(value);
+        if (!isString(value)) {
+            return STRING_EMPTY;
+        }
+
         if (value.length === 0) {
             return value;
         }
@@ -1234,13 +1250,13 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Convert a null/undefined string to an empty string
+     * Convert a null/undefined variable to an empty string
      *
      * @param {string} value String value to convert
-     * @return {string} An empty string; otherwise original string
+     * @return {string} An empty string; otherwise original value
      */
     function stringNullUndefinedToEmpty(value) {
-        return toString(value);
+        return isNullOrUndefined(value) ? STRING_EMPTY : value;
     }
 
     /**
@@ -1248,14 +1264,12 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {string} value String value to repeat
      * @param {number} count Number of times to repeat the string
-     * @return {string} Repeated string; otherwise, empty string on error
+     * @return {string} Repeated string; otherwise, an empty string on error
      */
     function stringRepeat(value, count) {
-        if (!isInteger(count) || count <= 0) {
+        if (!isString(value) || !isInteger(count) || count <= 0) {
             return STRING_EMPTY;
         }
-
-        value = toString(value);
 
         return isFunction(_nativeString.REPEAT) ?
             _nativeString.REPEAT.call(value, count) :
@@ -1266,7 +1280,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Reverse a string value
      *
      * @param {string} value String value to reverse
-     * @return {string} Reversed string
+     * @return {string} Reversed string; otherwise, an empty string on error
      */
     function stringReverse(value) {
         var array = stringToArray(value);
@@ -1315,10 +1329,12 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {string} value String value to pad
      * @param {string} padding Padding value to pre-append or append to the string value
      * @param {number} length Maximum length of the string value
-     * @return {string} Padded string; otherwise, original value coerced as string
+     * @return {string} Padded string; otherwise, an empty string on error
      */
     function stringPad(value, padding, length) {
-        value = toString(value);
+        if (!isString(value)) {
+            return STRING_EMPTY;
+        }
 
         if (!isInteger(length) || value.length === 0) {
             return value;
@@ -1328,7 +1344,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         padding = toString(padding);
         padding = new window.Array(_nativeMath.MAX(_nativeMath.ABS(length) - value.length + 1, 0)).join(padding);
 
-        return length > 0 ? padding + value : value + padding;
+        return length >= 0 ? padding + value : value + padding;
     }
 
     /**
@@ -1344,7 +1360,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return false;
         }
 
-        if (!isNumber(position)) {
+        if (!isInteger(position)) {
             position = 0;
         }
 
@@ -1358,7 +1374,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Strip EOL characters ( ASCII 10 and ASCII 13 ) in a string
      *
      * @param {string} value String value to strip the EOL characters
-     * @return {string} String stripped of EOL characters; otherwise, an empty string
+     * @return {string} String stripped of EOL characters; otherwise, an empty string on error
      */
     function stringStripEOL(value) {
         return isStringNotEmpty(value) ? value.replace(_reEOLChars, STRING_EMPTY) : STRING_EMPTY;
@@ -1368,7 +1384,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Strip carriage return characters ( ASCII 10 ) in a string
      *
      * @param {string} value String value to strip
-     * @return {string} New string of stripped carriage returns; otherwise, an empty string
+     * @return {string} New string of stripped carriage returns; otherwise, an empty string on error
      */
     function stringStripCR(value) {
         return isStringNotEmpty(value) ? value.replace(_reCarriageReturn, STRING_EMPTY) : STRING_EMPTY;
@@ -1378,7 +1394,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Strip line-feed characters ( ASCII 13 ) in a string
      *
      * @param {string} value String value to strip
-     * @return {string} New string of stripped line-feeds; otherwise, an empty string
+     * @return {string} New string of stripped line-feeds; otherwise, an empty string on error
      */
     function stringStripLF(value) {
         return isStringNotEmpty(value) ? value.replace(_reLineFeed, STRING_EMPTY) : STRING_EMPTY;
@@ -1388,16 +1404,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Strip leading and trailing whitespace
      *
      * @param {string} value String value to strip
-     * @return {string} New string with stripped leading and trailing whitespace; otherwise, an empty string
+     * @return {string} New string with stripped leading and trailing whitespace; otherwise, an empty string on error
      */
     function stringStripWS(value) {
-        if (!isString(value)) {
-            return STRING_EMPTY;
-        }
-
-        return isFunction(_nativeString.TRIM) ?
-            _nativeString.TRIM.call(value) :
-            value.replace(_reTrim, STRING_EMPTY);
+        return isStringNotEmpty(value) ? _trim(value) : STRING_EMPTY;
     }
 
     /**
@@ -1406,10 +1416,14 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {string} vslue String value to supplement
      * @param {object} object Object literal with one level only. The keys should match the segments in the string value
-     * @return {string} Parsed string; otherwise, empty string
+     * @return {string} Parsed string; otherwise, an empty string on error
      */
     function stringSupplant(value, object) {
-        return toString(value).replace(_reSupplant, function stringSupplantKeys(fullMatch, key) {
+        if (!isString(value) || value.length === 0) {
+            return STRING_EMPTY;
+        }
+
+        return value.replace(_reSupplant, function stringSupplantKeys(fullMatch, key) {
             return has(object, key) ? object[key] : fullMatch;
         });
     }
@@ -1421,7 +1435,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {array} An array; otherwise, an empty array
      */
     function stringToArray(value) {
-        return isString(value) && value.length > 0 ? value.split(STRING_EMPTY) : []; // Not as elegant as lodash's version
+        return isStringNotEmpty(value) ? value.split(STRING_EMPTY) : []; // Not as elegant as lodash's version
     }
 
     /**
@@ -1455,7 +1469,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {number} Parsed number; otherwise, zero by default
      */
     function stringToNumber(value, precision) {
-        if (isNullOrUndefined(value)) {
+        if (!isString(value)) {
             return 0;
         }
 
@@ -1468,7 +1482,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {string} value String value to trim
      * @param {number} count Number of characters to trim from the left
-     * @return {string} Trimmed string; otherwise, an empty string
+     * @return {string} Trimmed string; otherwise, an empty string on error
      */
     function stringTrimLeft(value, count) {
         return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(count) : STRING_EMPTY;
@@ -1479,7 +1493,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {string} value String value to trim
      * @param {number} count Number of characters to trim from the right
-     * @return {string} Trimmed string; otherwise, an empty string
+     * @return {string} Trimmed string; otherwise, an empty string on error
      */
     function stringTrimRight(value, count) {
         return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(0, value.length - count) : STRING_EMPTY;
@@ -1574,24 +1588,39 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Idea by underscore.string, URL: https://github.com/epeli/underscore.string
      *
      * @param {string} value String value to trim
-     * @param {string} characters Character set to trim. If null or undefined, then the native String.prototype.trim will be used instead
-     * @return {string} Trimmed string
+     * @param {string} characters Character set to trim. If not a string e.g. null or undefined, then the native String.prototype.trim will be used instead
+     * @return {string} Trimmed string; otherwise, an empty string on error
      */
     function trim(value, characters) {
-        value = toString(value);
-        if (value.length === 0) {
-            return value;
-        }
+        return _trimmer(value, characters, _trim, function trimCharacters(characters) {
+            return '^' + characters + '+|' + characters + '+$';
+        });
+    }
 
-        // If null or undefined, then use the native trim
-        if (isNullOrUndefined(characters)) {
-            return stringStripWS(value);
-        }
+    /**
+     * Trim characters from the left-hand side of a string
+     *
+     * @param {string} value String value to trim
+     * @param {string} characters Character set to trim. If not a string e.g. null or undefined, then the native String.prototype.trimLeft will be used instead
+     * @return {string} Trimmed string; otherwise, an empty string on error
+     */
+    function trimLeft(value, characters) {
+        return _trimmer(value, characters, _trimLeft, function trimLeftCharacters(characters) {
+            return '^' + characters + '+';
+        });
+    }
 
-        // Coerce as a string and escape the meta regular expression characters
-        characters = '[' + regExpEscape(toString(characters)) + ']';
-
-        return value.replace(new window.RegExp('^' + characters + '+|' + characters + '+$', 'g'), STRING_EMPTY);
+    /**
+     * Trim characters from the right-hand side of a string
+     *
+     * @param {string} value String value to trim
+     * @param {string} characters Character set to trim. If not a string e.g. null or undefined, then the native String.prototype.trimRight will be used instead
+     * @return {string} Trimmed string; otherwise, an empty string on error
+     */
+    function trimRight(value, characters) {
+        return _trimmer(value, characters, _trimRight, function trimRightCharacters(characters) {
+            return characters + '+$';
+        });
     }
 
     /**
@@ -1648,6 +1677,72 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function _isObjectLike(value) {
         return _objectToString.call(value) === _objectStrings.OBJECT;
+    }
+
+    /**
+     * Trim call around the native function or wrapper
+     *
+     * @param {string} value String value to trim
+     * @return {string} Trimmed string
+     */
+    function _trim(value) {
+        return isFunction(_nativeStringTrim) ?
+            _nativeStringTrim.call(value) :
+            value.replace(_reTrim, STRING_EMPTY);
+    }
+
+    /**
+     * TrimLeft call around the native function or wrapper
+     *
+     * @param {string} value String value to trim
+     * @return {string} Trimmed string
+     */
+    function _trimLeft(value) {
+        return isFunction(_nativeStringTrimLeft) ?
+            _nativeStringTrimLeft.call(value) :
+            value.replace(_reTrimLeft, STRING_EMPTY);
+    }
+
+    /**
+     * TrimRight call around the native function or wrapper
+     *
+     * @param {string} value String value to trim
+     * @return {string} Trimmed string
+     */
+    function _trimRight(value) {
+        return isFunction(_nativeStringTrimRight) ?
+            _nativeStringTrimRight.call(value) :
+            value.replace(_reTrimRight, STRING_EMPTY);
+    }
+
+    /**
+     * Trim wrapper for trim, trimLeft and trimRight
+     *
+     * @param {string} value String value to trim
+     * @param {string} characters Character set to trim. If not a string e.g. null or undefined, then the native String.prototype.trim will be used instead
+     * @param {function} fnNative Native function to call if the character set is not a string
+     * @param {function} fnCharacters Function to call once the character set has been escaped
+     * @return {string} Trimmed string; otherwise, an empty string on error
+     */
+    function _trimmer(value, characters, fnNative, fnCharacters) {
+        if (!isString(value)) {
+            return STRING_EMPTY;
+        }
+
+        if (value.length === 0) {
+            return value;
+        }
+
+        // If not a string, then use the native function
+        if (!isString(characters)) {
+            return fnNative(value);
+        }
+
+        // Escape the meta regular expression characters
+        characters = '[' + regExpEscape(characters) + ']';
+        characters = fnCharacters(characters);
+
+        return value.replace(new window.RegExp(characters, 'g'), STRING_EMPTY);
     }
 
     /**
@@ -1780,6 +1875,8 @@ App.core = (function coreModule(window, document, $, undefined) {
         toLength: toLength,
         toString: toString,
         trim: trim,
+        trimLeft: trimLeft,
+        trimRight: trimRight,
         type: type,
         typeOf: typeOf,
     };
