@@ -918,7 +918,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a string and not empty; otherwise, false
      */
     function isStringNotEmpty(value) {
-        return !isStringEmptyOrWhitespace(value);
+        return isString(value) && value.length > 0;
     }
 
     /**
