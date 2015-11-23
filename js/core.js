@@ -938,7 +938,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is representing an octal; otherwise, false
      */
     function isStringOctal(value) {
-        return isString(value) && _reOctal(value);
+        return isString(value) && _reOctal.test(value);
     }
 
     /**
