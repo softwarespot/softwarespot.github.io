@@ -23,7 +23,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var MILLISECONDS_IN_A_SECOND = 1000;
 
     // Value of indexOf when a value isn't found
-    var NOT_FOUND = 1;
+    var NOT_FOUND = -1;
 
     // Char used for padding digits
     var DIGIT_PADDING_CHAR = '0';
