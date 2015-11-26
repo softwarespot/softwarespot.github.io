@@ -3,7 +3,7 @@
 /**
  * Gists module
  *
- * Modified: 2015/11/05
+ * Modified: 2015/11/26
  * @author softwarespot
  */
 App.namespace().gists = (function gistsModule(window, document, $, core, undefined) {
@@ -111,7 +111,7 @@ App.namespace().gists = (function gistsModule(window, document, $, core, undefin
         var jqxhr = $.ajax(options);
 
         // If the request completed successfully
-        jqxhr.done(function done(response, textStatus, $this) {
+        jqxhr.done(function done(response/*, textStatus, $this*/) {
             // window.console.log(response);
             // window.console.log(textStatus);
             // window.console.log($this);
@@ -122,7 +122,7 @@ App.namespace().gists = (function gistsModule(window, document, $, core, undefin
         });
 
         // If the request failed
-        jqxhr.fail(function fail($this, textStatus, errorThrown) {
+        jqxhr.fail(function fail(/*$this, textStatus, errorThrown*/) {
             // window.console.log($this);
             // window.console.log(textStatus);
             // window.console.log(errorThrown);

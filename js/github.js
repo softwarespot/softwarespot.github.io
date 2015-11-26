@@ -6,7 +6,7 @@
 /**
  * GitHub module
  *
- * Modified: 2015/11/05
+ * Modified: 2015/11/26
  * @author softwarespot
  */
 App.namespace().github = (function githubModule(window, document, $, core, undefined) {
@@ -112,7 +112,7 @@ App.namespace().github = (function githubModule(window, document, $, core, undef
         var jqxhr = $.ajax(options);
 
         // If the request completed successfully
-        jqxhr.done(function(response, textStatus, $this) {
+        jqxhr.done(function(response/*, textStatus, $this*/) {
             // window.console.log(response);
             // window.console.log(textStatus);
             // window.console.log($this);
@@ -123,7 +123,7 @@ App.namespace().github = (function githubModule(window, document, $, core, undef
         });
 
         // If the request failed
-        jqxhr.fail(function($this, textStatus, errorThrown) {
+        jqxhr.fail(function(/*$this, textStatus, errorThrown*/) {
             // window.console.log($this);
             // window.console.log(textStatus);
             // window.console.log(errorThrown);

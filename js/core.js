@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/11/21
+ * Modified: 2015/11/26
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $, undefined) {
@@ -37,49 +37,36 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _isInitialised = false;
 
     // Native functions
-    var _nativeArray = {
-        ARRAY_OF: window.Array.of,
-        IS_ARRAY: window.Array.isArray,
-    };
+    var _nativeArrayArrayOf = window.Array.of;
+    var _nativeArrayIsArray = window.Array.isArray;
 
-    var _nativeDate = {
-        NOW: window.Date.now,
-    };
+    var _nativeDateNow = window.Date.now;
 
-    var _nativeMath = {
-        ABS: window.Math.abs,
-        FLOOR: window.Math.floor,
-        MAX: window.Math.max,
-        MIN: window.Math.min,
-        POW: window.Math.pow,
-        RANDOM: window.Math.random,
-        ROUND: window.Math.round,
-    };
+    var _nativeMathAbs = window.Math.abs;
+    var _nativeMathFloor = window.Math.floor;
+    var _nativeMathMax = window.Math.max;
+    var _nativeMathMin = window.Math.min;
+    var _nativeMathPow = window.Math.pow;
+    var _nativeMathRandom = window.Math.random;
+    var _nativeMathRound = window.Math.round;
 
     // Programatically calculate the maximum possible number
-    var _maxSafeInteger = _nativeMath.POW(2, 53) - 1;
-    var _nativeNumber = {
-        INFINITY: 1 / 0,
-        IS_FINITE: window.Number.isFinite,
-        IS_NAN: window.Number.isNaN,
-        IS_SAFE_INTEGER: window.Number.isSafeInteger,
-        MAX_SAFE_INTEGER: _maxSafeInteger, // 9007199254740991 or Number.MAX_SAFE_INTEGER
-        MIN_SAFE_INTEGER: -(_maxSafeInteger), // -9007199254740991 or Number.MIN_SAFE_INTEGER
-        NAN: 0 / 0,
-    };
+    var _maxSafeInteger = _nativeMathPow(2, 53) - 1;
 
-    var _nativeObject = {
-        KEYS: window.Object.keys,
-    };
+    // var _nativeNumberInfinity = 1 / 0;
+    var _nativeNumberIsFinite = window.Number.isFinite;
+    var _nativeNumberIsNaN = window.Number.isNaN;
+    var _nativeNumberIsSafeInteger = window.Number.isSafeInteger;
+    var _nativeNumberMaxSafeInteger = _maxSafeInteger; // 9007199254740991 or Number.MAX_SAFE_INTEGER
+    var _nativeNumberMinSafeInteger = -(_maxSafeInteger); // -9007199254740991 or Number.MIN_SAFE_INTEGER
+    // var _nativeNumberNaN = 0 / 0;
 
-    var _nativeString = {
-        ENDS_WITH: window.String.prototype.endsWith,
-        INCLUDES: window.String.prototype.includes,
-        REPEAT: window.String.prototype.repeat,
-        STARTS_WITH: window.String.prototype.startsWith,
-        TRIM: window.String.prototype.trim,
-    };
+    var _nativeObjectKeys = window.Object.keys;
 
+    var _nativeStringEndsWith = window.String.prototype.endsWith;
+    var _nativeStringIncludes = window.String.prototype.includes;
+    var _nativeStringRepeat = window.String.prototype.repeat;
+    var _nativeStringStartsWith = window.String.prototype.startsWith;
     var _nativeStringTrim = window.String.prototype.trim;
     var _nativeStringTrimLeft = window.String.prototype.trimLeft;
     var _nativeStringTrimRight = window.String.prototype.trimRight;
@@ -103,25 +90,28 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // Return strings of toString() found on the Object prototype
     // Based on the implementation by lodash including certain is* function as well
-    var _objectStrings = {
-        ARGUMENTS: '[object Arguments]',
-        ARRAY: '[object Array]',
-        BOOLEAN: '[object Boolean]',
-        DATE: '[object Date]',
-        ERROR: '[object Error]',
-        FUNCTION: '[object Function]',
-        GENERATOR: '[object GeneratorFunction]',
-        MAP: '[object Map]',
-        NUMBER: '[object Number]',
-        OBJECT: '[object Object]',
-        PROMISE: '[object Promise]',
-        REGEXP: '[object RegExp]',
-        SET: '[object Set]',
-        STRING: '[object String]',
-        SYMBOL: '[object Symbol]',
-        WEAKMAP: '[object WeakMap]',
-        WEAKSET: '[object WeakSet]',
-    };
+    var _objectStringsArguments = '[object Arguments]';
+    var _objectStringsArray = '[object Array]';
+    var _objectStringsBoolean = '[object Boolean]';
+    var _objectStringsDate = '[object Date]';
+
+    // var _objectStringsError = '[object Error]';
+    var _objectStringsFunction = '[object Function]';
+    var _objectStringsGenerator = '[object GeneratorFunction]';
+
+    // var _objectStringsMap = '[object Map]';
+    var _objectStringsNumber = '[object Number]';
+    var _objectStringsObject = '[object Object]';
+
+    // var _objectStringsPromise = '[object Promise]';
+    var _objectStringsRegExp = '[object RegExp]';
+
+    // var _objectStringsSet = '[object Set]';
+    var _objectStringsString = '[object String]';
+
+    // var _objectStringsSymbol = '[object Symbol]';
+    // var _objectStringsWeakMap = '[object WeakMap]';
+    // var _objectStringsWeakSet = '[object WeakSet]';
 
     // Store the object prototype
     var _objectPrototype = window.Object.prototype;
@@ -271,7 +261,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function isFunction(value) {
         var tag = isObject(value) ? _objectToString.call(value) : null;
-        return tag === _objectStrings.FUNCTION || tag === _objectStrings.GENERATOR;
+        return tag === _objectStringsFunction || tag === _objectStringsGenerator;
     }
 
     /**
@@ -374,7 +364,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {arguments} arguments Arguments passed to the arrayOf
      * @return {array} An array of arguments passed to arrayOf; otherwise, an empty array
      */
-    var arrayOf = isFunction(_nativeArray.ARRAY_OF) ? _nativeArray.ARRAY_OF : function arrayOf() {
+    var arrayOf = isFunction(_nativeArrayArrayOf) ? _nativeArrayArrayOf : function arrayOf() {
         return argumentsToArray(arguments, 0);
     };
 
@@ -456,8 +446,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             return [];
         }
 
-        if (isFunction(_nativeObject.KEYS)) {
-            return _nativeObject.KEYS(object);
+        if (isFunction(_nativeObjectKeys)) {
+            return _nativeObjectKeys(object);
         }
 
         var array = [];
@@ -488,7 +478,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is an array-like arguments object; otherwise, false
      */
     function isArguments(value) {
-        return _objectToString.call(value) === _objectStrings.ARGUMENTS;
+        return _objectToString.call(value) === _objectStringsArguments;
     }
 
     /**
@@ -507,8 +497,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is an array datatype; otherwise, false
      */
-    var isArray = isFunction(_nativeArray.IS_ARRAY) ? _nativeArray.IS_ARRAY : function isArray(value) {
-        return _objectToString.call(value) === _objectStrings.ARRAY;
+    var isArray = isFunction(_nativeArrayIsArray) ? _nativeArrayIsArray : function isArray(value) {
+        return _objectToString.call(value) === _objectStringsArray;
     };
 
     /**
@@ -544,7 +534,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a boolean datatype; otherwise, false
      */
     function isBoolean(value) {
-        return value === true || value === false || _objectToString.call(value) === _objectStrings.BOOLEAN;
+        return value === true || value === false || _objectToString.call(value) === _objectStringsBoolean;
     }
 
     /**
@@ -574,7 +564,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a Date object; otherwise, false
      */
     function isDate(value) {
-        return _objectToString.call(value) === _objectStrings.DATE;
+        return _objectToString.call(value) === _objectStringsDate;
     }
 
     /**
@@ -620,7 +610,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isError(value) {
-    //     return _objectToString.call(value) === _objectStrings.ERROR && isString(value.message);
+    //     return _objectToString.call(value) === _objectStringsError && isString(value.message);
     // }
 
     /**
@@ -639,7 +629,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is finite; otherwise, false
      */
-    var isFinite = isFunction(_nativeNumber.IS_FINITE) ? _nativeNumber.IS_FINITE : function isFinite(value) {
+    var isFinite = isFunction(_nativeNumberIsFinite) ? _nativeNumberIsFinite : function isFinite(value) {
         return isNumber(value) && window.isFinite(value);
     };
 
@@ -661,7 +651,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isGeneratorFunction(value) {
-    //     return _objectToString.call(value) === _objectStrings.GENERATOR;
+    //     return _objectToString.call(value) === _objectStringsGenerator;
     // }
 
     /**
@@ -722,7 +712,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isMap(value) {
-    //     return _objectToString.call(value) === _objectStrings.MAP;
+    //     return _objectToString.call(value) === _objectStringsMap;
     // }
 
     /**
@@ -731,7 +721,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is NaN; otherwise, false
      */
-    var isNaN = isFunction(_nativeNumber.IS_NAN) ? _nativeNumber.IS_NAN : function isNaN(value) {
+    var isNaN = isFunction(_nativeNumberIsNaN) ? _nativeNumberIsNaN : function isNaN(value) {
         return isNumber(value) && window.isNaN(value);
     };
 
@@ -772,7 +762,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a number datatype; otherwise, false
      */
     function isNumber(value) {
-        return typeof value === 'number' || _objectToString.call(value) === _objectStrings.NUMBER;
+        return typeof value === 'number' || _objectToString.call(value) === _objectStringsNumber;
     }
 
     /**
@@ -827,7 +817,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isPromise(value) {
-    //     return _objectToString.call(value) === _objectStrings.PROMISE;
+    //     return _objectToString.call(value) === _objectStringsPromise;
     // }
 
     /**
@@ -837,7 +827,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a RegExp object; otherwise, false
      */
     function isRegExp(value) {
-        return _objectToString.call(value) === _objectStrings.REGEXP;
+        return _objectToString.call(value) === _objectStringsRegExp;
     }
 
     /**
@@ -846,8 +836,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {number} value Value to check
      * @return {boolean} True, the value is a safe integer; otherwise, false
      */
-    var isSafeInteger = isFunction(_nativeNumber.IS_SAFE_INTEGER) ? _nativeNumber.IS_SAFE_INTEGER : function isSafeInteger(value) {
-        return isInteger(value) && value >= _nativeNumber.MIN_SAFE_INTEGER && value <= _nativeNumber.MAX_SAFE_INTEGER;
+    var isSafeInteger = isFunction(_nativeNumberIsSafeInteger) ? _nativeNumberIsSafeInteger : function isSafeInteger(value) {
+        return isInteger(value) && value >= _nativeNumberMinSafeInteger && value <= _nativeNumberMaxSafeInteger;
     };
 
     /**
@@ -858,7 +848,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isSet(value) {
-    //     return _objectToString.call(value) === _objectStrings.SET;
+    //     return _objectToString.call(value) === _objectStringsSet;
     // }
 
     /**
@@ -868,7 +858,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a string datatype; otherwise, false
      */
     function isString(value) {
-        return typeof value === 'string' || _objectToString.call(value) === _objectStrings.STRING;
+        return typeof value === 'string' || _objectToString.call(value) === _objectStringsString;
     }
 
     /**
@@ -1004,7 +994,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isWeakMap(value) {
-    //     return _objectToString.call(value) === _objectStrings.WEAKMAP;
+    //     return _objectToString.call(value) === _objectStringsWeakMap;
     // }
 
     /**
@@ -1015,7 +1005,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isWeakSet(value) {
-    //     return _objectToString.call(value) === _objectStrings.WEAKSET;
+    //     return _objectToString.call(value) === _objectStringsWeakSet;
     // }
 
     /**
@@ -1043,7 +1033,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {number} Current Unix epoch
      */
     function now() {
-        var timstamp = isFunction(_nativeDate.NOW) ? _nativeDate.NOW() : new window.Date().getTime();
+        var timstamp = isFunction(_nativeDateNow) ? _nativeDateNow() : new window.Date().getTime();
 
         return timstamp / MILLISECONDS_IN_A_SECOND;
     }
@@ -1119,7 +1109,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
-        return stringPad(value, DIGIT_PADDING_CHAR, _nativeMath.ABS(length));
+        return stringPad(value, DIGIT_PADDING_CHAR, _nativeMathAbs(length));
     }
 
     /**
@@ -1135,7 +1125,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         // URL: http://www.w3schools.com/jsref/jsref_random.asp
-        return _nativeMath.FLOOR((_nativeMath.RANDOM() * max) + min);
+        return _nativeMathFloor((_nativeMathRandom() * max) + min);
     }
 
     /**
@@ -1201,8 +1191,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             return false;
         }
 
-        return isFunction(_nativeString.INCLUDES) ?
-            _nativeString.INCLUDES.call(value, searchFor) :
+        return isFunction(_nativeStringIncludes) ?
+            _nativeStringIncludes.call(value, searchFor) :
             value.indexOf(searchFor) !== NOT_FOUND;
     }
 
@@ -1271,8 +1261,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             return STRING_EMPTY;
         }
 
-        return isFunction(_nativeString.REPEAT) ?
-            _nativeString.REPEAT.call(value, count) :
+        return isFunction(_nativeStringRepeat) ?
+            _nativeStringRepeat.call(value, count) :
             (new window.Array(++count)).join(value);
     }
 
@@ -1313,8 +1303,8 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         position -= searchFor.length;
 
-        if (isFunction(_nativeString.ENDS_WITH)) {
-            return _nativeString.ENDS_WITH.call(value, searchFor, position);
+        if (isFunction(_nativeStringEndsWith)) {
+            return _nativeStringEndsWith.call(value, searchFor, position);
         }
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
@@ -1342,7 +1332,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
         padding = toString(padding);
-        padding = new window.Array(_nativeMath.MAX(_nativeMath.ABS(length) - value.length + 1, 0)).join(padding);
+        padding = new window.Array(_nativeMathMax(_nativeMathAbs(length) - value.length + 1, 0)).join(padding);
 
         return length >= 0 ? padding + value : value + padding;
     }
@@ -1365,8 +1355,8 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
-        return isFunction(_nativeString.STARTS_WITH) ?
-            _nativeString.STARTS_WITH.call(value, searchFor, position) :
+        return isFunction(_nativeStringStartsWith) ?
+            _nativeStringStartsWith.call(value, searchFor, position) :
             value.indexOf(searchFor, position) === position;
     }
 
@@ -1473,8 +1463,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             return 0;
         }
 
-        var factor = _nativeMath.POW(10, window.isFinite(precision) ? precision : 0);
-        return _nativeMath.ROUND(value * factor) / factor;
+        var factor = _nativeMathPow(10, window.isFinite(precision) ? precision : 0);
+        return _nativeMathRound(value * factor) / factor;
     }
 
     /**
@@ -1531,7 +1521,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return value;
         }
 
-        return (value > 0 ? 1 : -1) * _nativeMath.FLOOR(_nativeMath.ABS(value));
+        return (value > 0 ? 1 : -1) * _nativeMathFloor(_nativeMathAbs(value));
     }
 
     /**
@@ -1565,7 +1555,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     function toLength(value) {
         value = toInteger(value);
 
-        return _nativeMath.MIN(_nativeMath.MAX(value, 0), _nativeNumber.MAX_SAFE_INTEGER);
+        return _nativeMathMin(_nativeMathMax(value, 0), _nativeNumberMaxSafeInteger);
     }
 
     /**
@@ -1676,7 +1666,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is an object; otherwise, false
      */
     function _isObjectLike(value) {
-        return _objectToString.call(value) === _objectStrings.OBJECT;
+        return _objectToString.call(value) === _objectStringsObject;
     }
 
     /**
