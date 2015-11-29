@@ -606,7 +606,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * 'SyntaxError', 'TypeError', or 'URIError' object
      *
      * @param {mixed} value Value to check
-     * @returns {boolean} True, the value is a Error object; otherwise, false
+     * @returns {boolean} True, the value is an Error object; otherwise, false
      */
 
     // function isError(value) {
