@@ -128,28 +128,36 @@ gulp.task('cssmin', function cssMinTask() {
 
 // Minify the main html file(s)
 gulp.task('htmlmin', function cssMinTask() {
+    // All html file(s)
+    var all = Assets.html.custom.all;
+
     // Store the destination directory
     var dest = Assets.html.dest;
 
     // Store the source directory
     var source = Assets.html.source;
 
-    return gulp.src([
-            source + '/**/*.html',
-        ])
+    return gulp.src(all)
         .pipe(minifyHTML())
         .pipe(gulp.dest(dest));
 });
 
 // Copy images to the destination directory
 gulp.task('images', function imagesTask() {
+    // Store the destination directory
+    var dest = Assets.images.dest;
+
+    // Store the source directory
+    var source = Assets.images.source;
+
     // Copy images to the destination directory
-    return gulp.src(Assets.images.source)
-        .pipe(gulp.dest(Assets.images.dest));
+    return gulp.src(source)
+        .pipe(gulp.dest(dest));
 });
 
 // Check the code meets the following standards outlined in .jshintrc
 gulp.task('jshint', function jsHintTask() {
+    // All js file(s)
     var all = Assets.js.custom.all;
 
     return gulp.src(all)
@@ -173,6 +181,7 @@ gulp.task('php-server', function phpSeverTask() {
 
 // Prettify the main js file(s)
 gulp.task('prettify-js', function prettifyJSTask() {
+    // All js file(s)
     var all = Assets.js.custom.all;
 
     // Store the source directory
@@ -266,9 +275,10 @@ gulp.task('vendor', function vendorTask() {
 // Build the main css and js file(s)
 gulp.task('build', ['cssmin', 'htmlmin', 'uglify']);
 
-// Watch for changes to the main css and js file(s)
+// Watch for changes to the main css, html and js file(s)
 gulp.task('watch', function watchTask() {
     gulp.watch(Assets.css.custom.all, ['cssmin']);
+    gulp.watch(Assets.html.custom.all, ['htmlmin']);
     gulp.watch(Assets.js.custom.all, ['jshint', 'uglify']);
 });
 
