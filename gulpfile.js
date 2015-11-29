@@ -6,6 +6,7 @@ var cssmin = require('gulp-cssmin');
 var jshint = require('gulp-jshint');
 var php = require('gulp-connect-php');
 var prettify = require('gulp-jsbeautifier');
+var minifyHTML = require('gulp-minify-html');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var del = require('del');
@@ -54,6 +55,17 @@ var Assets = {
     },
     fonts: {
         dest: './build/fonts',
+    },
+    html: {
+        dest: './',
+        source: './html',
+        custom: {
+            all: [
+
+                // Select all html file(s) include sub-directories
+                './html/**/*.html',
+            ],
+        },
     },
     images: {
         dest: './build/images',
@@ -114,6 +126,21 @@ gulp.task('cssmin', function cssMinTask() {
         .pipe(gulp.dest(dest));
 });
 
+// Minify the main html file(s)
+gulp.task('htmlmin', function cssMinTask() {
+    // Store the destination directory
+    var dest = Assets.html.dest;
+
+    // Store the source directory
+    var source = Assets.html.source;
+
+    return gulp.src([
+            source + '/**/*.html',
+        ])
+        .pipe(minifyHTML())
+        .pipe(gulp.dest(dest));
+});
+
 // Copy images to the destination directory
 gulp.task('images', function imagesTask() {
     // Copy images to the destination directory
@@ -123,7 +150,9 @@ gulp.task('images', function imagesTask() {
 
 // Check the code meets the following standards outlined in .jshintrc
 gulp.task('jshint', function jsHintTask() {
-    return gulp.src(Assets.js.custom.all)
+    var all = Assets.js.custom.all;
+
+    return gulp.src(all)
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
@@ -144,12 +173,17 @@ gulp.task('php-server', function phpSeverTask() {
 
 // Prettify the main js file(s)
 gulp.task('prettify-js', function prettifyJSTask() {
-    gulp.src(Assets.js.custom.all)
+    var all = Assets.js.custom.all;
+
+    // Store the source directory
+    var source = Assets.js.source;
+
+    gulp.src(all)
         .pipe(prettify({
             config: '.jsbeautifyrc',
             mode: 'VERIFY_AND_WRITE',
         }))
-        .pipe(gulp.dest('./' + Assets.js.source));
+        .pipe(gulp.dest(source));
 });
 
 // Uglify aka minify the main js file(s)
@@ -230,7 +264,7 @@ gulp.task('vendor', function vendorTask() {
 });
 
 // Build the main css and js file(s)
-gulp.task('build', ['cssmin', 'uglify']);
+gulp.task('build', ['cssmin', 'htmlmin', 'uglify']);
 
 // Watch for changes to the main css and js file(s)
 gulp.task('watch', function watchTask() {
@@ -243,6 +277,7 @@ gulp.task('default', ['clean', 'build', 'images', 'vendor']);
 
 // 'gulp build' to build the main css and js file(s)
 // 'gulp cssmin' to minify the main css file(s)
+// 'gulp htmlmin' to minify the main html file(s)
 // 'gulp images' to copy images files to the destination directory
 // 'gulp jshint' to check the syntax of the main js file(s)
 // 'gulp php-server' to connect to the local PHP server
