@@ -1914,7 +1914,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             var isType = 'is' + typeName;
 
             // Extend if a function doesn't exist on the public API already
-            publicAPI[isType] = publicAPI[isType] || function isTypeNameMatch(value) {
+            publicAPI[isType] = isFunction(publicAPI[isType]) ?  publicAPI[isType] : function isTypeNameMatch(value) {
                 return type(value) === typeNameMatch;
             };
         });
