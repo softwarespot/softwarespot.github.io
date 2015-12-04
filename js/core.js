@@ -49,6 +49,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _nativeMathPow = window.Math.pow;
     var _nativeMathRandom = window.Math.random;
     var _nativeMathRound = window.Math.round;
+    var _nativeMathSqrt = window.Math.sqrt;
 
     // Programatically calculate the maximum possible number
     var _maxSafeInteger = _nativeMathPow(2, 53) - 1;
@@ -214,7 +215,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -614,9 +615,9 @@ App.core = (function coreModule(window, document, $, undefined) {
     // }
 
     /**
-     * Check is an integer is even
+     * Check if an integer is even
      *
-     * @param {number} value Value to check
+     * @param {number} value Integer value to check
      * @return {boolean} True, the integer is even; otherwise, false
      */
     function isEven(value) {
@@ -800,13 +801,35 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Check is an integer is odd
+     * Check if an integer is odd
      *
-     * @param {number} value Value to check
+     * @param {number} value Integer value to check
      * @return {boolean} True, the integer is odd; otherwise, false
      */
     function isOdd(value) {
         return isInteger(value) && value % 2 !== 0;
+    }
+
+    /**
+     * Check if an integer is a prime number
+     *
+     * @param {number} value Integer value to check
+     * @return {boolean} True, the value is a prime number; otherwise, false
+     */
+    function isPrime(value) {
+        if (!isInteger(value)) {
+            return false;
+        }
+
+        var sqrt = _nativeMathSqrt(value);
+        var start = 2;
+        while (start <= sqrt) {
+            if (value % start++ === 0) {
+                return false;
+            }
+        }
+
+        return value > 1;
     }
 
     /**
@@ -1802,10 +1825,10 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // isNumber: isNumber,
 
-        isStringOctal: isStringOctal,
         isObject: isObject,
         isObjectLiteral: isObjectLiteral,
         isOdd: isOdd,
+        isPrime: isPrime,
 
         // isPromise: isPromise,
         // isRegExp: isRegExp,
@@ -1819,6 +1842,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         isStringInteger: isStringInteger,
         isStringNotEmpty: isStringNotEmpty,
         isStringNumber: isStringNumber,
+        isStringOctal: isStringOctal,
 
         // isUndefined: isUndefined,
         isUndefinedAssignable: isUndefinedAssignable,
@@ -1914,7 +1938,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             var isType = 'is' + typeName;
 
             // Extend if a function doesn't exist on the public API already
-            publicAPI[isType] = isFunction(publicAPI[isType]) ?  publicAPI[isType] : function isTypeNameMatch(value) {
+            publicAPI[isType] = isFunction(publicAPI[isType]) ? publicAPI[isType] : function isTypeNameMatch(value) {
                 return type(value) === typeNameMatch;
             };
         });
