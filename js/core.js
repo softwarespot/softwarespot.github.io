@@ -23,13 +23,16 @@ App.core = (function coreModule(window, document, $, undefined) {
     var MILLISECONDS_IN_A_SECOND = 1000;
 
     // Value of indexOf when a value isn't found
-    var NOT_FOUND = -1;
+    var IS_NOT_FOUND = -1;
 
     // Char used for padding digits
     var DIGIT_PADDING_CHAR = '0';
 
     // Store an empty string
     var STRING_EMPTY = '';
+
+    // Store ellipses string
+    var STRING_ELLPISES = '...';
 
     // Fields
 
@@ -43,16 +46,21 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _nativeDateNow = window.Date.now;
 
     var _nativeMathAbs = window.Math.abs;
+    var _nativeMathCeil = window.Math.ceil;
     var _nativeMathFloor = window.Math.floor;
     var _nativeMathMax = window.Math.max;
     var _nativeMathMin = window.Math.min;
     var _nativeMathPow = window.Math.pow;
     var _nativeMathRandom = window.Math.random;
     var _nativeMathRound = window.Math.round;
+    var _nativeMathSign = window.Math.sign;
     var _nativeMathSqrt = window.Math.sqrt;
+    var _nativeMathTrunc = window.Math.trunc;
 
     // Programatically calculate the maximum possible number
     var _maxSafeInteger = _nativeMathPow(2, 53) - 1;
+
+    var _nativeNumber = window.Number;
 
     // var _nativeNumberInfinity = 1 / 0;
     var _nativeNumberIsFinite = window.Number.isFinite;
@@ -215,7 +223,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -399,7 +407,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         var index = array.indexOf(value);
-        if (index !== NOT_FOUND) {
+        if (index !== IS_NOT_FOUND) {
             array.splice(index, 1);
         }
     }
@@ -1042,6 +1050,34 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Indicate whether a number is positive, negative or zero
+     * Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
+     *
+     * @param {mixed} value Value to check
+     * @return {number} 1 (positive), -1 (negative) or 0 (zero); otherwise, NaN on error
+     */
+    var mathSign = isFunction(_nativeMathSign) ? _nativeMathSign : function mathSign(value) {
+        // Convert to a number
+        value = _nativeNumber(value);
+        if (value === 0 || isNaN(value)) {
+            return value;
+        }
+
+        return value > 0 ? 1 : -1;
+    };
+
+    /**
+     * Remove any fractional digits from a number
+     * Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
+     *
+     * @param {mixed} value Value to convert
+     * @return {number} Truncated number; otherwise, NaN on error
+     */
+    var mathTrunc = isFunction(_nativeMathTrunc) ? _nativeMathTrunc : function mathTrunc(value) {
+        return value < 0 ? _nativeMathCeil(value) : _nativeMathFloor(value);
+    };
+
+    /**
      * Empty function declaration
      *
      * @return {undefined}
@@ -1216,7 +1252,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return isFunction(_nativeStringIncludes) ?
             _nativeStringIncludes.call(value, searchFor) :
-            value.indexOf(searchFor) !== NOT_FOUND;
+            value.indexOf(searchFor) !== IS_NOT_FOUND;
     }
 
     /**
@@ -1332,7 +1368,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
         var lastIndex = value.indexOf(searchFor, position);
-        return lastIndex !== NOT_FOUND && lastIndex === position;
+        return lastIndex !== IS_NOT_FOUND && lastIndex === position;
     }
 
     /**
@@ -1513,6 +1549,38 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Truncate a string to a maximum length and append ellipses (...)
+     * Idea by kgriffs, URL: http://snipplr.com/view/40259/smart-string-truncate-with-ellipses/
+     *
+     * @param {string} value String value to truncate
+     * @param {number} maxLength Maximum length of the string to truncate
+     * @param {boolean} breakWords True, break at the end of the last word; otherwise, break according to the maximum length
+     * @return {string} Truncated string or original string; otherwise, empty string on error
+     */
+    function stringTrunc(value, maxLength, breakWords) {
+        if (!isString(value)) {
+            return STRING_EMPTY;
+        }
+
+        // Return original value if not an integers or below the maximum length
+        if (!isInteger(maxLength) || value.length <= maxLength) {
+            return value;
+        }
+
+        var truncateAt = maxLength - STRING_ELLPISES.length;
+
+        // Explicit check for true
+        if (breakWords === true) {
+            var index = value.lastIndexOf(' ', truncateAt);
+            if (index !== IS_NOT_FOUND && index >= truncateAt / 2) {
+                truncateAt = index;
+            }
+        }
+
+        return value.substr(0, truncateAt) + STRING_ELLPISES;
+    }
+
+    /**
      * Convert the first character of a string to upper-case
      *
      * @param {string} value String value
@@ -1535,7 +1603,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {number} New integer value
      */
     function toInteger(value) {
-        value = window.Number(value);
+        // Convert to a number
+        value = _nativeNumber(value);
         if (isNaN(value)) {
             return 0;
         }
@@ -1852,6 +1921,8 @@ App.core = (function coreModule(window, document, $, undefined) {
         // isWeakSet: isWeakSet,
         isWindow: isWindow,
         keys: keys,
+        mathSign: mathSign,
+        mathTrunc: mathTrunc,
         noop: noop,
         now: now,
         once: once,
@@ -1883,6 +1954,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringToNumber: stringToNumber,
         stringTrimLeft: stringTrimLeft,
         stringTrimRight: stringTrimRight,
+        stringTrunc: stringTrunc,
         stringUCFirst: stringUCFirst,
         toInteger: toInteger,
         toISOString: toISOString,
