@@ -32,7 +32,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var STRING_EMPTY = '';
 
     // Store ellipses string
-    var STRING_ELLPISES = '...';
+    var STRING_ELLIPSES = '...';
 
     // Fields
 
@@ -1567,7 +1567,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return value;
         }
 
-        var truncateAt = maxLength - STRING_ELLPISES.length;
+        var truncateAt = maxLength - STRING_ELLIPSES.length;
 
         // Explicit check for true
         if (breakWords === true) {
@@ -1577,7 +1577,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             }
         }
 
-        return value.substr(0, truncateAt) + STRING_ELLPISES;
+        return value.substr(0, truncateAt) + STRING_ELLIPSES;
     }
 
     /**
