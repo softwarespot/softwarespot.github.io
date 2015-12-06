@@ -56,6 +56,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
     // whether or not it's supported by the following browser
     var _inputs = null;
 
+    // Cache the HTML node
+    var _html = document.documentElement;
+    var _prefixes = ['Khtml', 'Moz', 'Ms', 'O', 'Webkit'];
+
     // Methods
 
     /**
@@ -292,6 +296,46 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
     }
 
     /**
+     * Check if the webStorage API exists
+     *
+     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/
+     *
+     * @return {boolean} True, the feature exists; otherwise, false
+     */
+    function hasWebStorage() {
+        return _hasWebStorage;
+    }
+
+    /**
+     * Check if a CSS style is supported. Automatically checks for common vendor prefixes
+     *
+     * @param {string} property CSS property to check (without the vendor prefix)
+     * @return {boolean} True, the style is supported; otherwise, false
+     */
+    function isStyleSupported(property) {
+        if (!core.isString(property) || property.length === 0) {
+            return false;
+        }
+
+        // Appears the style is supported
+        if (!core.isUndefined(_html.style[property])) {
+            return true;
+        }
+
+        // Check common vendor prefixes
+        property = core.stringLCFirst(property);
+
+        var length = _prefixes.length;
+        while (length-- > 0) {
+            if (!core.isUndefined(_html.style[_prefixes[length] + property])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check if a valid storage object
      *
      * @param {type} storage Storage object
@@ -306,29 +350,19 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
             'clear' in storage;
     }
 
-    /**
-     * Check if the webStorage API exists
-     *
-     * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/
-     *
-     * @return {boolean} True, the feature exists; otherwise, false
-     */
-    function hasWebStorage() {
-        return _hasWebStorage;
-    }
-
     // Public API
     return {
         init: init,
         destroy: destroy,
         getVersion: getVersion,
         hasCSSSupports: hasCSSSupports,
+        hasGeoLocation: hasGeoLocation,
         hasHistory: hasHistory,
-        hasPromise: hasPromise,
         hasInput: hasInput,
         hasLocalStorage: hasLocalStorage,
+        hasPromise: hasPromise,
         hasSessionStorage: hasSessionStorage,
         hasWebStorage: hasWebStorage,
-        hasGeoLocation: hasGeoLocation,
+        isStyleSupported: isStyleSupported,
     };
 })(window, window.document, window.jQuery, window.App.core);
