@@ -308,6 +308,7 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
 
     /**
      * Check if a CSS style is supported. Automatically checks for common vendor prefixes
+     * Idea by TutsPlus, URL: http://code.tutsplus.com/tutorials/quick-tip-detect-css3-support-in-browsers-with-javascript--net-16444
      *
      * @param {string} property CSS property to check (without the vendor prefix)
      * @return {boolean} True, the style is supported; otherwise, false
