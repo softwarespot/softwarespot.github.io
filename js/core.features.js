@@ -25,6 +25,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
     // Store if the module has been initialised
     var _isInitialised = false;
 
+    // Native functions
+    var _nativeHistory = window.history;
+    var _nativePromise = window.Promise;
+
     // Hold the input data, with the key being the input type and the value of either true or false as
     // whether or not it's supported by the following browser
     var _inputs = null;
@@ -79,7 +83,8 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      * @return {boolean} True the feature exists; otherwise, false
      */
     function hasHistory() {
-        var history = window.history;
+        var history = _nativeHistory;
+
         return core.isObject(history) &&
             'pushState' in history;
     }
@@ -230,7 +235,8 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      * @return {boolean} True the feature exists; otherwise, false
      */
     function hasPromise() {
-        var promise = window.Promise;
+        var promise = _nativePromise;
+
         return core.isFunction(promise) &&
             'all' in promise &&
             'race' in promise &&
