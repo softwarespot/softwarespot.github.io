@@ -3,7 +3,7 @@
 /**
  * Navigation module
  *
- * Modified: 2015/11/05
+ * Modified: 2015/12/06
  * @author softwarespot
  */
 App.namespace().navigation = (function navigationModule(window, document, $, core, undefined) {

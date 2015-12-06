@@ -8,7 +8,7 @@
  * @link http://caniuse.com/
  * @link https://github.com/NielsLeenheer/html5test/
  *
- * Modified: 2015/11/05
+ * Modified: 2015/12/06
  * @author softwarespot
  */
 App.namespace('core').features = (function featuresModule(window, document, $, core, undefined) {
@@ -26,8 +26,31 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
     var _isInitialised = false;
 
     // Native functions
+    var _nativeCSS = window.CSS;
     var _nativeHistory = window.history;
+    var _nativeLocalStorage = window.localStorage;
+    var _nativeNavigator = window.navigator;
     var _nativePromise = window.Promise;
+    var _nativeSessionStorage = window.sessionStorage;
+
+    // Store has* results
+    // Note: Opera 12 supports window.supportsCSS according to caniuse.com
+    var _hasCSSSupports = (core.isFunction(_nativeCSS) && core.isFunction(_nativeCSS.supports)) || window.supportsCSS;
+    var _hasGeoLocation = core.isObject(_nativeNavigator) &&
+        'geolocation' in _nativeNavigator;
+
+    var _hasHistory = core.isObject(_nativeHistory) &&
+        'pushState' in _nativeHistory;
+
+    var _hasLocalStorage = _isStorage(_nativeLocalStorage);
+    var _hasSessionStorage = _isStorage(_nativeSessionStorage);
+    var _hasWebStorage = _hasLocalStorage && _hasSessionStorage;
+
+    var _hasPromise = core.isFunction(_nativePromise) &&
+        'all' in _nativePromise &&
+        'race' in _nativePromise &&
+        'reject' in _nativePromise &&
+        'resolve' in _nativePromise;
 
     // Hold the input data, with the key being the input type and the value of either true or false as
     // whether or not it's supported by the following browser
@@ -69,6 +92,17 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         return VERSION;
     }
 
+    // CSS
+
+    /**
+     * Checl if CSSSupports exists
+     *
+     * @return {boolean} True, the feature exists; otherwise, false
+     */
+    function hasCSSSupports() {
+        return _hasCSSSupports;
+    }
+
     // EVENTS
     // https://github.com/Modernizr/Modernizr/blob/master/src/hasEvent.js
     // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/hashchange.js
@@ -80,13 +114,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      *
      * Based on the concept by Modernizr URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
      *
-     * @return {boolean} True the feature exists; otherwise, false
+     * @return {boolean} True, the feature exists; otherwise, false
      */
     function hasHistory() {
-        var history = _nativeHistory;
-
-        return core.isObject(history) &&
-            'pushState' in history;
+        return _hasHistory;
     }
 
     // GEOLOCATION
@@ -96,10 +127,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      *
      * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/geolocation.js
      *
-     * @return {boolean} True the feature exists; otherwise, false
+     * @return {boolean} True, the feature exists; otherwise, false
      */
     function hasGeoLocation() {
-        return core.isObject(window.navigator) && 'geolocation' in window.navigator;
+        return _hasGeoLocation;
     }
 
     // INPUTS
@@ -111,8 +142,6 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      * @return {boolean} True the type is supported; otherwise, false
      */
     function hasInput(inputType) {
-        // _getInputs();
-
         // Coerce as a string
         var hasInputResult = _inputs[core.toString(inputType)];
         return core.isUndefined(hasInputResult) ? false : hasInputResult;
@@ -232,16 +261,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      *
      * Based on the concept by Modernizr URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/es6/promises.js
      *
-     * @return {boolean} True the feature exists; otherwise, false
+     * @return {boolean} True, the feature exists; otherwise, false
      */
     function hasPromise() {
-        var promise = _nativePromise;
-
-        return core.isFunction(promise) &&
-            'all' in promise &&
-            'race' in promise &&
-            'reject' in promise &&
-            'resolve' in promise;
+        return _hasPromise;
     }
 
     // STORAGE
@@ -251,10 +274,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      *
      * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/localstorage.js
      *
-     * @return {boolean} True the feature exists; otherwise, false
+     * @return {boolean} True, the feature exists; otherwise, false
      */
     function hasLocalStorage() {
-        return _isStorage(window.localStorage);
+        return _hasLocalStorage;
     }
 
     /**
@@ -262,10 +285,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      *
      * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/sessionstorage.js
      *
-     * @return {boolean} True the feature exists; otherwise, false
+     * @return {boolean} True, the feature exists; otherwise, false
      */
     function hasSessionStorage() {
-        return _isStorage(window.sessionStorage);
+        return _hasSessionStorage;
     }
 
     /**
@@ -288,10 +311,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      *
      * Based on the concept by Modernizr, URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/
      *
-     * @return {boolean} True the feature exists; otherwise, false
+     * @return {boolean} True, the feature exists; otherwise, false
      */
     function hasWebStorage() {
-        return hasLocalStorage() && hasSessionStorage();
+        return _hasWebStorage;
     }
 
     // Public API
@@ -299,6 +322,7 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         init: init,
         destroy: destroy,
         getVersion: getVersion,
+        hasCSSSupports: hasCSSSupports,
         hasHistory: hasHistory,
         hasPromise: hasPromise,
         hasInput: hasInput,

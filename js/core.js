@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/11/26
+ * Modified: 2015/12/06
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $, undefined) {
@@ -166,6 +166,15 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Strip EOL characters
     var _reEOLChars = /\r?\n|\r/gm;
 
+    // Escape hyphens (-), underscores (_) or whitespace
+    var _reEscapedCaseChars = /(?:[\-_\s]+)/g;
+
+    // Escape upper-case characters
+    var _reEscapedCamelCaseChar = /([A-Z])/g;
+
+    // Escape a camel-case string
+    var _reEscapedCamelCaseChars = /([a-z0-9])([A-Z]+)/g;
+
     // Float values
     var _reFloat = /(?:^-?(?!0+)\d+\.\d+$)/;
 
@@ -201,6 +210,9 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // Parse items between {} e.g. {username}
     var _reSupplant = /(?:{([^{}]*)})/g;
+
+    // Convert a kebab-case or snake-case string to camel-case
+    var _reToCamelCase = /(?:[\-_\s]+([^\-_\s]))/g;
 
     // Strip leading whitespace
     var _reTrimLeft = /^[\s\uFEFF\xA0]+/;
@@ -1299,6 +1311,21 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Convert the first character of a string to lower-case
+     *
+     * @param {string} value String value to convert
+     * @return {string} First character of the string changed to lower-case; otherwise, an empty string
+     */
+    function stringLCFirst(value) {
+        if (!isString(value)) {
+            return STRING_EMPTY;
+        }
+
+        var index = 0;
+        return (value[index++].toLowerCase()) + value.slice(index);
+    }
+
+    /**
      * Convert a null/undefined variable to an empty string
      *
      * @param {string} value String value to convert
@@ -1498,6 +1525,26 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Convert a kebab-case or snake-case string to camel-case
+     *
+     * @param {string} value String value to convert
+     * @return {string} Converted string; otherwise, an empty string on error
+     */
+    function stringToCamelCase(value) {
+        if (!isString(value) || value.length === 0) {
+            return STRING_EMPTY;
+        }
+
+        // Convert the first character to lower-case
+        var index = 0;
+        value = value[index++].toLowerCase() + value.slice(index);
+
+        return value.replace(_reToCamelCase, function charToUpper(all, char) {
+            return char.toUpperCase();
+        });
+    }
+
+    /**
      * Convert a string to a UTF-16 char array
      *
      * @param {string} value String value
@@ -1511,9 +1558,25 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Convert a camel-case or snake-case string to kebab-case
+     *
+     * @param {string} value String value to convert
+     * @return {string} Converted string; otherwise, an empty string on error
+     */
+    function stringToKebabCase(value) {
+        if (!isString(value) || value.length === 0) {
+            return STRING_EMPTY;
+        }
+
+        return value.replace(_reEscapedCamelCaseChar, '-$1')
+            .replace(_reEscapedCaseChars, '-')
+            .toLowerCase();
+    }
+
+    /**
      * Convert a string to a number datatype. Idea by underscore.string, URL: https://github.com/epeli/underscore.string
      *
-     * @param {string} value String value
+     * @param {string} value String value to convert
      * @param {number} precision Precision value
      * @return {number} Parsed number; otherwise, zero by default
      */
@@ -1527,6 +1590,23 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Convert a camel-case or kebab-case string to snake-case
+     * Idea by underscore.string, URL: https://github.com/epeli/underscore.string
+     *
+     * @param {string} value String value to convert
+     * @return {string} Converted string; otherwise, an empty string on error
+     */
+    function stringToSnakeCase(value) {
+        if (!isString(value) || value.length === 0) {
+            return STRING_EMPTY;
+        }
+
+        return value.replace(_reEscapedCamelCaseChars, '$1_$2')
+            .replace(_reEscapedCaseChars, '_')
+            .toLowerCase();
+    }
+
+    /**
      * Trim a number of characters left of a string
      *
      * @param {string} value String value to trim
@@ -1534,7 +1614,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Trimmed string; otherwise, an empty string on error
      */
     function stringTrimLeft(value, count) {
-        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(count) : STRING_EMPTY;
+        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.slice(count) : STRING_EMPTY;
     }
 
     /**
@@ -1545,7 +1625,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Trimmed string; otherwise, an empty string on error
      */
     function stringTrimRight(value, count) {
-        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.substr(0, value.length - count) : STRING_EMPTY;
+        return isString(value) && isInteger(count) && count > 0 && count < value.length ? value.slice(0, value.length - count) : STRING_EMPTY;
     }
 
     /**
@@ -1577,13 +1657,13 @@ App.core = (function coreModule(window, document, $, undefined) {
             }
         }
 
-        return value.substr(0, truncateAt) + STRING_ELLIPSES;
+        return value.slice(0, truncateAt) + STRING_ELLIPSES;
     }
 
     /**
      * Convert the first character of a string to upper-case
      *
-     * @param {string} value String value
+     * @param {string} value String value to convert
      * @return {string} First character of the string changed to upper-case; otherwise, an empty string
      */
     function stringUCFirst(value) {
@@ -1592,7 +1672,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         var index = 0;
-        return (value[index++].toUpperCase()) + value.substr(index);
+        return (value[index++].toUpperCase()) + value.slice(index);
     }
 
     /**
@@ -1938,6 +2018,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringEscapeHTML: stringEscapeHTML,
         stringFormat: stringFormat,
         stringIncludes: stringContains,
+        stringLCFirst: stringLCFirst,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
         stringPad: stringPad,
         stringRepeat: stringRepeat,
@@ -1950,8 +2031,11 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringSupplant: stringSupplant,
         stringToArray: stringToArray,
         stringToBoolean: stringToBoolean,
+        stringToCamelCase: stringToCamelCase,
         stringToCharArray: stringToCharArray,
+        stringToKebabCase: stringToKebabCase,
         stringToNumber: stringToNumber,
+        stringToSnakeCase: stringToSnakeCase,
         stringTrimLeft: stringTrimLeft,
         stringTrimRight: stringTrimRight,
         stringTrunc: stringTrunc,

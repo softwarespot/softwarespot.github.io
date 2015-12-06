@@ -6,7 +6,7 @@
 /**
  * GitHub module
  *
- * Modified: 2015/11/26
+ * Modified: 2015/12/06
  * @author softwarespot
  */
 App.namespace().github = (function githubModule(window, document, $, core, undefined) {
