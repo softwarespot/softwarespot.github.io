@@ -1793,14 +1793,23 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string|null} Classname of the value; otherwise, undefined on error
      */
     function type(value) {
-        var TYPE_MATCH = 1;
         var tag = _objectToString.call(value).match(_reTypeOf);
+        if (isNull(tag)) {
+            return undefined;
+        }
 
-        return isNull(tag) ? undefined : tag[TYPE_MATCH].toLowerCase();
+        var TYPE_MATCH = 1;
+        tag = tag[TYPE_MATCH].toLowerCase();
+        if (tag === 'number' && isNaN(value)) {
+            // Override number if a NaN
+            tag = 'nan';
+        }
+
+        return tag;
     }
 
     /**
-     * Override the default behaviour of typeof, by returning 'null' for a null value or 'array' for an array datatype.
+     * Override the default behaviour of typeof, by returning 'null' for a null value, 'array' for an array datatype or 'nan' for NaN
      * Idea by Douglas Crockford, URL: http://javascript.crockford.com/remedial.html
      *
      * @param {mixed} value Variable to check
@@ -1816,6 +1825,9 @@ App.core = (function coreModule(window, document, $, undefined) {
             } else if (isNull(value)) {
                 type = 'null';
             }
+        } else if (type === 'number' && isNaN(value)) {
+            // Override number if a NaN
+            type = 'nan';
         }
 
         return type;
