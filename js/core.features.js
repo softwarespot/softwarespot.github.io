@@ -107,6 +107,36 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         return _hasCSSSupports;
     }
 
+    /**
+     * Check if a CSS style is supported. Automatically checks for common vendor prefixes
+     * Idea by TutsPlus, URL: http://code.tutsplus.com/tutorials/quick-tip-detect-css3-support-in-browsers-with-javascript--net-16444
+     *
+     * @param {string} property CSS property to check (without the vendor prefix)
+     * @return {boolean} True, the style is supported; otherwise, false
+     */
+    function isStyleSupported(property) {
+        if (!core.isString(property) || property.length === 0) {
+            return false;
+        }
+
+        // Appears the style is supported
+        if (!core.isUndefined(_html.style[property])) {
+            return true;
+        }
+
+        // Check common vendor prefixes
+        property = core.stringUCFirst(property);
+
+        var length = _prefixes.length;
+        while (length-- > 0) {
+            if (!core.isUndefined(_html.style[_prefixes[length] + property])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // EVENTS
     // https://github.com/Modernizr/Modernizr/blob/master/src/hasEvent.js
     // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/hashchange.js
@@ -304,36 +334,6 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      */
     function hasWebStorage() {
         return _hasWebStorage;
-    }
-
-    /**
-     * Check if a CSS style is supported. Automatically checks for common vendor prefixes
-     * Idea by TutsPlus, URL: http://code.tutsplus.com/tutorials/quick-tip-detect-css3-support-in-browsers-with-javascript--net-16444
-     *
-     * @param {string} property CSS property to check (without the vendor prefix)
-     * @return {boolean} True, the style is supported; otherwise, false
-     */
-    function isStyleSupported(property) {
-        if (!core.isString(property) || property.length === 0) {
-            return false;
-        }
-
-        // Appears the style is supported
-        if (!core.isUndefined(_html.style[property])) {
-            return true;
-        }
-
-        // Check common vendor prefixes
-        property = core.stringLCFirst(property);
-
-        var length = _prefixes.length;
-        while (length-- > 0) {
-            if (!core.isUndefined(_html.style[_prefixes[length] + property])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
