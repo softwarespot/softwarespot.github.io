@@ -72,6 +72,8 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     var _nativeObjectKeys = window.Object.keys;
 
+    var _nativePromise = window.Promise;
+
     var _nativeStringEndsWith = window.String.prototype.endsWith;
     var _nativeStringIncludes = window.String.prototype.includes;
     var _nativeStringRepeat = window.String.prototype.repeat;
@@ -1200,6 +1202,24 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Execute code once the DOM has loaded
+     * Idea by bliss, URL: http://blissfuljs.com/docs.html#fn-ready
+     *
+     * @return {promise} A promise that is resolved once the DOM is loaded
+     */
+    function ready() {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
+            if (document.readyState !== 'loading') {
+                resolve();
+            } else {
+                document.addEventListener('DOMContentLoaded', function domContentLoadedListener() {
+                    resolve();
+                });
+            }
+        });
+    }
+
+    /**
      * Escape RegExp characters with a prefixed backslash
      *
      * @param {string} value String value to escape
@@ -2018,6 +2038,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         noop: noop,
         now: now,
         once: once,
+        ready: ready,
         regExpEscape: regExpEscape,
         regExpFlags: regExpFlags,
         padDigits: padDigits,
