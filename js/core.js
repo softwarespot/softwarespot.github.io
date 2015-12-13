@@ -1186,6 +1186,27 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Parse a string value to HTML
+     * Idea by , URL: http://youmightnotneedjquery.com/
+     *
+     * @param {string} value String value to parse
+     * @return {HTMLCollection} HTMLCollection of nodes; otherwise, null on error
+     */
+    function parseHTML(value) {
+        if (!isString(value)) {
+            return null;
+        }
+
+        // Create an inner HTML document
+        var html = document.implementation.createHTMLDocument();
+
+        // Set the inner HTML
+        html.body.innerHTML = value;
+
+        return html.body.children;
+    }
+
+    /**
      * Generate a random number
      *
      * @param {number} min Minimum value
@@ -2042,6 +2063,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         regExpEscape: regExpEscape,
         regExpFlags: regExpFlags,
         padDigits: padDigits,
+        parseHTML: parseHTML,
         randomNumber: randomNumber,
         sprintf: stringFormat,
         stringAddCR: stringAddCR,
