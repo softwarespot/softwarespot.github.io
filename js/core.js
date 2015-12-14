@@ -42,6 +42,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Native functions
     var _nativeArrayArrayOf = window.Array.of;
     var _nativeArrayIsArray = window.Array.isArray;
+    var _nativeArrayPrototypeSlice = window.Array.prototype.slice;
 
     var _nativeDateNow = window.Date.now;
 
@@ -424,6 +425,37 @@ App.core = (function coreModule(window, document, $, undefined) {
         if (index !== IS_NOT_FOUND) {
             array.splice(index, 1);
         }
+    }
+
+    /**
+     * Abstraction of querySelectorAll with increased performance and greater usability
+     * Idea by ryanmorr, URL: https://github.com/ryanmorr/query
+     *
+     * @param {string} selector String selector
+     * @param {object|undefined} context Current context. If undefined then 'document' is used
+     * @return {array} Array of DOM elements; otherwise, an empty array on array
+     */
+    function dom(selector, context) {
+        if (!isString(selector)) {
+            return [];
+        }
+
+        context = context || document;
+
+        var reQuerySelector = /(?:^#?[\w\-]+|\.[\w-.]+$)/;
+        if (reQuerySelector.test(selector)) {
+            switch (selector[0]) {
+                case '#':
+                    return [document.getElementById(selector.substr(1))];
+                case '.':
+                    var reReplaceDots = /\./g;
+                    return _nativeArrayPrototypeSlice.call(context.getElementsByClassName(selector.substr(1).replace(reReplaceDots, ' ')));
+                default:
+                    return _nativeArrayPrototypeSlice.call(context.getElementsByTagName(selector));
+            }
+        }
+
+        return _nativeArrayPrototypeSlice.call(context.querySelectorAll(selector));
     }
 
     /**
@@ -1113,6 +1145,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     /**
      * Call a function after a timed delay
+     * Idea by Remy Sharp, URL: https://remysharp.com/2010/07/21/throttling-function-calls
      *
      * @param {function} fn Function to call after a timed delay
      * @param {number} delay Delay before calling the function. If not a number then defaults to zero
@@ -1145,8 +1178,6 @@ App.core = (function coreModule(window, document, $, undefined) {
             }, delay);
         };
     }
-
-    // https://remysharp.com/2010/07/21/throttling-function-calls
 
     /**
      * Call a function only once
@@ -1985,6 +2016,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         arrayPeek: arrayPeek,
         arrayRemove: arrayRemove,
         debounce: debounce,
+        dom: dom,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
         isAlNum: isAlNum,
