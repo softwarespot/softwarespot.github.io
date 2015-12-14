@@ -436,7 +436,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {array} Array of DOM elements; otherwise, an empty array on array
      */
     function dom(selector, context) {
-        if (!isString(selector)) {
+        if (trim(selector).length === 0) {
             return [];
         }
 
