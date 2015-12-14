@@ -238,7 +238,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -442,11 +442,13 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         context = context || document;
 
-        var reQuerySelector = /(?:^#?[\w\-]+|\.[\w-.]+$)/;
+        var reQuerySelector = /(?:^#?[\w\-]+|\.[\w\-.]+$)/;
         if (reQuerySelector.test(selector)) {
             switch (selector[0]) {
                 case '#':
-                    return [document.getElementById(selector.substr(1))];
+                    var result = document.getElementById(selector.substr(1));
+
+                    return isNull(result) ? [] : [result];
                 case '.':
                     var reReplaceDots = /\./g;
                     return _nativeArrayPrototypeSlice.call(context.getElementsByClassName(selector.substr(1).replace(reReplaceDots, ' ')));
@@ -1260,7 +1262,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/ ) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {
