@@ -428,6 +428,43 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Call a function after a timed delay
+     * Idea by Remy Sharp, URL: https://remysharp.com/2010/07/21/throttling-function-calls
+     *
+     * @param {function} fn Function to call after a timed delay
+     * @param {number} delay Delay before calling the function. If not a number then defaults to zero
+     * @param {object|undefined} context Current context. If undefined then 'this' is used
+     * @return {undefined}
+     */
+    function debounce(fn, delay, context) {
+        // Cache the timer handle
+        var timer = null;
+
+        delay = isNumber(delay) ? delay : 0;
+
+        return function debounceApply() {
+            if (!isFunction(fn)) {
+                return;
+            }
+
+            if (!isNull(timer)) {
+                window.clearTimeout(timer);
+            }
+
+            // Cache the arguments object-like array
+            var args = arguments;
+
+            // If the context is undefined then use 'this'
+            context = context || this;
+
+            timer = window.setTimeout(function setTimeout() {
+                fn.apply(context, args);
+            }, delay);
+        };
+    }
+
+
+    /**
      * Abstraction of querySelectorAll with increased performance and greater usability
      * Idea by ryanmorr, URL: https://github.com/ryanmorr/query
      *
@@ -1143,42 +1180,6 @@ App.core = (function coreModule(window, document, $, undefined) {
         var timstamp = isFunction(_nativeDateNow) ? _nativeDateNow() : new window.Date().getTime();
 
         return timstamp / MILLISECONDS_IN_A_SECOND;
-    }
-
-    /**
-     * Call a function after a timed delay
-     * Idea by Remy Sharp, URL: https://remysharp.com/2010/07/21/throttling-function-calls
-     *
-     * @param {function} fn Function to call after a timed delay
-     * @param {number} delay Delay before calling the function. If not a number then defaults to zero
-     * @param {object|undefined} context Current context. If undefined then 'this' is used
-     * @return {undefined}
-     */
-    function debounce(fn, delay, context) {
-        // Cache the timer handle
-        var timer = null;
-
-        delay = isNumber(delay) ? delay : 0;
-
-        return function debounceApply() {
-            if (!isFunction(fn)) {
-                return;
-            }
-
-            if (!isNull(timer)) {
-                window.clearTimeout(timer);
-            }
-
-            // Cache the arguments object-like array
-            var args = arguments;
-
-            // If the context is undefined then use 'this'
-            context = context || this;
-
-            timer = window.setTimeout(function setTimeout() {
-                fn.apply(context, args);
-            }, delay);
-        };
     }
 
     /**
