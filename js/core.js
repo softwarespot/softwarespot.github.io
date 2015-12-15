@@ -71,6 +71,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _nativeNumberMinSafeInteger = -(_maxSafeInteger); // -9007199254740991 or Number.MIN_SAFE_INTEGER
     // var _nativeNumberNaN = 0 / 0;
 
+    var _nativeObjectIs = window.Object.is;
     var _nativeObjectKeys = window.Object.keys;
 
     var _nativePromise = window.Promise;
@@ -1183,6 +1184,22 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Determine if two values are the same
+     * Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+     *
+     * @param {mixed} value1 Value to compare
+     * @param {mixed} value2 Value to compare
+     * @return {boolean} True, values are the same; otherwise, false
+     */
+    var objectIs = isFunction(_nativeObjectIs) ? _nativeObjectIs : function objectIs(value1, value2) {
+        if (value1 === value2) {
+            return value1 !== 0 || 1 / value1 === 1 / value2;
+        }
+
+        return value1 !== value1 && value2 !== value2;
+    };
+
+    /**
      * Call a function only once
      * Idea by David Walsh, URL: https://davidwalsh.name/essential-javascript-functions
      *
@@ -2093,6 +2110,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         mathTrunc: mathTrunc,
         noop: noop,
         now: now,
+        objectIs: objectIs,
         once: once,
         ready: ready,
         regExpEscape: regExpEscape,
