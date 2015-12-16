@@ -40,9 +40,10 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _isInitialised = false;
 
     // Native functions
-    var _nativeArrayArrayOf = window.Array.of;
-    var _nativeArrayIsArray = window.Array.isArray;
-    var _nativeArrayPrototypeSlice = window.Array.prototype.slice;
+    var _nativeArray = window.Array;
+    var _nativeArrayArrayOf = _nativeArray.of;
+    var _nativeArrayIsArray = _nativeArray.isArray;
+    var _nativeArrayPrototypeSlice = _nativeArray.prototype.slice;
 
     var _nativeDateNow = window.Date.now;
 
@@ -1441,7 +1442,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return isFunction(_nativeStringRepeat) ?
             _nativeStringRepeat.call(value, count) :
-            (new window.Array(++count)).join(value);
+            (new _nativeArray(++count)).join(value);
     }
 
     /**
@@ -1510,7 +1511,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
         padding = toString(padding);
-        padding = new window.Array(_nativeMathMax(_nativeMathAbs(length) - value.length + 1, 0)).join(padding);
+        padding = new _nativeArray(_nativeMathMax(_nativeMathAbs(length) - value.length + 1, 0)).join(padding);
 
         return length >= 0 ? padding + value : value + padding;
     }
