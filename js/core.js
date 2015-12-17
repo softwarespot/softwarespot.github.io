@@ -558,6 +558,64 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Load a script file
+     * Idea by Liam Newmarch, URL: http://liamnewmarch.co.uk/promises/
+     *
+     * @param  {string} sourceFile Script file to load
+     * @return {promise} A new promise that passes the script file loaded as an argument
+     */
+    function include(sourceFile) {
+        var SCRIPT_EVENT_ERROR = 'error';
+        var SCRIPT_EVENT_LOAD = 'load';
+
+        var _head = document.head;
+        var _node = document.createElement('script');
+
+        // Store the promise functions to call once the script has been loaded
+        var _resolve = null;
+        var _reject = null;
+
+        // Set the source attribute
+        _node.src = sourceFile;
+
+        // Set script loading to be asynchronous
+        _node.async = true;
+
+        // _node.crossOrigin = 'anonymous';
+
+        // On successful script load
+        function scriptOnLoad() {
+            _resolve(sourceFile);
+            _remove();
+        }
+
+        // On script loading failure
+        function scriptOnError() {
+            _reject(sourceFile);
+            _remove();
+        }
+
+        // Remove the assigned event listeners and remove the promise function references
+        function _remove() {
+            _resolve = null;
+            _reject = null;
+            _node.removeEventListener(SCRIPT_EVENT_ERROR, scriptOnError, false);
+            _node.removeEventListener(SCRIPT_EVENT_LOAD, scriptOnLoad, false);
+        }
+
+        // Return a promise
+        return new window.Promise(function promise(resolve, reject) {
+            _resolve = resolve;
+            _reject = reject;
+            _node.addEventListener(SCRIPT_EVENT_ERROR, scriptOnError, false);
+            _node.addEventListener(SCRIPT_EVENT_LOAD, scriptOnLoad, false);
+
+            // Append to the HEAD node
+            _head.appendChild(_node);
+        });
+    }
+
+    /**
      * Check if a string contains only alphanumeric characters ( 0-9 and A-Z )
      *
      * @param {string} value String value to check
@@ -2036,6 +2094,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         dom: dom,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
+        include: include,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
 
