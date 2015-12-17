@@ -888,11 +888,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         // Based on the idea by jQuery
-        if (value.constructor && !has(value.constructor.prototype, 'isPrototypeOf')) {
-            return false;
-        }
-
-        return true;
+        return value.constructor && has(value.constructor.prototype, 'isPrototypeOf');
     }
 
     /**
