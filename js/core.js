@@ -240,7 +240,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -465,7 +465,6 @@ App.core = (function coreModule(window, document, $, undefined) {
         };
     }
 
-
     /**
      * Abstraction of querySelectorAll with increased performance and greater usability
      * Idea by ryanmorr, URL: https://github.com/ryanmorr/query
@@ -490,6 +489,7 @@ App.core = (function coreModule(window, document, $, undefined) {
                     return isNull(result) ? [] : [result];
                 case '.':
                     var reReplaceDots = /\./g;
+
                     return _nativeArrayPrototypeSlice.call(context.getElementsByClassName(selector.substr(1).replace(reReplaceDots, ' ')));
                 default:
                     return _nativeArrayPrototypeSlice.call(context.getElementsByTagName(selector));
@@ -1239,6 +1239,28 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Iterate over an object's keys
+     *
+     * @param {object} object Object to iterate over
+     * @param {function} fn Callback function to execute on each key in the object. FUnction signature is fn => value, key, originalObject
+     * @param {object|undefined} context Current context. If undefined then the 'object' is used
+     * @return {undefined}
+     */
+    function objectForEach(object, fn, context) {
+        if (!isFunction(fn)) {
+            return;
+        }
+
+        // If the context is undefined then use the 'object'
+        context = context || object;
+        for (var key in object) {
+            if (has(object, key)) {
+                fn.call(context, object[key], key, object);
+            }
+        }
+    }
+
+    /**
      * Determine if two values are the same
      * Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
      *
@@ -1335,7 +1357,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /*, reject/*/ ) {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {
@@ -2166,6 +2188,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         mathTrunc: mathTrunc,
         noop: noop,
         now: now,
+        objectForEach: objectForEach,
         objectIs: objectIs,
         once: once,
         ready: ready,
