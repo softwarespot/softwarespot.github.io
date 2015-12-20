@@ -804,7 +804,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is empty; otherwise, false
      */
     function isEmpty(value) {
-        if (isNullOrUndefined(value) || value === 0) {
+        if (isNil(value) || value === 0) {
             return true;
         }
 
@@ -946,6 +946,16 @@ App.core = (function coreModule(window, document, $, undefined) {
     };
 
     /**
+     * Check if a variable is null or undefined
+     *
+     * @param {mixed} value Value to check
+     * @returns {boolean} True, the value is null or undefined; otherwise, false
+     */
+    function isNil(value) {
+        return isNull(value) || isUndefined(value);
+    }
+
+    /**
      * Check if a variable is not null
      *
      * @param {mixed} value Value to check
@@ -963,16 +973,6 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function isNull(value) {
         return value === null;
-    }
-
-    /**
-     * Check if a variable is null or undefined
-     *
-     * @param {mixed} value Value to check
-     * @returns {boolean} True, the value is null or undefined; otherwise, false
-     */
-    function isNullOrUndefined(value) {
-        return isNull(value) || isUndefined(value);
     }
 
     /**
@@ -1212,7 +1212,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the file extension matches; otherwise, false
      */
     function isValidFileExtension(value, extensions) {
-        if (isNullOrUndefined(value)) {
+        if (isNil(value)) {
             return false;
         }
 
@@ -1567,7 +1567,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} An empty string; otherwise original value
      */
     function stringNullUndefinedToEmpty(value) {
-        return isNullOrUndefined(value) ? STRING_EMPTY : value;
+        return isNil(value) ? STRING_EMPTY : value;
     }
 
     /**
@@ -2008,7 +2008,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return value;
         }
 
-        return isNullOrUndefined(value) || _isObjectLike(value) ? STRING_EMPTY : (STRING_EMPTY + value);
+        return isNil(value) || _isObjectLike(value) ? STRING_EMPTY : (STRING_EMPTY + value);
     }
 
     /**
@@ -2165,12 +2165,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Trimmed string; otherwise, an empty string on error
      */
     function _trimmer(value, characters, fnNative, fnCharacters) {
-        if (!isString(value)) {
+        if (!isString(value) || value.length === 0) {
             return STRING_EMPTY;
-        }
-
-        if (value.length === 0) {
-            return value;
         }
 
         // If not a string, then use the native function
@@ -2247,11 +2243,11 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // isMap: isMap,
         isNaN: isNaN,
-        isNil: isNullOrUndefined,
+        isNil: isNil,
         isNotNull: isNotNull,
 
         // isNull: isNull,
-        isNullOrUndefined: isNullOrUndefined,
+        isNullOrUndefined: isNil,
 
         // isNumber: isNumber,
 
