@@ -240,7 +240,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -293,28 +293,30 @@ App.core = (function coreModule(window, document, $, undefined) {
     /**
      * Convert the array-like arguments object variable used in a closure to an array
      * Leaking arguments, URL: https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments
+     * Benchmark, URL: http://jsperf.com/arguments-to-array/40
      *
      * @param {arguments} args The array-like arguments object
      * @param {number} start Start position of the array. If undefined or invalid, the default is zero
      * @return {array} An array of arguments (not array-like); otherwise, an empty array
      */
     function argumentsToArray(args, start) {
-        var array = [];
-
         if (isArguments(args)) {
             var length = args.length;
+            var array = _nativeArray(length);
 
             // Set the start position of the array to zero if an invalid integer or start position
             if (!isInteger(start) || start < 0 || start >= length) {
                 start = 0;
             }
 
-            for (var i = start; i < length; i++) {
-                array.push(args[i]);
+            for (var i = start, j = 0; i < length; i++, j++) {
+                array[j] = args[i];
             }
+
+            return array;
         }
 
-        return array;
+        return [];
     }
 
     /**
@@ -876,7 +878,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is NaN; otherwise, false
      */
     var isNaN = isFunction(_nativeNumberIsNaN) ? _nativeNumberIsNaN : function isNaN(value) {
-        return isNumber(value) && window.isNaN(value);
+        return isNumber(value) && value !== value;
     };
 
     /**
@@ -1357,7 +1359,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/ ) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {
