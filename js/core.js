@@ -26,7 +26,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var IS_NOT_FOUND = -1;
 
     // Char used for padding digits
-    var DIGIT_PADDING_CHAR = '0';
+    var PADDING_DIGIT_CHAR = '0';
 
     // Store an empty string
     var STRING_EMPTY = '';
@@ -41,6 +41,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // Native functions
     var _nativeArray = window.Array;
+    var _nativeArrayArrayFrom = _nativeArray.from;
     var _nativeArrayArrayOf = _nativeArray.of;
     var _nativeArrayIsArray = _nativeArray.isArray;
     var _nativeArrayPrototypeSlice = _nativeArray.prototype.slice;
@@ -66,12 +67,14 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // var _nativeNumberInfinity = 1 / 0;
     var _nativeNumberIsFinite = window.Number.isFinite;
+    var _nativeNumberIsInteger = window.Number.isInteger;
     var _nativeNumberIsNaN = window.Number.isNaN;
     var _nativeNumberIsSafeInteger = window.Number.isSafeInteger;
     var _nativeNumberMaxSafeInteger = _maxSafeInteger; // 9007199254740991 or Number.MAX_SAFE_INTEGER
     var _nativeNumberMinSafeInteger = -(_maxSafeInteger); // -9007199254740991 or Number.MIN_SAFE_INTEGER
     // var _nativeNumberNaN = 0 / 0;
 
+    var _nativeObject = window.Object;
     var _nativeObjectIs = window.Object.is;
     var _nativeObjectKeys = window.Object.keys;
 
@@ -240,7 +243,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -291,7 +294,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Convert the array-like arguments object variable used in a closure to an array
+     * Convert the array-like arguments object variable used in a closure to an arrayquery
      * Leaking arguments, URL: https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments
      * Benchmark, URL: http://jsperf.com/arguments-to-array/40
      *
@@ -303,6 +306,11 @@ App.core = (function coreModule(window, document, $, undefined) {
         if (isArguments(args)) {
             var length = args.length;
             var array = _nativeArray(length);
+
+            // If the length is zero, then don't continue
+            if (length === 0) {
+                return array;
+            }
 
             // Set the start position of the array to zero if an invalid integer or start position
             if (!isInteger(start) || start < 0 || start >= length) {
@@ -336,6 +344,60 @@ App.core = (function coreModule(window, document, $, undefined) {
             array.splice(0, length);
         }
     }
+    /**
+     * Create a new array of an array-like iterable object
+     * Idea by MDN, URL: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+     *
+     * @param {array|object} arrayLike An array-like or iterable object to convert to an array
+     * @param {function} fn Optional map function to call on every element of the array. Function signature is fn => value, index
+     * @param {object|undefined} context Current context. If null or undefined then 'this' is used
+     * @return {array} New array; otherwise, an empty array on error
+     */
+    var arrayFrom = isFunction(_nativeArrayFrom) ? _nativeArrayFrom : function arrayFrom(arrayLike, fn, context) {
+        // If not an iterable object, then return an empty array
+        if (isNil(arrayLike)) {
+            return [];
+        }
+
+        // Cache the current context
+        var _this = this;
+
+        // Coerce as an object
+        var items = _nativeObject(arrayLike);
+
+        var length = toLength(items.length);
+        if (length === 0) {
+            return [];
+        }
+
+        if (isFunction(fn)) {
+            if (isNil(context)) {
+                context = undefined;
+            }
+        } else {
+            // If not a callable function, then set the context and function to be undefined
+            context = undefined;
+            fn = undefined;
+        }
+
+        // If the current context is a constructor, then call the [[Construct]] internal method; otherwise, create a new array
+        var array = isFunction(_this) ? _nativeObject(new _this(length)) : new _nativeArray(length);
+        var i = 0;
+        while (i < length) {
+            var value = items[i];
+            if (fn) {
+                array[i] = context ? fn.call(context, value, i) : fn(value, i);
+            } else {
+                array[i] = value;
+            }
+
+            i++;
+        }
+
+        array.length = length;
+
+        return array;
+    };
 
     /**
      * Search through an array to determine whether a value exists in the array
@@ -437,7 +499,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {function} fn Function to call after a timed delay
      * @param {number} delay Delay before calling the function. If not a number then defaults to zero
-     * @param {object|undefined} context Current context. If undefined then 'this' is used
+     * @param {object|undefined} context Current context. If null or undefined then 'this' is used
      * @return {undefined}
      */
     function debounce(fn, delay, context) {
@@ -458,8 +520,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             // Cache the arguments object-like array
             var args = arguments;
 
-            // If the context is undefined then use 'this'
-            context = context || this;
+            // If the context is null or undefined then use 'this'
+            context = isNil(context) ? this : context;
 
             timer = window.setTimeout(function setTimeout() {
                 fn.apply(context, args);
@@ -472,7 +534,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Idea by ryanmorr, URL: https://github.com/ryanmorr/query
      *
      * @param {string} selector String selector
-     * @param {object|undefined} context Current context. If undefined then 'document' is used
+     * @param {object|undefined} context Current context. If null or undefined then 'document' is used
      * @return {array} Array of DOM elements; otherwise, an empty array on array
      */
     function dom(selector, context) {
@@ -480,25 +542,27 @@ App.core = (function coreModule(window, document, $, undefined) {
             return [];
         }
 
-        context = context || document;
+        // If the context is null or undefined then use 'document'
+        context = isNil(context) ? document : context;
 
         var reQuerySelector = /(?:^#?[\w\-]+|\.[\w\-.]+$)/;
         if (reQuerySelector.test(selector)) {
-            switch (selector[0]) {
+            var selection = 0;
+            switch (selector[selection]) {
                 case '#':
-                    var result = document.getElementById(selector.substr(1));
+                    var result = document.getElementById(selector.substr(++selection));
 
                     return isNull(result) ? [] : [result];
                 case '.':
                     var reReplaceDots = /\./g;
 
-                    return _nativeArrayPrototypeSlice.call(context.getElementsByClassName(selector.substr(1).replace(reReplaceDots, ' ')));
+                    return arrayFrom(context.getElementsByClassName(selector.substr(++selection).replace(reReplaceDots, ' ')));
                 default:
-                    return _nativeArrayPrototypeSlice.call(context.getElementsByTagName(selector));
+                    return arrayFrom(context.getElementsByTagName(selector));
             }
         }
 
-        return _nativeArrayPrototypeSlice.call(context.querySelectorAll(selector));
+        return arrayFrom(context.querySelectorAll(selector));
     }
 
     /**
@@ -836,9 +900,9 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {mixed} value Value to check
      * @returns {boolean} True, the value is an integer; otherwise, false
      */
-    function isInteger(value) {
-        return isNumber(value) && _reInteger.test(toString(value));
-    }
+    var isInteger = isFunction(_nativeNumberIsInteger) ? _nativeNumberIsInteger : function isInteger(value) {
+        return isNumber(value) && isFinite(value) && _nativeMathFloor(value) === value;
+    };
 
     /**
      * Check if a variable is an instance of jQuery
@@ -1244,8 +1308,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Iterate over an object's keys
      *
      * @param {object} object Object to iterate over
-     * @param {function} fn Callback function to execute on each key in the object. FUnction signature is fn => value, key, originalObject
-     * @param {object|undefined} context Current context. If undefined then the 'object' is used
+     * @param {function} fn Callback function to execute on each key in the object. Function signature is fn => value, key, originalObject
+     * @param {object|undefined} context Current context. If null or undefined then the 'object' is used
      * @return {undefined}
      */
     function objectForEach(object, fn, context) {
@@ -1253,8 +1317,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             return;
         }
 
-        // If the context is undefined then use the 'object'
-        context = context || object;
+        // If the context is null or undefined then use the 'object'
+        context = isNil(context) ? object : context;
         for (var key in object) {
             if (has(object, key)) {
                 fn.call(context, object[key], key, object);
@@ -1283,7 +1347,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Idea by David Walsh, URL: https://davidwalsh.name/essential-javascript-functions
      *
      * @param {function} fn Function to call only once
-     * @param {object|undefined} context Current context. If undefined then 'this' is used
+     * @param {object|undefined} context Current context. If null or undefined then 'this' is used
      * @return {mixed} Return value of the fn argument. If once is called more than once, then the cached result is returned
      */
     function once(fn, context) {
@@ -1292,8 +1356,8 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return function onceApply() {
             if (isFunction(fn)) {
-                // If the context is undefined then use 'this'
-                context = context || this;
+                // If the context is null or undefined then use 'this'
+                context = isNil(context) ? this : context;
                 result = fn.apply(context, arguments);
 
                 // Destroy the fn reference
@@ -1312,7 +1376,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
-        return stringPad(value, DIGIT_PADDING_CHAR, _nativeMathAbs(length));
+        return stringPad(value, PADDING_DIGIT_CHAR, _nativeMathAbs(length));
     }
 
     /**
@@ -1359,7 +1423,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /*, reject/*/ ) {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {
@@ -1475,7 +1539,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return value.replace(_reStringFormat, function stringFormatKeys(fullMatch, index) {
             // Coerce as a number and get the value at the index position in the arguments array
-            var value = args[+index];
+            var value = args[toInteger(index)];
 
             return isUndefined(value) ? fullMatch : value;
         });
@@ -1847,6 +1911,37 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Coerce a value to a boolean datatype
+     * Idea by ECMAScript, URL: http://www.ecma-international.org/ecma-262/5.1/#sec-9.2
+     *
+     * @param {mixed} value Value to convert
+     * @return {boolean} New boolean value
+     */
+    function toBoolean(value) {
+        if (isNil(value)) {
+            return false;
+        }
+
+        if (isBoolean(value)) {
+            return value;
+        }
+
+        if (isNumber(value) && value !== 0 && !isNaN(value)) {
+            return true;
+        }
+
+        if (isString(value) && value.length > 0) {
+            return true;
+        }
+
+        if (isObject(value)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Coerce a value to an integer
      * Idea by MDN, URL: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/from
      *
@@ -1880,12 +1975,12 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         return date.getUTCFullYear() + '-' +
-            stringPad(date.getUTCMonth() + 1, DIGIT_PADDING_CHAR, 2) + '-' +
-            stringPad(date.getUTCDate(), DIGIT_PADDING_CHAR, 2) + 'T' +
-            stringPad(date.getUTCHours(), DIGIT_PADDING_CHAR, 2) + ':' +
-            stringPad(date.getUTCMinutes(), DIGIT_PADDING_CHAR, 2) + ':' +
-            stringPad(date.getUTCSeconds(), DIGIT_PADDING_CHAR, 2) + '.' +
-            stringPad(date.getUTCMilliseconds(), DIGIT_PADDING_CHAR, 3) + 'Z';
+            stringPad(date.getUTCMonth() + 1, PADDING_DIGIT_CHAR, 2) + '-' +
+            stringPad(date.getUTCDate(), PADDING_DIGIT_CHAR, 2) + 'T' +
+            stringPad(date.getUTCHours(), PADDING_DIGIT_CHAR, 2) + ':' +
+            stringPad(date.getUTCMinutes(), PADDING_DIGIT_CHAR, 2) + ':' +
+            stringPad(date.getUTCSeconds(), PADDING_DIGIT_CHAR, 2) + '.' +
+            stringPad(date.getUTCMilliseconds(), PADDING_DIGIT_CHAR, 3) + 'Z';
     }
 
     /**
@@ -1971,7 +2066,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         var TYPE_MATCH = 1;
         tag = tag[TYPE_MATCH].toLowerCase();
-        if (tag === 'number' && isNaN(value)) {
+        if (isNaN(value)) {
             // Override number if a NaN
             tag = 'nan';
         }
@@ -1996,7 +2091,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             } else if (isNull(value)) {
                 type = 'null';
             }
-        } else if (type === 'number' && isNaN(value)) {
+        } else if (isNaN(value)) {
             // Override number if a NaN
             type = 'nan';
         }
@@ -2110,6 +2205,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         getVersion: getVersion,
         argumentsToArray: argumentsToArray,
         arrayClear: arrayClear,
+        arrayFrom: arrayFrom,
         arrayIncludes: arrayIncludes,
         arrayOf: arrayOf,
         arrayPeek: arrayPeek,
@@ -2229,6 +2325,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringTrimRight: stringTrimRight,
         stringTrunc: stringTrunc,
         stringUCFirst: stringUCFirst,
+        toBoolean: toBoolean,
         toInteger: toInteger,
         toISOString: toISOString,
         toLength: toLength,
@@ -2244,10 +2341,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * isType module
      * Idea by YourJS, URL: http://yourjs.com/snippets
      *
-     * @param {object} publicAPI Public API to extend with the following isType functions
+     * @param {object} global Global object to extend with the following isType functions
      * @return {undefined}
      */
-    (function isTypeModule(publicAPI) {
+    (function isTypeModule(global) {
         var typeNames = [
             'Arguments',
             'Array',
@@ -2282,8 +2379,8 @@ App.core = (function coreModule(window, document, $, undefined) {
             var typeNameMatch = typeName.toLowerCase();
             var isType = 'is' + typeName;
 
-            // Extend if a function doesn't exist on the public API already
-            publicAPI[isType] = isFunction(publicAPI[isType]) ? publicAPI[isType] : function isTypeNameMatch(value) {
+            // Extend if a function doesn't exist on the global object already
+            global[isType] = isFunction(global[isType]) ? global[isType] : function isTypeNameMatch(value) {
                 return type(value) === typeNameMatch;
             };
         });
