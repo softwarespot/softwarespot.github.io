@@ -244,7 +244,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -1359,7 +1359,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         var context = object;
-        namespaceParts.split('.').forEach(function(part) {
+        namespaceParts.split('.').forEach(function (part) {
             // Create a new object or use existing if undefined
             context[part] = context[part] || {};
 
@@ -1451,7 +1451,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/ ) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {
@@ -1586,6 +1586,25 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         var index = 0;
         return (value[index++].toLowerCase()) + value.slice(index);
+    }
+
+    /**
+     * Map characters in a string using a callback function fn => value
+     *
+     * @param {string} value String value to map
+     * @param {function} fn Function callback for each character
+     * @return {string} New string; otherwise, an empty string on error
+     */
+    function stringMap(value, fn) {
+        if (!isString(value) || value.length === 0) {
+            return STRING_EMPTY;
+        }
+
+        if (!isFunction(fn)) {
+            return value;
+        }
+
+        return value.replace(/./g, fn);
     }
 
     /**
@@ -2329,6 +2348,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringFormat: stringFormat,
         stringIncludes: stringContains,
         stringLCFirst: stringLCFirst,
+        stringMap: stringMap,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
         stringPad: stringPad,
         stringRepeat: stringRepeat,
