@@ -41,10 +41,11 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // Native functions
     var _nativeArray = window.Array;
-    var _nativeArrayArrayFrom = _nativeArray.from;
+    var _nativeArrayFrom = _nativeArray.from;
     var _nativeArrayArrayOf = _nativeArray.of;
     var _nativeArrayIsArray = _nativeArray.isArray;
-    var _nativeArrayPrototypeSlice = _nativeArray.prototype.slice;
+
+    // var _nativeArrayPrototypeSlice = _nativeArray.prototype.slice;
 
     var _nativeDateNow = window.Date.now;
 
@@ -317,8 +318,8 @@ App.core = (function coreModule(window, document, $, undefined) {
                 start = 0;
             }
 
-            for (var i = start, j = 0; i < length; i++, j++) {
-                array[j] = args[i];
+            for (var i = start, j = 0; i < length;) {
+                array[j++] = args[i++];
             }
 
             return array;
@@ -1343,6 +1344,33 @@ App.core = (function coreModule(window, document, $, undefined) {
     };
 
     /**
+     * Create an object with nested properties e.g. obj.key1.key2 => obj = { key1: { key2: true } }
+     *
+     * @param {object} object Object to use
+     * @param {string} namespaceParts Namespace string, with a dot (.) as the delimiter for each property
+     * @return {object} New object; otherwise, empty object literal
+     */
+    function objectNamespace(object, namespaceParts) {
+        // Create a new object or use existing if undefined
+        object = object || {};
+
+        if (!isString(namespaceParts) || namespaceParts.length === 0) {
+            return object;
+        }
+
+        var context = object;
+        namespaceParts.split('.').forEach(function(part) {
+            // Create a new object or use existing if undefined
+            context[part] = context[part] || {};
+
+            // Set the context for nesting
+            context = context[part];
+        });
+
+        return object;
+    }
+
+    /**
      * Call a function only once
      * Idea by David Walsh, URL: https://davidwalsh.name/essential-javascript-functions
      *
@@ -2284,6 +2312,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         now: now,
         objectForEach: objectForEach,
         objectIs: objectIs,
+        objectNamespace: objectNamespace,
         once: once,
         ready: ready,
         regExpEscape: regExpEscape,
@@ -2393,22 +2422,17 @@ App.core = (function coreModule(window, document, $, undefined) {
  * @return {object} Context of this, based on the last part in the namespace e.g. this would be equal to the 'clock' object reference
  */
 App.namespace = function namespace(namespacePath) {
-    var core = App.core;
     var _this = this;
 
     // Return the context this being the root object, if not a valid string
-    if (!core.isString(namespacePath) || core.isStringEmptyOrWhitespace(namespacePath)) {
+    if (!App.core.isString(namespacePath) || App.core.isStringEmptyOrWhitespace(namespacePath)) {
         return _this;
     }
 
-    var parts = namespacePath.split('.');
-    for (var i = 0, length = parts.length; i < length; i++) {
-        if (!_this[parts[i]]) {
-            _this[parts[i]] = {};
-        }
-
-        _this = _this[parts[i]];
-    }
+    namespacePath.split('.').forEach(function forEach(part) {
+        _this[part] = _this[part] || {};
+        _this = _this[part];
+    });
 
     return _this;
 };
