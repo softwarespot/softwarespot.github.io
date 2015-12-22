@@ -244,7 +244,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -1359,7 +1359,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         var context = object;
-        namespaceParts.split('.').forEach(function (part) {
+        namespaceParts.split('.').forEach(function forEachPart(part) {
             // Create a new object or use existing if undefined
             context[part] = context[part] || {};
 
@@ -1451,7 +1451,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /*, reject/*/ ) {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {
