@@ -19,20 +19,20 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Unique global identifier. Internal usage only
     // var GUID = 'BF1D7691-79D4-4A89-930B-84C65A309E86';
 
-    // Milliseconds in a second
-    var MILLISECONDS_IN_A_SECOND = 1000;
-
     // Value of indexOf when a value isn't found
     var IS_NOT_FOUND = -1;
 
-    // Char used for padding digits
-    var PADDING_DIGIT_CHAR = '0';
+    // Milliseconds in a second
+    var MILLISECONDS_IN_A_SECOND = 1000;
 
     // Store an empty string
     var STRING_EMPTY = '';
 
     // Store ellipses string
     var STRING_ELLIPSES = '...';
+
+    // Char used for padding digits
+    var STRING_PADDING_CHAR = '0';
 
     // Fields
 
@@ -290,7 +290,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a function datatype; otherwise, false
      */
     function isFunction(value) {
-        var tag = isObject(value) ? _objectToString.call(value) : null;
+        var tag = _objectToString.call(value);
         return tag === _objectStringsFunction || tag === _objectStringsGenerator;
     }
 
@@ -466,7 +466,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {mixed|undefined} The last item pushed onto the array; otherwise, undefined
      */
     function arrayPeek(array) {
-        if (!isArray(array) || array.length === 0) {
+        if (!isArray(array)) {
             return;
         }
 
@@ -605,15 +605,15 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {array} An array of keys; otherwise, an empty array
      */
     function keys(object) {
+        var array = [];
+
         if (!isObject(object)) {
-            return [];
+            return array;
         }
 
         if (isFunction(_nativeObjectKeys)) {
             return _nativeObjectKeys(object);
         }
-
-        var array = [];
 
         for (var key in object) {
             if (has(object, key)) {
@@ -1404,7 +1404,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Value with padded zeroes
      */
     function padDigits(value, length) {
-        return stringPad(value, PADDING_DIGIT_CHAR, _nativeMathAbs(length));
+        return stringPad(value, STRING_PADDING_CHAR, _nativeMathAbs(length));
     }
 
     /**
@@ -2022,12 +2022,12 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         return date.getUTCFullYear() + '-' +
-            stringPad(date.getUTCMonth() + 1, PADDING_DIGIT_CHAR, 2) + '-' +
-            stringPad(date.getUTCDate(), PADDING_DIGIT_CHAR, 2) + 'T' +
-            stringPad(date.getUTCHours(), PADDING_DIGIT_CHAR, 2) + ':' +
-            stringPad(date.getUTCMinutes(), PADDING_DIGIT_CHAR, 2) + ':' +
-            stringPad(date.getUTCSeconds(), PADDING_DIGIT_CHAR, 2) + '.' +
-            stringPad(date.getUTCMilliseconds(), PADDING_DIGIT_CHAR, 3) + 'Z';
+            stringPad(date.getUTCMonth() + 1, STRING_PADDING_CHAR, 2) + '-' +
+            stringPad(date.getUTCDate(), STRING_PADDING_CHAR, 2) + 'T' +
+            stringPad(date.getUTCHours(), STRING_PADDING_CHAR, 2) + ':' +
+            stringPad(date.getUTCMinutes(), STRING_PADDING_CHAR, 2) + ':' +
+            stringPad(date.getUTCSeconds(), STRING_PADDING_CHAR, 2) + '.' +
+            stringPad(date.getUTCMilliseconds(), STRING_PADDING_CHAR, 3) + 'Z';
     }
 
     /**
@@ -2449,7 +2449,7 @@ App.namespace = function namespace(namespacePath) {
         return _this;
     }
 
-    namespacePath.split('.').forEach(function forEach(part) {
+    namespacePath.split('.').forEach(function forEachPart(part) {
         _this[part] = _this[part] || {};
         _this = _this[part];
     });
