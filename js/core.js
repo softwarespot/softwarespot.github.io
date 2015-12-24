@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/12/06
+ * Modified: 2015/12/24
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $, undefined) {
@@ -796,6 +796,16 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     function isDefined(value) {
         return !isUndefined(value);
+    }
+
+    /**
+     * Check if an object is a node element
+     *
+     * @param {object} object Object to check
+     * @return {boolean} True, the object is a node element; otherwise, false
+     */
+    function isElement(object) {
+        return !!(object && object.nodeType === Node.ELEMENT_NODE);
     }
 
     /**
@@ -2273,6 +2283,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // isDate: isDate,
         isDefined: isDefined,
+        isElement: isElement,
         isEmpty: isEmpty,
 
         // isError: isError,
