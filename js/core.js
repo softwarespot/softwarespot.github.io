@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/12/24
+ * Modified: 2015/12/26
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $, undefined) {
@@ -24,6 +24,9 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // Milliseconds in a second
     var MILLISECONDS_IN_A_SECOND = 1000;
+
+    // First regular expression match
+    var REGEXP_FIRST_MATCH = 1;
 
     // Store an empty string
     var STRING_EMPTY = '';
@@ -234,7 +237,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _reTrim = new window.RegExp(_reTrimLeft.source + '|' + _reTrimRight.source, 'g');
 
     // Parsing the native toString() return value e.g. [object Object]
-    var _reTypeOf = /(?:^\[object\s([A-Za-z]+)\]$)/;
+    var _reTypeOf = /(?:^\[object\s(.*?)\]$)/;
 
     // Methods
 
@@ -2113,17 +2116,11 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Idea by JavaScript Weblog, URL: https://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
      *
      * @param {mixed} value Variable to check
-     * @return {string|null} Classname of the value; otherwise, undefined on error
+     * @return {string} Classname of the value
      */
     function type(value) {
-        var tag = _objectToString.call(value).match(_reTypeOf);
-        if (isNull(tag)) {
-            return undefined;
-        }
-
-        var TYPE_MATCH = 1;
-        tag = tag[TYPE_MATCH].toLowerCase();
-        if (isNaN(value)) {
+        var tag = (_objectToString.call(value).match(_reTypeOf)[REGEXP_FIRST_MATCH] || 'undefined').toLowerCase();
+        if (tag === 'number' && value !== value) {
             // Override number if a NaN
             tag = 'nan';
         }
