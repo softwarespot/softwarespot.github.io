@@ -84,6 +84,15 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _nativeObjectIs = window.Object.is;
     var _nativeObjectKeys = window.Object.keys;
 
+    // Store the object prototype
+    var _objectPrototype = window.Object.prototype;
+
+    // Store the hasOwnProperty method
+    var _objectHasOwnProperty = _objectPrototype.hasOwnProperty;
+
+    // Store the toString method
+    var _objectToString = _objectPrototype.toString;
+
     var _nativePromise = window.Promise;
 
     var _nativeStringEndsWith = window.String.prototype.endsWith;
@@ -135,15 +144,6 @@ App.core = (function coreModule(window, document, $, undefined) {
     // var _objectStringsSymbol = '[object Symbol]';
     // var _objectStringsWeakMap = '[object WeakMap]';
     // var _objectStringsWeakSet = '[object WeakSet]';
-
-    // Store the object prototype
-    var _objectPrototype = window.Object.prototype;
-
-    // Store the hasOwnProperty method
-    var _objectHasOwnProperty = _objectPrototype.hasOwnProperty;
-
-    // Store the toString method
-    var _objectToString = _objectPrototype.toString;
 
     // Regular expressions
 
@@ -199,7 +199,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _reHex = /(?:^0[xX][\dA-Fa-f]+$)/;
 
     // Escape HTML characters
-    var _reHTMLEscape = new window.RegExp('([' + keys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g');
+    var _reHTMLEscape = new window.RegExp('([' + _nativeObjectKeys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g');
 
     // Integer values
     var _reInteger = /(?:^-?(?!0+)\d+$)/;
@@ -411,8 +411,8 @@ App.core = (function coreModule(window, document, $, undefined) {
      *
      * @param {array} array The array to search in
      * @param {mixed} searchFor The value to search for
-     * @param {number} position Position to start searching from. A positive value searches from the left and a negative value searches from the right.
-     * The default is zero
+     * @param {number} position Position to start searching from
+     * Note: A positive value searches from the left and a negative value searches from the right. The default is zero
      * @return {boolean} True, the value exists in the array; otherwise, false
      */
     function arrayIncludes(array, searchFor, position) {
@@ -441,7 +441,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         var isSearchNaN = isNaN(searchFor);
 
         // Loop through the array searching for the value or if the value and element are not equal to themselves i.e. NaN
-        for (; incrementer < length; incrementer++) {
+        while (incrementer < length) {
             var element = array[incrementer];
             if (searchFor === element ||
 
@@ -449,6 +449,8 @@ App.core = (function coreModule(window, document, $, undefined) {
                 (isSearchNaN && element !== element)) {
                 return true;
             }
+
+            incrementer++;
         }
 
         return false;
