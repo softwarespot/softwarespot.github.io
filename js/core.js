@@ -28,11 +28,11 @@ App.core = (function coreModule(window, document, $, undefined) {
     // First regular expression match
     var REGEXP_FIRST_MATCH = 1;
 
-    // Store an empty string
-    var STRING_EMPTY = '';
-
     // Store ellipses string
     var STRING_ELLIPSES = '...';
+
+    // Store an empty string
+    var STRING_EMPTY = '';
 
     // Char used for padding digits
     var STRING_PADDING_CHAR = '0';
@@ -51,6 +51,8 @@ App.core = (function coreModule(window, document, $, undefined) {
     // var _nativeArrayPrototypeSlice = _nativeArray.prototype.slice;
 
     var _nativeDateNow = window.Date.now;
+
+    var _nativeError = window.Error;
 
     var _nativeMathAbs = window.Math.abs;
     var _nativeMathCeil = window.Math.ceil;
@@ -1971,6 +1973,16 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Throw an error with an error message
+     *
+     * @param {string} value Message value
+     * @return {undefined}
+     */
+    function throwError(value) {
+        throw new _nativeError(value);
+    }
+
+    /**
      * Coerce a value to a boolean datatype
      * Idea by ECMAScript, URL: http://www.ecma-international.org/ecma-262/5.1/#sec-9.2
      *
@@ -2378,6 +2390,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringTrimRight: stringTrimRight,
         stringTrunc: stringTrunc,
         stringUCFirst: stringUCFirst,
+        throwError: throwError,
         toBoolean: toBoolean,
         toInteger: toInteger,
         toISOString: toISOString,
