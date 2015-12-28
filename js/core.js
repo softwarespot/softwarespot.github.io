@@ -190,7 +190,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _reEscapedCamelCaseChars = /([a-z0-9])([A-Z]+)/g;
 
     // Float values
-    var _reFloat = /(?:^-?(?!0+)\d+\.\d+$)/;
+    var _reFloat = /(?:^-?(?!0{2,})\d+\.\d+$)/;
 
     // Globally unique identifier
     var _reGUID = /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/;
