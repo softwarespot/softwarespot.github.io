@@ -19,6 +19,10 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Unique global identifier. Internal usage only
     // var GUID = 'BF1D7691-79D4-4A89-930B-84C65A309E86';
 
+    // HTML element loading/error events
+    var ELEMENT_EVENT_ERROR = 'error';
+    var ELEMENT_EVENT_LOAD = 'load';
+
     // Value of indexOf when a value isn't found
     var IS_NOT_FOUND = -1;
 
@@ -632,6 +636,40 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Check if an image is resolvable i.e. returns a HTTP status code that is not 404
+     *
+     * @param {string} sourceFile An image source file to check
+     * @return {promise} A promise that is resolved once the image has loaded or a response has been resolved. The source file is passed to the callbacks
+     */
+    function imageExists(sourceFile) {
+        // Return a promise
+        return new _nativePromise(function promise(resolve, reject) {
+            if (!isString(sourceFile) || sourceFile.length === 0) {
+                reject(STRING_EMPTY);
+                return;
+            }
+
+            var img = document.createElement('img');
+
+            // Create event listeners for when or if the HTMLImageElement is loaded
+            img.addEventListener(ELEMENT_EVENT_LOAD, function load() {
+                resolve(sourceFile);
+            });
+
+            img.addEventListener(ELEMENT_EVENT_ERROR, function error() {
+                reject(sourceFile);
+            });
+
+            img.src = sourceFile;
+
+            // If the image has already been loaded i.e. cached
+            if (img.complete) {
+                resolve(sourceFile);
+            }
+        });
+    }
+
+    /**
      * Load a script file
      * Idea by Liam Newmarch, URL: http://liamnewmarch.co.uk/promises/
      *
@@ -639,9 +677,6 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A new promise that passes the script file loaded as an argument
      */
     function include(sourceFile) {
-        var SCRIPT_EVENT_ERROR = 'error';
-        var SCRIPT_EVENT_LOAD = 'load';
-
         var _head = document.head;
         var _node = document.createElement('script');
 
@@ -673,16 +708,16 @@ App.core = (function coreModule(window, document, $, undefined) {
         function _remove() {
             _resolve = null;
             _reject = null;
-            _node.removeEventListener(SCRIPT_EVENT_ERROR, scriptOnError, false);
-            _node.removeEventListener(SCRIPT_EVENT_LOAD, scriptOnLoad, false);
+            _node.removeEventListener(ELEMENT_EVENT_ERROR, scriptOnError, false);
+            _node.removeEventListener(ELEMENT_EVENT_LOAD, scriptOnLoad, false);
         }
 
         // Return a promise
-        return new window.Promise(function promise(resolve, reject) {
+        return new _nativePromise(function promise(resolve, reject) {
             _resolve = resolve;
             _reject = reject;
-            _node.addEventListener(SCRIPT_EVENT_ERROR, scriptOnError, false);
-            _node.addEventListener(SCRIPT_EVENT_LOAD, scriptOnLoad, false);
+            _node.addEventListener(ELEMENT_EVENT_ERROR, scriptOnError, false);
+            _node.addEventListener(ELEMENT_EVENT_LOAD, scriptOnLoad, false);
 
             // Append to the HEAD node
             _head.appendChild(_node);
@@ -2278,6 +2313,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         dom: dom,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
+        imageExists: imageExists,
         include: include,
         isAlNum: isAlNum,
         isAlpha: isAlpha,
