@@ -86,31 +86,6 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     var _nativeObject = window.Object;
     var _nativeObjectIs = window.Object.is;
-    var _nativeObjectKeys = window.Object.keys;
-
-    // Store the object prototype
-    var _objectPrototype = window.Object.prototype;
-
-    // Store the hasOwnProperty method
-    var _objectHasOwnProperty = _objectPrototype.hasOwnProperty;
-
-    // Store the toString method
-    var _objectToString = _objectPrototype.toString;
-
-    var _nativePromise = window.Promise;
-
-    var _nativeStringEndsWith = window.String.prototype.endsWith;
-    var _nativeStringIncludes = window.String.prototype.includes;
-    var _nativeStringRepeat = window.String.prototype.repeat;
-    var _nativeStringStartsWith = window.String.prototype.startsWith;
-    var _nativeStringTrim = window.String.prototype.trim;
-    var _nativeStringTrimLeft = window.String.prototype.trimLeft;
-    var _nativeStringTrimRight = window.String.prototype.trimRight;
-
-    // Escaped characters and their HTML entity equivalents
-    var _htmlEscapeChars = {
-        '&': '&amp;',
-        '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
         '\'': '&#39;',
@@ -652,17 +627,18 @@ App.core = (function coreModule(window, document, $, undefined) {
             var img = document.createElement('img');
 
             // Create event listeners for when or if the HTMLImageElement is loaded
-            img.addEventListener(ELEMENT_EVENT_LOAD, function load() {
+            img.addEventListener(ELEMENT_EVENT_LOAD, function elementOnLoad() {
                 resolve(sourceFile);
             });
 
-            img.addEventListener(ELEMENT_EVENT_ERROR, function error() {
+            img.addEventListener(ELEMENT_EVENT_ERROR, function elementOnError() {
                 reject(sourceFile);
             });
 
+            // Set the image element source file
             img.src = sourceFile;
 
-            // If the image has already been loaded i.e. cached
+            // If the image has already been loaded i.e. cached, then resolve the promise
             if (img.complete) {
                 resolve(sourceFile);
             }
