@@ -139,7 +139,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _reASCIIExtended = /(?:^[\x00-\xFF]*$)/;
 
     // Base64
-    var _reBase64 = /(?:^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$)/;
+    var _reBase64 = /(?:^(?:[0-9A-Za-z+/]{4})*(?:[0-9A-Za-z+/]{2}==|[0-9A-Za-z+/]{3}=)?$)/;
 
     // Is representing a boolean datatype
     var _reBoolean = /(?:^false|true$)/i;
@@ -166,7 +166,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _reEscapedCamelCaseChar = /([A-Z])/g;
 
     // Escape a camel-case string
-    var _reEscapedCamelCaseChars = /([a-z0-9])([A-Z]+)/g;
+    var _reEscapedCamelCaseChars = /([0-9a-z])([A-Z]+)/g;
 
     // Float values
     var _reFloat = /(?:^-?(?!0{2,})\d+\.\d+$)/;
@@ -175,7 +175,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _reGUID = /(?:^[0-9A-Fa-f]{8}-(?:[0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$)/;
 
     // Hex string ( ASCII A-F, a-f, 0-9 )
-    var _reHex = /(?:^0[xX][\dA-Fa-f]+$)/;
+    var _reHex = /(?:^0[xX][0-9A-Fa-f]+$)/;
 
     // Escape HTML characters
     var _reHTMLEscape = new window.RegExp('([' + _nativeObjectKeys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g');
