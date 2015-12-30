@@ -823,7 +823,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the object is a node element; otherwise, false
      */
     function isElement(object) {
-        return !!(object && object.nodeType === Node.ELEMENT_NODE);
+        return !!(object && object.nodeType === window.Node.ELEMENT_NODE);
     }
 
     /**
