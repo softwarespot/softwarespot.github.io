@@ -773,7 +773,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a boolean datatype; otherwise, false
      */
     function isBoolean(value) {
-        return value === true || value === false || _objectToString.call(value) === _objectStringsBoolean;
+        return value === false || value === true || _objectToString.call(value) === _objectStringsBoolean;
     }
 
     /**
