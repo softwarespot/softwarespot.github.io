@@ -19,7 +19,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Unique global identifier. Internal usage only
     // var GUID = 'BF1D7691-79D4-4A89-930B-84C65A309E86';
 
-    // HTML element loading/error events
+    // HTML element error/loading events
     var ELEMENT_EVENT_ERROR = 'error';
     var ELEMENT_EVENT_LOAD = 'load';
 
@@ -520,13 +520,14 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         delay = isNumber(delay) ? delay : 0;
 
-        return function debounceApply() {
+        return function debounceClosure() {
             if (!isFunction(fn)) {
                 return;
             }
 
             if (!isNull(timer)) {
                 window.clearTimeout(timer);
+                timer = null;
             }
 
             // Cache the arguments object-like array
@@ -674,10 +675,14 @@ App.core = (function coreModule(window, document, $, undefined) {
 
             // Create event listeners for when or if the HTMLImageElement is loaded
             img.addEventListener(ELEMENT_EVENT_LOAD, function elementOnLoad() {
+                // Destroy the image element
+                img = null;
                 resolve(sourceFile);
             });
 
             img.addEventListener(ELEMENT_EVENT_ERROR, function elementOnError() {
+                // Destroy the image element
+                img = null;
                 reject(sourceFile);
             });
 
@@ -1456,7 +1461,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Cache the fn result, as the fn will be destroyed when called once
         var result;
 
-        return function onceApply() {
+        return function onceClosure() {
             if (isFunction(fn)) {
                 // If the context is null or undefined then use 'this'
                 context = isNil(context) ? this : context;
