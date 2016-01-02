@@ -86,6 +86,31 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     var _nativeObject = window.Object;
     var _nativeObjectIs = window.Object.is;
+    var _nativeObjectKeys = window.Object.keys;
+
+    // Store the object prototype
+    var _objectPrototype = window.Object.prototype;
+
+    // Store the hasOwnProperty method
+    var _objectHasOwnProperty = _objectPrototype.hasOwnProperty;
+
+    // Store the toString method
+    var _objectToString = _objectPrototype.toString;
+
+    var _nativePromise = window.Promise;
+
+    var _nativeStringEndsWith = window.String.prototype.endsWith;
+    var _nativeStringIncludes = window.String.prototype.includes;
+    var _nativeStringRepeat = window.String.prototype.repeat;
+    var _nativeStringStartsWith = window.String.prototype.startsWith;
+    var _nativeStringTrim = window.String.prototype.trim;
+    var _nativeStringTrimLeft = window.String.prototype.trimLeft;
+    var _nativeStringTrimRight = window.String.prototype.trimRight;
+
+    // Escaped characters and their HTML entity equivalents
+    var _htmlEscapeChars = {
+        '&': '&amp;',
+        '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
         '\'': '&#39;',
@@ -228,7 +253,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init( /*config*/ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -551,6 +576,27 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return arrayFrom(context.querySelectorAll(selector));
     }
+
+    /**
+     * [getAbsoluteUrl description]
+     * Idea by David Walsh, URL: https://davidwalsh.name/essential-javascript-functions
+     *
+     * @param {string} url Url to get the absolute path of
+     * @return {string} Absolute url; otherwise, an empty string
+     */
+    var getAbsoluteUrl = (function getAbsoluteUrl() {
+        var element = document.createElement('a');
+
+        return function getAbsoluteUrlClosure(url) {
+            if (!isString(url)) {
+                return STRING_EMPTY;
+            }
+
+            element.href = url;
+
+            return element.href;
+        };
+    })();
 
     /**
      * Get the outerHTML of a specific jQuery selector object element
@@ -1479,7 +1525,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/ ) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {
@@ -2287,6 +2333,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         arrayRemove: arrayRemove,
         debounce: debounce,
         dom: dom,
+        getAbsoluteUrl: getAbsoluteUrl,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
         imageExists: imageExists,
