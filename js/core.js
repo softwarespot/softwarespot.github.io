@@ -354,6 +354,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             array.splice(0, length);
         }
     }
+
     /**
      * Create a new array of an array-like iterable object
      * Idea by MDN, URL: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/from
