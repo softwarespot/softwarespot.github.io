@@ -4,7 +4,7 @@ var App = App || {};
 /**
  * Core module
  *
- * Modified: 2015/12/26
+ * Modified: 2016/01/03
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $, undefined) {
@@ -253,7 +253,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /*config*/ ) {
+    function init(/*config*/) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
@@ -1530,7 +1530,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /*, reject/*/ ) {
+        return new _nativePromise(function readyPromise(resolve /*, reject/*/) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {

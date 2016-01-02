@@ -3,7 +3,7 @@
 /**
  * Gists module
  *
- * Modified: 2015/12/06
+ * Modified: 2016/01/03
  * @author softwarespot
  */
 App.namespace().gists = (function gistsModule(window, document, $, core, undefined) {
