@@ -99,6 +99,8 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     var _nativePromise = window.Promise;
 
+    var _nativeRegExp = window.RegExp;
+
     var _nativeStringEndsWith = window.String.prototype.endsWith;
     var _nativeStringIncludes = window.String.prototype.includes;
     var _nativeStringRepeat = window.String.prototype.repeat;
@@ -203,7 +205,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _reHex = /(?:^0[xX][0-9A-Fa-f]+$)/;
 
     // Escape HTML characters
-    var _reHTMLEscape = new window.RegExp('([' + _nativeObjectKeys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g');
+    var _reHTMLEscape = new _nativeRegExp('([' + _nativeObjectKeys(_htmlEscapeChars).join(STRING_EMPTY) + '])', 'g');
 
     // Integer values
     var _reInteger = /(?:^-?(?!0+)\d+$)/;
@@ -240,7 +242,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     // Strip leading and trailing whitespace
     // Idea by MDN, URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
-    var _reTrim = new window.RegExp(_reTrimLeft.source + '|' + _reTrimRight.source, 'g');
+    var _reTrim = new _nativeRegExp(_reTrimLeft.source + '|' + _reTrimRight.source, 'g');
 
     // Parsing the native toString() return value e.g. [object Object]
     var _reTypeOf = /(?:^\[object\s(.*?)\]$)/;
@@ -1302,7 +1304,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Replace semi-colon(s) (;) with pipe(s) (|)
         extensions = toString(extensions).replace(';', '|');
 
-        return (new window.RegExp('(?:\.(?:' + extensions + ')$)', 'i')).test(value);
+        return (new _nativeRegExp('(?:\.(?:' + extensions + ')$)', 'i')).test(value);
     }
 
     /**
@@ -2309,7 +2311,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         characters = '[' + regExpEscape(characters) + ']';
         characters = fnCharacters(characters);
 
-        return value.replace(new window.RegExp(characters, 'g'), STRING_EMPTY);
+        return value.replace(new _nativeRegExp(characters, 'g'), STRING_EMPTY);
     }
 
     /**
