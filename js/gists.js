@@ -6,7 +6,7 @@
  * Modified: 2016/01/03
  * @author softwarespot
  */
-App.namespace().gists = (function gistsModule(window, document, $, core, undefined) {
+App.namespace().gists = (function gistsModule(window, document, $, core) {
     // Constants
 
     // SemVer version number of the module

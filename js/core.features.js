@@ -11,7 +11,7 @@
  * Modified: 2016/01/03
  * @author softwarespot
  */
-App.namespace('core').features = (function featuresModule(window, document, $, core, undefined) {
+App.namespace('core').features = (function featuresModule(window, document, $, core) {
     // Constants
 
     // SemVer version number of the module
