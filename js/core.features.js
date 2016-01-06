@@ -219,7 +219,6 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         // Iterate through the array. A polyfill is available at
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Polyfill
         inputTypes.forEach(function forEachInputType(inputType) {
-
             // Set the attribute type of the input element
             input.setAttribute('type', inputType);
 
@@ -241,7 +240,6 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
 
             // If a range type
             if (reRange.test(inputType) && core.isDefined(input.style.WebkitAppearance)) {
-
                 // Append the input element to the current document
                 documentElem.appendChild(input);
 
@@ -270,21 +268,17 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
 
                 // If a email, number or url type
             } else if (reEmailNumberUrl.test(inputType)) {
-
                 // The following types come with pre-backed validation
                 isValid = input.checkValidity && input.checkValidity() === false;
 
                 // For all other types check if the value has been sanitised
             } else {
-
                 // If the upgraded input component rejects the :) text, we've got a winner
                 isValid = input.value !== testData;
-
             }
 
             // Add to the internal object literal
             _inputs[inputType] = !!isValid;
-
         });
     }
 

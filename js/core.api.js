@@ -6,7 +6,7 @@
  * Modified: 2016/01/03
  * @author softwarespot
  */
-App.namespace('core').api = (function apiModule(window, document, $, core, undefined) {
+App.namespace('core').api = (function apiModule(window, document, $, core) {
     // Constants
 
     // SemVer version number of the module
@@ -151,7 +151,7 @@ App.namespace('core').api = (function apiModule(window, document, $, core, undef
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init(/* config */) {
         if (_isInitialised) {
             return;
         }

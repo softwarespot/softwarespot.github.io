@@ -6,7 +6,7 @@
  * Modified: 2016/01/03
  * @author softwarespot
  */
-App.namespace().main = (function mainModule(window, document, $, core) {
+App.namespace().main = (function mainModule(window, document, $) {
     // Constants
 
     // SemVer version number of the module
@@ -28,7 +28,7 @@ App.namespace().main = (function mainModule(window, document, $, core) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/*config*/) {
+    function init(/* config */) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = {};
 
