@@ -2462,6 +2462,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         stringTrunc: stringTrunc,
         stringUCFirst: stringUCFirst,
         throwError: throwError,
+        toArray: arrayFrom,
         toBoolean: toBoolean,
         toInteger: toInteger,
         toISOString: toISOString,
