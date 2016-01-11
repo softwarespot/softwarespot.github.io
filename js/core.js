@@ -1514,18 +1514,20 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     /**
      * Generate a random number
+     * Idea by Chris Heilmann, URL: https://davidwalsh.name/essential-javascript-functions#comment-502510
      *
      * @param {number} min Minimum value
      * @param {number} max Maximum value
      * @return {number} Returns a random number between the minimum and maximum values
      */
-    function randomNumber(min, max) {
+    function randomNumber(min, max, isInteger) {
         if (!isNumber(min) || !isNumber(max)) {
             return 0;
         }
 
-        // URL: http://www.w3schools.com/jsref/jsref_random.asp
-        return _nativeMathFloor((_nativeMathRandom() * max) + min);
+        var random = _nativeMathRandom() * (max - min) + min;
+
+        return isInteger === false ? random : _nativeMathFloor(random);
     }
 
     /**
