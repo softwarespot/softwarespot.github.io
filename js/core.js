@@ -1580,6 +1580,41 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Return a closure that is wrapped in a try...catch
+     *
+     * @param {function} fn Function to wrap
+     * @param {function} catchFn Function to call on error. An exceptions object is passed to the function
+     * @param {object|undefined} context Current context. If null or undefined then 'this' is used
+     * @return {mixed} Returns a mixed value; otherwise, null on error
+     */
+    function safeFunction(fn, catchFn, context) {
+        if (!isFunction(fn)) {
+            return null;
+        }
+
+        // Return a closure
+        return function safeFunction() {
+            if (!isFunction(fn)) {
+                return null;
+            }
+
+            if (isNil(context)) {
+                context = undefined;
+            }
+
+            try {
+                return fn.spply(context, arguments);
+            } catch (e) {
+                if (!isFunction(catchFn)) {
+                    return null;
+                }
+
+                return catchFn.call(context, e);
+            }
+        };
+    }
+
+    /**
      * Prefix all line-feed characters ( ASCII 10 ) with a carriage return character ( ASCII 13 )
      *
      * @param {string} value String value to replace
@@ -2432,6 +2467,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         padDigits: padDigits,
         parseHTML: parseHTML,
         randomNumber: randomNumber,
+        safeFunction: safeFunction,
         sprintf: stringFormat,
         stringAddCR: stringAddCR,
         stringAddLF: stringAddLF,
