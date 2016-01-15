@@ -85,6 +85,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     // var _nativeNumberNaN = 0 / 0;
 
     var _nativeObject = window.Object;
+    var _nativeObjectCreate = window.Object.create;
     var _nativeObjectIs = window.Object.is;
     var _nativeObjectKeys = window.Object.keys;
 
@@ -581,6 +582,43 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Wrap an element with an outer element
+     * Idea by DevTools, https://bgrins.github.io/devtools-snippets/#wrapelement
+     *
+     * @param {HTMLElement|string} element An element to wrap. Can either be a string selector or element node
+     * @param {HTMLElement|string} wrapper The element to encase the element in. Can either be a string selector or element node
+     * @return {undefined}
+     */
+    function elementWrap(element, wrapper) {
+        // Get the element to wrap
+        if (isString(element) || !isElement(element)) {
+            element = document.querySelector(element);
+        }
+
+        if (isNull(element)) {
+            return;
+        }
+
+        // Create the element wrapper
+        if (isString(wrapper) || !isElement(wrapper)) {
+            wrapper = document.createElement(wrapper);
+        }
+
+        if (isNull(wrapper)) {
+            return;
+        }
+
+        var currentParent = element.parentNode;
+        var nextSibling = element.nextSibling;
+        wrapper.appendChild(element);
+        if (nextSibling) {
+            currentParent.insertBefore(wrapper, nextSibling);
+        } else {
+            currentParent.appendChild(wrapper);
+        }
+    }
+
+    /**
      * Get the absolute url
      * Idea by David Walsh, URL: https://davidwalsh.name/essential-javascript-functions
      *
@@ -589,6 +627,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
     var getAbsoluteUrl = (function getAbsoluteUrl() {
         var element = document.createElement('a');
+        element.style.display = 'none';
 
         return function getAbsoluteUrlClosure(url) {
             if (!isString(url)) {
@@ -620,6 +659,36 @@ App.core = (function coreModule(window, document, $, undefined) {
         .prop('outerHTML');
 
         return isUndefined(outerHTML) ? null : outerHTML;
+    }
+
+    /**
+     * Get custom properties attached to the window object
+     * Idea by DevTools, URL: https://bgrins.github.io/devtools-snippets/#log-globals
+     *
+     * @return {object} An object with custom properties
+     */
+    function getGlobals() {
+        // Create an iFrame and append to the current body to determine the browser's native window object properties
+        var iFrame = document.createElement('iframe');
+        iFrame.style.display = 'none';
+        document.body.appendChild(iFrame);
+        var windowClone = iFrame.contentWindow;
+        document.body.removeChild(iFrame);
+
+        // Do not inherit from Object.prototype
+        var globals = _nativeObjectCreate(null);
+
+        // Note: Using Object.prototype.hasOwnProperty.call will result in incorrect results
+
+        // Get all the properties in the window global object
+        for (var property in window) {
+            // If they are not in the cloned window, the assume it's a custom property
+            if (!(property in windowClone)) {
+                globals[property] = window[property];
+            }
+        }
+
+        return globals;
     }
 
     /**
@@ -1392,17 +1461,23 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} object Object to iterate over
      * @param {function} fn Callback function to execute on each key in the object. Function signature is fn => value, key, originalObject
      * @param {object|undefined} context Current context. If null or undefined then the 'object' is used
+     * @param {boolean} ignoreHasOwnProperty Iterate over properties that aren't directly attached to the object, By default
      * @return {undefined}
      */
-    function objectForEach(object, fn, context) {
+    function objectForEach(object, fn, context, ignoreHasOwnProperty) {
         if (!isFunction(fn)) {
             return;
+        }
+
+        // By default
+        if (!isBoolean(ignoreHasOwnProperty)) {
+            ignoreHasOwnProperty = false;
         }
 
         // If the context is null or undefined then use the 'object'
         context = isNil(context) ? object : context;
         for (var key in object) {
-            if (has(object, key)) {
+            if (ignoreHasOwnProperty === true || has(object, key)) {
                 fn.call(context, object[key], key, object);
             }
         }
@@ -2377,7 +2452,9 @@ App.core = (function coreModule(window, document, $, undefined) {
         arrayRemove: arrayRemove,
         debounce: debounce,
         dom: dom,
+        elementWrap: elementWrap,
         getAbsoluteUrl: getAbsoluteUrl,
+        getGlobals: getGlobals,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
         imageExists: imageExists,
