@@ -485,11 +485,8 @@ App.core = (function coreModule(window, document, $, undefined) {
         }
 
         var length = array.length;
-        if (length > 0) {
-            return array[length - 1];
-        }
 
-        return null;
+        return length > 0 ? array[length - 1] : null;
     }
 
     /**
