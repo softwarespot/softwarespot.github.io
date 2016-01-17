@@ -52,63 +52,64 @@ App.core = (function coreModule(window, document, $, undefined) {
     var _nativeArrayArrayOf = _nativeArray.of;
     var _nativeArrayIsArray = _nativeArray.isArray;
 
-    // var _nativeArrayPrototypeSlice = _nativeArray.prototype.slice;
+    // var _nativeArrayPrototype = _nativeArray.prototype;
+    // var _nativeArraySlice = _nativeArrayPrototype.slice;
 
-    var _nativeDateNow = window.Date.now;
+    var _nativeDate = window.Date;
+    var _nativeDateNow = _nativeDate.now;
 
     var _nativeError = window.Error;
 
-    var _nativeMathAbs = window.Math.abs;
-    var _nativeMathCeil = window.Math.ceil;
-    var _nativeMathFloor = window.Math.floor;
-    var _nativeMathMax = window.Math.max;
-    var _nativeMathMin = window.Math.min;
-    var _nativeMathPow = window.Math.pow;
-    var _nativeMathRandom = window.Math.random;
-    var _nativeMathRound = window.Math.round;
-    var _nativeMathSign = window.Math.sign;
-    var _nativeMathSqrt = window.Math.sqrt;
-    var _nativeMathTrunc = window.Math.trunc;
+    var _nativeMath = window.Math;
+    var _nativeMathAbs = _nativeMath.abs;
+    var _nativeMathCeil = _nativeMath.ceil;
+    var _nativeMathFloor = _nativeMath.floor;
+    var _nativeMathMax = _nativeMath.max;
+    var _nativeMathMin = _nativeMath.min;
+    var _nativeMathPow = _nativeMath.pow;
+    var _nativeMathRandom = _nativeMath.random;
+    var _nativeMathRound = _nativeMath.round;
+    var _nativeMathSign = _nativeMath.sign;
+    var _nativeMathSqrt = _nativeMath.sqrt;
+    var _nativeMathTrunc = _nativeMath.trunc;
 
     // Programatically calculate the maximum possible number
     var _maxSafeInteger = _nativeMathPow(2, 53) - 1;
 
+    var _nativeNode = window.Node;
+
     var _nativeNumber = window.Number;
 
     // var _nativeNumberInfinity = 1 / 0;
-    var _nativeNumberIsFinite = window.Number.isFinite;
-    var _nativeNumberIsInteger = window.Number.isInteger;
-    var _nativeNumberIsNaN = window.Number.isNaN;
-    var _nativeNumberIsSafeInteger = window.Number.isSafeInteger;
+    var _nativeNumberIsFinite = _nativeNumber.isFinite;
+    var _nativeNumberIsInteger = _nativeNumber.isInteger;
+    var _nativeNumberIsNaN = _nativeNumber.isNaN;
+    var _nativeNumberIsSafeInteger = _nativeNumber.isSafeInteger;
     var _nativeNumberMaxSafeInteger = _maxSafeInteger; // 9007199254740991 or Number.MAX_SAFE_INTEGER
     var _nativeNumberMinSafeInteger = -(_maxSafeInteger); // -9007199254740991 or Number.MIN_SAFE_INTEGER
     // var _nativeNumberNaN = 0 / 0;
 
     var _nativeObject = window.Object;
-    var _nativeObjectCreate = window.Object.create;
-    var _nativeObjectIs = window.Object.is;
-    var _nativeObjectKeys = window.Object.keys;
+    var _nativeObjectCreate = _nativeObject.create;
+    var _nativeObjectIs = _nativeObject.is;
+    var _nativeObjectKeys = _nativeObject.keys;
 
-    // Store the object prototype
-    var _objectPrototype = window.Object.prototype;
-
-    // Store the hasOwnProperty method
-    var _objectHasOwnProperty = _objectPrototype.hasOwnProperty;
-
-    // Store the toString method
-    var _objectToString = _objectPrototype.toString;
+    var _nativeObjectPrototype = _nativeObject.prototype;
+    var _nativeObjectHasOwnProperty = _nativeObjectPrototype.hasOwnProperty;
+    var _nativeObjectToString = _nativeObjectPrototype.toString;
 
     var _nativePromise = window.Promise;
 
     var _nativeRegExp = window.RegExp;
 
-    var _nativeStringEndsWith = window.String.prototype.endsWith;
-    var _nativeStringIncludes = window.String.prototype.includes;
-    var _nativeStringRepeat = window.String.prototype.repeat;
-    var _nativeStringStartsWith = window.String.prototype.startsWith;
-    var _nativeStringTrim = window.String.prototype.trim;
-    var _nativeStringTrimLeft = window.String.prototype.trimLeft;
-    var _nativeStringTrimRight = window.String.prototype.trimRight;
+    var _nativeString = window.String;
+    var _nativeStringEndsWith = _nativeString.prototype.endsWith;
+    var _nativeStringIncludes = _nativeString.prototype.includes;
+    var _nativeStringRepeat = _nativeString.prototype.repeat;
+    var _nativeStringStartsWith = _nativeString.prototype.startsWith;
+    var _nativeStringTrim = _nativeString.prototype.trim;
+    var _nativeStringTrimLeft = _nativeString.prototype.trimLeft;
+    var _nativeStringTrimRight = _nativeString.prototype.trimRight;
 
     // Escaped characters and their HTML entity equivalents
     var _htmlEscapeChars = {
@@ -302,7 +303,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a function datatype; otherwise, false
      */
     function isFunction(value) {
-        var tag = _objectToString.call(value);
+        var tag = _nativeObjectToString.call(value);
         return tag === _objectStringsFunction || tag === _objectStringsGenerator;
     }
 
@@ -330,9 +331,13 @@ App.core = (function coreModule(window, document, $, undefined) {
                 start = 0;
             }
 
-            for (var i = start, j = 0; i < length;) {
+            var i = start;
+            var j = 0;
+            while (i < length) {
                 array[j++] = args[i++];
             }
+
+            array.length = j;
 
             return array;
         }
@@ -448,13 +453,13 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Cache whether the search value is a NaN
         var isSearchNaN = isNaN(searchFor);
 
-        // Loop through the array searching for the value or if the value and element are not equal to themselves i.e. NaN
+        // Loop through the array searching for the search value or if the search value and array value are not equal to themselves i.e. NaN
         while (incrementer < length) {
-            var element = array[incrementer];
-            if (searchFor === element ||
+            var value = array[incrementer];
+            if (searchFor === value ||
 
                 // Unique approach to searching for NaN
-                (isSearchNaN && element !== element)) {
+                (isSearchNaN && value !== value)) {
                 return true;
             }
 
@@ -681,10 +686,10 @@ App.core = (function coreModule(window, document, $, undefined) {
         // Note: Using Object.prototype.hasOwnProperty.call will result in incorrect results
 
         // Get all the properties in the window global object
-        for (var property in window) {
+        for (var key in window) {
             // If they are not in the cloned window, the assume it's a custom property
-            if (!(property in windowClone)) {
-                globals[property] = window[property];
+            if (!(key in windowClone)) {
+                globals[key] = window[key];
             }
         }
 
@@ -699,7 +704,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the property exists; otherwise, false
      */
     function has(object, property) {
-        return _objectHasOwnProperty.call(object, property);
+        return _nativeObjectHasOwnProperty.call(object, property);
     }
 
     /**
@@ -839,7 +844,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is an array-like arguments object; otherwise, false
      */
     function isArguments(value) {
-        return _objectToString.call(value) === _objectStringsArguments;
+        return _nativeObjectToString.call(value) === _objectStringsArguments;
     }
 
     /**
@@ -859,7 +864,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is an array datatype; otherwise, false
      */
     var isArray = isFunction(_nativeArrayIsArray) ? _nativeArrayIsArray : function isArray(value) {
-        return _objectToString.call(value) === _objectStringsArray;
+        return _nativeObjectToString.call(value) === _objectStringsArray;
     };
 
     /**
@@ -895,7 +900,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a boolean datatype; otherwise, false
      */
     function isBoolean(value) {
-        return value === false || value === true || _objectToString.call(value) === _objectStringsBoolean;
+        return value === false || value === true || _nativeObjectToString.call(value) === _objectStringsBoolean;
     }
 
     /**
@@ -925,7 +930,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a Date object; otherwise, false
      */
     function isDate(value) {
-        return _objectToString.call(value) === _objectStringsDate;
+        return _nativeObjectToString.call(value) === _objectStringsDate;
     }
 
     /**
@@ -945,7 +950,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {boolean} True, the object is a node element; otherwise, false
      */
     function isElement(object) {
-        return !!(object && object.nodeType === window.Node.ELEMENT_NODE);
+        return !!(object && object.nodeType === _nativeNode.ELEMENT_NODE);
     }
 
     /**
@@ -981,7 +986,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isError(value) {
-    //     return _objectToString.call(value) === _objectStringsError && isString(value.message);
+    //     return _nativeObjectToString.call(value) === _objectStringsError && isString(value.message);
     // }
 
     /**
@@ -1022,7 +1027,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isGeneratorFunction(value) {
-    //     return _objectToString.call(value) === _objectStringsGenerator;
+    //     return _nativeObjectToString.call(value) === _objectStringsGenerator;
     // }
 
     /**
@@ -1083,7 +1088,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isMap(value) {
-    //     return _objectToString.call(value) === _objectStringsMap;
+    //     return _nativeObjectToString.call(value) === _objectStringsMap;
     // }
 
     /**
@@ -1133,7 +1138,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a number datatype; otherwise, false
      */
     function isNumber(value) {
-        return typeof value === 'number' || _objectToString.call(value) === _objectStringsNumber;
+        return typeof value === 'number' || _nativeObjectToString.call(value) === _objectStringsNumber;
     }
 
     /**
@@ -1206,7 +1211,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isPromise(value) {
-    //     return _objectToString.call(value) === _objectStringsPromise;
+    //     return _nativeObjectToString.call(value) === _objectStringsPromise;
     // }
 
     /**
@@ -1216,7 +1221,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a RegExp object; otherwise, false
      */
     function isRegExp(value) {
-        return _objectToString.call(value) === _objectStringsRegExp;
+        return _nativeObjectToString.call(value) === _objectStringsRegExp;
     }
 
     /**
@@ -1237,7 +1242,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isSet(value) {
-    //     return _objectToString.call(value) === _objectStringsSet;
+    //     return _nativeObjectToString.call(value) === _objectStringsSet;
     // }
 
     /**
@@ -1247,7 +1252,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is a string datatype; otherwise, false
      */
     function isString(value) {
-        return typeof value === 'string' || _objectToString.call(value) === _objectStringsString;
+        return typeof value === 'string' || _nativeObjectToString.call(value) === _objectStringsString;
     }
 
     /**
@@ -1383,7 +1388,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isWeakMap(value) {
-    //     return _objectToString.call(value) === _objectStringsWeakMap;
+    //     return _nativeObjectToString.call(value) === _objectStringsWeakMap;
     // }
 
     /**
@@ -1394,7 +1399,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      */
 
     // function isWeakSet(value) {
-    //     return _objectToString.call(value) === _objectStringsWeakSet;
+    //     return _nativeObjectToString.call(value) === _objectStringsWeakSet;
     // }
 
     /**
@@ -1450,9 +1455,9 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {number} Current Unix epoch
      */
     function now() {
-        var timstamp = isFunction(_nativeDateNow) ? _nativeDateNow() : new window.Date().getTime();
+        var timstamp = isFunction(_nativeDateNow) ? _nativeDateNow() : new _nativeDate().getTime();
 
-        return timstamp / MILLISECONDS_IN_A_SECOND;
+        return _nativeMathFloor(timstamp / MILLISECONDS_IN_A_SECOND);
     }
 
     /**
@@ -1583,6 +1588,47 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         return html.body.children;
     }
+
+    // Queue a function module
+    var queueFn = (function queueFnModule() {
+        var _queueFn = [];
+
+        /**
+         * Calls the next function in the queue. The function is passed to the function that is being called, including any  arguments
+         *
+         * @return {undefined}
+         */
+        function next() {
+            // Create an arguments array
+            var args = argumentsToArray(arguments);
+
+            // Add the next function to the start of the arguments array
+            args.unshift(next);
+
+            // Dequeue the function from the internal queue
+            var fn = _queueFn.shift();
+            fn.apply(null, args);
+        }
+
+        /**
+         * Add a function to the internal queue array
+         *
+         * @param {function} fn Function to queue to the internal queue array
+         * @return {undefined}
+         */
+        return function queueFn(fn) {
+            if (!isFunction(fn)) {
+                return;
+            }
+
+            // Enqueue to the internal queue
+            _queueFn.push(fn);
+
+            if (_queueFn.length === 1) {
+                next();
+            }
+        };
+    })();
 
     /**
      * Generate a random number
@@ -1836,7 +1882,11 @@ App.core = (function coreModule(window, document, $, undefined) {
     function stringReverse(value) {
         var array = stringToArray(value);
 
-        for (var length = value.length, i = 0, j = length - 1, halfLength = length / 2; i < halfLength;) {
+        var length = value.length;
+        var i = 0;
+        var j = length - 1;
+        var halfLength = length / 2;
+        while (i < halfLength) {
             var temp = array[i];
             array[i++] = array[j];
             array[j--] = temp;
@@ -2309,7 +2359,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {string} Classname of the value
      */
     function type(value) {
-        var tag = (_objectToString.call(value).match(_reTypeOf)[REGEXP_FIRST_MATCH] || 'undefined').toLowerCase();
+        var tag = (_nativeObjectToString.call(value).match(_reTypeOf)[REGEXP_FIRST_MATCH] || 'undefined').toLowerCase();
         if (tag === 'number' && value !== value) {
             // Override number if a NaN
             tag = 'nan';
@@ -2360,7 +2410,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is an object; otherwise, false
      */
     function _isObjectLike(value) {
-        return _objectToString.call(value) === _objectStringsObject;
+        return _nativeObjectToString.call(value) === _objectStringsObject;
     }
 
     /**
@@ -2535,6 +2585,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         objectIs: objectIs,
         objectNamespace: objectNamespace,
         once: once,
+        queueFn: queueFn,
         ready: ready,
         regExpEscape: regExpEscape,
         regExpFlags: regExpFlags,
