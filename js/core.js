@@ -1485,6 +1485,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // If the context is null or undefined then use the 'object'
         context = isNil(context) ? object : context;
+
         for (var key in object) {
             if (ignoreHasOwnProperty === true || has(object, key)) {
                 fn.call(context, object[key], key, object);
