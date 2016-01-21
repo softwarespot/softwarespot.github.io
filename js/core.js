@@ -587,6 +587,17 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Search from an element for the closest match, by traversing up the DOM
+     *
+     * @param {HTMLElement} element Element to start traversing from
+     * @param {function} fn Function to recursively that passes the next element above. This is a predicate function i.e. returns a boolean
+     * @return {HTMLElement|undefined} Matched HTMLElement; otherwise, undefined
+     */
+    function elementClosest(element, fn) {
+        return element && isFunction(fn) && (fn.call(this, element) ? element : elementClosest(element.parentNode, fn));
+    }
+
+    /**
      * Wrap an element with an outer element
      * Idea by DevTools, https://bgrins.github.io/devtools-snippets/#wrapelement
      *
@@ -2502,6 +2513,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         arrayRemove: arrayRemove,
         debounce: debounce,
         dom: dom,
+        elementClosest: elementClosest,
         elementWrap: elementWrap,
         getAbsoluteUrl: getAbsoluteUrl,
         getGlobals: getGlobals,
