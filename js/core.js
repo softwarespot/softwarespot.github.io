@@ -722,9 +722,10 @@ App.core = (function coreModule(window, document, $, undefined) {
      * Extract the keys of an object to an array
      *
      * @param {object} object Object to extract the keys from
+     * @param {boolean} ignoreHasOwnProperty Iterate over properties that aren't directly attached to the object. By default, access the properties directly attached to the object
      * @return {array} An array of keys; otherwise, an empty array
      */
-    function keys(object) {
+    function keys(object, ignoreHasOwnProperty) {
         var array = [];
 
         if (!isObject(object)) {
@@ -735,8 +736,12 @@ App.core = (function coreModule(window, document, $, undefined) {
             return _nativeObjectKeys(object);
         }
 
+        if (!isBoolean(ignoreHasOwnProperty)) {
+            ignoreHasOwnProperty = false;
+        }
+
         for (var key in object) {
-            if (has(object, key)) {
+            if (ignoreHasOwnProperty === true || has(object, key)) {
                 array.push(key);
             }
         }
@@ -1477,7 +1482,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {object} object Object to iterate over
      * @param {function} fn Callback function to execute on each key in the object. Function signature is fn => value, key, originalObject
      * @param {object|undefined} context Current context. If null or undefined then the 'object' is used
-     * @param {boolean} ignoreHasOwnProperty Iterate over properties that aren't directly attached to the object, By default
+     * @param {boolean} ignoreHasOwnProperty Iterate over properties that aren't directly attached to the object. By default, access the properties directly attached to the object
      * @return {undefined}
      */
     function objectForEach(object, fn, context, ignoreHasOwnProperty) {
@@ -1485,13 +1490,13 @@ App.core = (function coreModule(window, document, $, undefined) {
             return;
         }
 
-        // By default
         if (!isBoolean(ignoreHasOwnProperty)) {
             ignoreHasOwnProperty = false;
         }
 
         // If the context is null or undefined then use the 'object'
         context = isNil(context) ? object : context;
+
         for (var key in object) {
             if (ignoreHasOwnProperty === true || has(object, key)) {
                 fn.call(context, object[key], key, object);
