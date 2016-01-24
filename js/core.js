@@ -533,7 +533,7 @@ App.core = (function coreModule(window, document, $, undefined) {
                 return;
             }
 
-            if (!isNull(timer)) {
+            if (isNotNull(timer)) {
                 window.clearTimeout(timer);
                 timer = null;
             }
@@ -1128,6 +1128,16 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Check if a variable is not null or undefined
+     *
+     * @param {mixed} value Value to check
+     * @return {boolean} True, the value is not null or undefined; otherwise, false
+     */
+    function isNotNil(value) {
+        return !isNil(value);
+    }
+
+    /**
      * Check if a variable is not null
      *
      * @param {mixed} value Value to check
@@ -1377,7 +1387,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
-     * Check if a value is the right file extension
+     * Check if a value is the correct file extension
      *
      * @param {string} value File extension to check
      * @param {string} extensions Semi-colon separated list e.g. js;html;htm
@@ -2560,6 +2570,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         // isMap: isMap,
         isNaN: isNaN,
         isNil: isNil,
+        isNotNil: isNotNil,
         isNotNull: isNotNull,
 
         // isNull: isNull,
