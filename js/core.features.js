@@ -7,6 +7,7 @@
  * @link http://html5please.com/
  * @link http://caniuse.com/
  * @link https://github.com/NielsLeenheer/html5test/
+ * @link https://github.com/viljamis/feature.js/
  *
  * Modified: 2016/01/03
  * @author softwarespot
@@ -30,6 +31,9 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
     var _nativeHistory = window.history;
     var _nativeLocalStorage = window.localStorage;
     var _nativeNavigator = window.navigator;
+    var _nativeNotification = window.Notification;
+    var _nativeObject = window.Object;
+    var _nativeObjectCreate = _nativeObject.create;
     var _nativePromise = window.Promise;
     var _nativeSessionStorage = window.sessionStorage;
 
@@ -46,18 +50,22 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
     var _hasSessionStorage = _isStorage(_nativeSessionStorage);
     var _hasWebStorage = _hasLocalStorage && _hasSessionStorage;
 
+    var _hasNotification = core.isFunction(_nativeNotification) &&
+        (_nativeNotification.permission === 'granted' ||
+        core.isFunction(_nativeNotification.requestPermission));
+
     var _hasPromise = core.isFunction(_nativePromise) &&
         'all' in _nativePromise &&
         'race' in _nativePromise &&
         'reject' in _nativePromise &&
         'resolve' in _nativePromise;
 
-    // Hold the input data, with the key being the input type and the value of either true or false as
+    // Store the input data, with the key being the input type and the value of either true or false as
     // whether or not it's supported by the following browser
     var _inputs = null;
 
     // Cache the HTML node
-    var _html = document.documentElement;
+    var _documentElement = document.documentElement;
     var _prefixes = ['Khtml', 'Moz', 'Ms', 'O', 'Webkit'];
 
     // Methods
@@ -73,7 +81,7 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         }
 
         // Initialise the input object literal
-        _getInputs();
+        _inputs = _getInputs();
 
         _isInitialised = true;
     }
@@ -120,7 +128,7 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         }
 
         // Appears the style is supported
-        if (!core.isUndefined(_html.style[property])) {
+        if (!core.isUndefined(_documentElement.style[property])) {
             return true;
         }
 
@@ -129,7 +137,7 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
 
         var length = _prefixes.length;
         while (length-- > 0) {
-            if (!core.isUndefined(_html.style[_prefixes[length] + property])) {
+            if (!core.isUndefined(_documentElement.style[_prefixes[length] + property])) {
                 return true;
             }
         }
@@ -172,13 +180,15 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
     /**
      * Check if an input type is supported
      *
-     * @param {string} inputType Input type
-     * @return {boolean} True the type is supported; otherwise, false
+     * @param {string} type Input type
+     * @return {boolean} True, the type is supported; otherwise, false
      */
-    function hasInput(inputType) {
-        // Coerce as a string
-        var hasInputResult = _inputs[core.toString(inputType)];
-        return core.isUndefined(hasInputResult) ? false : hasInputResult;
+    function hasInput(type) {
+        if (!core.isString(type)) {
+            return false;
+        }
+
+        return !core.isUndefined(_inputs[type]);
     }
 
     /**
@@ -189,26 +199,22 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
      * @return {undefined}
      */
     function _getInputs() {
-        if (!core.isNull(_inputs)) {
-            return;
-        }
-
         // Regular expressions
         var reEmailNumberUrl = /^(?:email|number|url)$/;
         var reRange = /(?:^range$)/;
         var reSearchTel = /^(?:search|tel)$/;
 
         // Create an empty object literal
-        _inputs = {};
+        var inputs = _nativeObjectCreate(null);
 
         // Input types that will are split as an array
-        var inputTypes = 'color date datetime datetime-local email month number range search tel time url week'.split(' ');
+        var types = 'color date datetime datetime-local email month number range search tel time url week'.split(' ');
+
+        // Document element to bind the input element to
+        var element = document.documentElement;
 
         // Create a temporary input element
         var input = document.createElement('input');
-
-        // Document element to bind the input element to
-        var documentElem = document.documentElement;
 
         // Inline stylesheet
         var cssStyles = 'position:absolute;visibility:hidden;';
@@ -216,11 +222,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         // Data to test with
         var testData = '=)';
 
-        // Iterate through the array. A polyfill is available at
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Polyfill
-        inputTypes.forEach(function forEachInputType(inputType) {
+        // Iterate through the array. A polyfill is available at URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Polyfill
+        types.forEach(function forEachInputType(type) {
             // Set the attribute type of the input element
-            input.setAttribute('type', inputType);
+            input.setAttribute('type', type);
 
             // Check the type is not text and that it contains a 'style' property
             var isValid = input.type !== 'text' && 'style' in input;
@@ -239,9 +244,9 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
             input.style.cssText = cssStyles;
 
             // If a range type
-            if (reRange.test(inputType) && core.isDefined(input.style.WebkitAppearance)) {
+            if (reRange.test(type) && core.isDefined(input.style.WebkitAppearance)) {
                 // Append the input element to the current document
-                documentElem.appendChild(input);
+                element.appendChild(input);
 
                 // Cache the defaultView
                 var defaultView = document.defaultView;
@@ -256,10 +261,10 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
                     // check the height to see if the widget is actually there
                     (input.offsetHeight !== 0);
 
-                documentElem.removeChild(input);
+                element.removeChild(input);
 
                 // If a search or tel type
-            } else if (reSearchTel.test(inputType)) {
+            } else if (reSearchTel.test(type)) {
                 // Specification doesn't define any special parsing or detectable UI
                 // behaviours so we pass these through as true
 
@@ -267,7 +272,7 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
                 // even make it here (I doubt anymore!)
 
                 // If a email, number or url type
-            } else if (reEmailNumberUrl.test(inputType)) {
+            } else if (reEmailNumberUrl.test(type)) {
                 // The following types come with pre-backed validation
                 isValid = input.checkValidity && input.checkValidity() === false;
 
@@ -278,8 +283,23 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
             }
 
             // Add to the internal object literal
-            _inputs[inputType] = !!isValid;
+            inputs[type] = isValid;
         });
+
+        return inputs;
+    }
+
+    // NOTIFICATION
+
+    /**
+     * Check if the Notification API exists
+     *
+     * Based on the concept by Modernizr URL: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/notification.js
+     *
+     * @return {boolean} True, the feature exists; otherwise, false
+     */
+    function hasNotification() {
+        return _hasNotification;
     }
 
     // PROMISE
@@ -355,6 +375,7 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         hasHistory: hasHistory,
         hasInput: hasInput,
         hasLocalStorage: hasLocalStorage,
+        hasNotification: hasNotification,
         hasPromise: hasPromise,
         hasSessionStorage: hasSessionStorage,
         hasWebStorage: hasWebStorage,
