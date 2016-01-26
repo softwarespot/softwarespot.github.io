@@ -566,7 +566,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         // If the context is null or undefined then use 'document'
         context = isNil(context) ? document : context;
 
-        var reQuerySelector = /(?:^#?[\w\-]+|\.[\w\-.]+$)/;
+        var reQuerySelector = /(?:^#?[0-9A-Za-z\-]+|\.[0-9A-Za-z\-.]+$)/;
         if (reQuerySelector.test(selector)) {
             var selection = 0;
             switch (selector[selection]) {
