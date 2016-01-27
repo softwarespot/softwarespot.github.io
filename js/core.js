@@ -249,6 +249,9 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Parsing the native toString() return value e.g. [object Object]
     var _reTypeOf = /(?:^\[object\s(.*?)\]$)/;
 
+    // Unique id cache
+    var _uniqueId = 0;
+
     // Methods
 
     /**
@@ -2420,6 +2423,19 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Generate a unique id string, with an optional prefix
+     * Idea by underscore, URL: https://github.com/jashkenas/underscore/blob/master/underscore.js
+     *
+     * @param {boolean|number|string} prefix Optional prefix
+     * @return {string} Unique id string
+     */
+    function uniqueId(prefix) {
+        var id = STRING_EMPTY + (++_uniqueId);
+
+        return isBoolean(prefix) || isNumber(prefix) || isString(prefix) ? prefix + id : id;
+    }
+
+    /**
      * Convert a character to a HTML entity
      *
      * @param {string} char Character to convert
@@ -2664,6 +2680,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         trimRight: trimRight,
         type: type,
         typeOf: typeOf,
+        uniqueId: uniqueId,
     };
 
     /**
