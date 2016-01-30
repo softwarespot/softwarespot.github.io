@@ -60,6 +60,8 @@ App.core = (function coreModule(window, document, $, undefined) {
 
     var _nativeError = window.Error;
 
+    var _nativeGlobalIsFinite = window.isFinite;
+
     var _nativeMath = window.Math;
     var _nativeMathAbs = _nativeMath.abs;
     var _nativeMathCeil = _nativeMath.ceil;
@@ -680,35 +682,35 @@ App.core = (function coreModule(window, document, $, undefined) {
         return isUndefined(outerHTML) ? null : outerHTML;
     }
 
-    /**
-     * Get custom properties attached to the window object
-     * Idea by DevTools, URL: https://bgrins.github.io/devtools-snippets/#log-globals
-     *
-     * @return {object} An object with custom properties
-     */
-    function getGlobals() {
+    // Get globals module
+    var getGlobals = (function getGlobalsModule() {
         // Create an iFrame and append to the current body to determine the browser's native window object properties
-        var iFrame = document.createElement('iframe');
-        iFrame.style.display = 'none';
-        document.body.appendChild(iFrame);
-        var windowClone = iFrame.contentWindow;
-        document.body.removeChild(iFrame);
+        var _iFrame = _createIFrame();
+        var _clone = _iFrame.contentWindow;
+        document.body.removeChild(_iFrame);
 
-        // Do not inherit from Object.prototype
-        var globals = _nativeObjectCreate(null);
-
-        // Note: Using Object.prototype.hasOwnProperty.call will result in incorrect results
+        // Don't inherit from Object.prototype
+        var _globals = _nativeObjectCreate(null);
 
         // Get all the properties in the window global object
         for (var key in window) {
             // If they are not in the cloned window, the assume it's a custom property
-            if (!(key in windowClone)) {
-                globals[key] = window[key];
+            // Note: Using Object.prototype.hasOwnProperty.call will result in incorrect results
+            if (!(key in _clone)) {
+                _globals[key] = window[key];
             }
         }
 
-        return globals;
-    }
+        /**
+         * Get custom properties attached to the window object
+         * Idea by DevTools, URL: https://bgrins.github.io/devtools-snippets/#log-globals
+         *
+         * @return {object} An object with custom properties
+         */
+        return function getGlobals() {
+            return _globals;
+        };
+    })();
 
     /**
      * Check if an object contains a key
@@ -845,6 +847,25 @@ App.core = (function coreModule(window, document, $, undefined) {
             _head.appendChild(_node);
         });
     }
+
+    // Is Ad blocker module
+    var hasAdBlocker = (function hasAdBlockerModule() {
+        var _iFrame = _createIFrame('ads-text-iframe', 'http://domain.com/ads.html');
+        var _hasAdBlocker = _iFrame.style.display === 'none' ||
+            _iFrame.style.display === 'hidden' ||
+            _iFrame.style.visibility === 'hidden' ||
+            _iFrame.offsetHeight === 0;
+
+        /**
+         * Has an Ad blocker
+         * Idea by Qnimate, URL: http://qnimate.com/how-to-detect-if-adblock-is-present-or-not/
+         *
+         * @return {boolean} True, has an ad blocker; otherwise, false
+         */
+        return function hasAdBlocker() {
+            return _hasAdBlocker;
+        };
+    })();
 
     /**
      * Check if a string contains only alphanumeric characters ( 0-9 and A-Z )
@@ -1025,7 +1046,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @returns {boolean} True, the value is finite; otherwise, false
      */
     var isFinite = isFunction(_nativeNumberIsFinite) ? _nativeNumberIsFinite : function isFinite(value) {
-        return isNumber(value) && window.isFinite(value);
+        return isNumber(value) && _nativeGlobalIsFinite(value);
     };
 
     /**
@@ -2139,7 +2160,7 @@ App.core = (function coreModule(window, document, $, undefined) {
             return 0;
         }
 
-        var factor = _nativeMathPow(10, window.isFinite(precision) ? precision : 0);
+        var factor = _nativeMathPow(10, isFinite(precision) ? precision : 0);
         return _nativeMathRound(value * factor) / factor;
     }
 
@@ -2436,6 +2457,33 @@ App.core = (function coreModule(window, document, $, undefined) {
     }
 
     /**
+     * Create an iFrame element
+     *
+     * @param {string} id Id of the iFrame
+     * @param {string} src Source of the iFrame
+     * @return {HTMLElement} iFrame element
+     */
+    function _createIFrame(id, src) {
+        var iFrame = document.createElement('iframe');
+        iFrame.height = '1px';
+        iFrame.width = '1px';
+
+        // Set the id of the iFrame
+        if (!isString(id)) {
+            iFrame.id = id;
+        }
+
+        // Set the source of the iFrame
+        if (!isString(src)) {
+            iFrame.src = src;
+        }
+
+        document.body.appendChild(iFrame);
+
+        return iFrame;
+    }
+
+    /**
      * Convert a character to a HTML entity
      *
      * @param {string} char Character to convert
@@ -2550,6 +2598,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         getGlobals: getGlobals,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
+        hasAdBlocker: hasAdBlocker,
         imageExists: imageExists,
         include: include,
         isAlNum: isAlNum,
