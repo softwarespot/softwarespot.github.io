@@ -6,7 +6,6 @@ var cssmin = require('gulp-cssmin');
 var eslint = require('gulp-eslint');
 var gulpIf = require('gulp-if');
 var htmlMin = require('gulp-htmlmin');
-var jshint = require('gulp-jshint');
 var php = require('gulp-connect-php');
 var prettify = require('gulp-jsbeautifier');
 var rename = require('gulp-rename');
@@ -144,7 +143,7 @@ gulp.task('cssmin', function cssMinTask() {
 gulp.task('eslint', function esLintTask() {
     // Has ESLint fixed the file contents?
     function isFixed(file) {
-        return file.eslint != null && file.eslint.fixed;
+        return file.eslint !== undefined && file.eslint !== null && file.eslint.fixed;
     }
 
     // All js file(s)
@@ -186,16 +185,6 @@ gulp.task('images', function imagesTask() {
     // Copy images to the destination directory
     return gulp.src(source)
         .pipe(gulp.dest(dest));
-});
-
-// Check the code meets the following standards outlined in .jshintrc
-gulp.task('jshint', function jsHintTask() {
-    // All js file(s)
-    var all = Assets.js.custom.all;
-
-    return gulp.src(all)
-        .pipe(jshint())
-        .pipe(jshint.reporter('jshint-stylish'));
 });
 
 // Initialise the PHP server 'php -S localhost:8000'
@@ -323,7 +312,6 @@ gulp.task('default', ['clean', 'build', 'images', 'vendor']);
 // 'gulp eslint' to check the syntax of the main js file(s)
 // 'gulp htmlmin' to minify the main html file(s)
 // 'gulp images' to copy images files to the destination directory
-// 'gulp jshint' to check the syntax of the main js file(s)
 // 'gulp php-server' to connect to the local PHP server
 // 'gulp prettify-js' to prettify the main js file(s)
 // 'gulp uglify' to uglify the main js file(s)

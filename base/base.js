@@ -6,7 +6,7 @@
  * Modified: YYYY/MM/DD
  * @author author
  */
-App.namespace().base = (function baseModule(window, document, $, core, undefined) {
+App.namespace().base = (function baseModule(window, document, $, core) {
     // Constants
 
     // SemVer version number of the module
@@ -110,4 +110,4 @@ App.namespace().base = (function baseModule(window, document, $, core, undefined
         destroy: destroy,
         getVersion: getVersion,
     };
-})(window, window.document, window.jQuery, window.App.core);
+}(window, window.document, window.jQuery, window.App.core));

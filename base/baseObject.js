@@ -1,4 +1,4 @@
-/* global App */
+/* global App, $ */
 
 /**
  * Base module
