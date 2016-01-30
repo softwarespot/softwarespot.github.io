@@ -18,7 +18,7 @@ App.namespace().main = (function mainModule(window, document, $) {
     // Fields
 
     // Store if the module has been initialised
-    var _isInitialised = false;
+    // var _isInitialised = false;
 
     // Methods
 
@@ -37,7 +37,7 @@ App.namespace().main = (function mainModule(window, document, $) {
 
         _cacheDom();
 
-        _isInitialised = true;
+        // _isInitialised = true;
     }
 
     /**
@@ -46,7 +46,7 @@ App.namespace().main = (function mainModule(window, document, $) {
      * @return {undefined}
      */
     function destroy() {
-        _isInitialised = false;
+        // _isInitialised = false;
     }
 
     /**
@@ -78,4 +78,4 @@ App.namespace().main = (function mainModule(window, document, $) {
         destroy: destroy,
         getVersion: getVersion,
     };
-})(window, window.document, window.jQuery, window.App.core);
+}(window, window.document, window.jQuery, window.App.core));

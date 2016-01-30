@@ -252,4 +252,4 @@ App.namespace('core').api = (function apiModule(window, document, $, core) {
         Methods: methods,
         parseUrl: parseUrl,
     };
-})(window, window.document, window.jQuery, window.App.core);
+}(window, window.document, window.jQuery, window.App.core));

@@ -7,7 +7,7 @@ var App = App || {};
  * Modified: 2016/01/03
  * @author softwarespot
  */
-App.core = (function coreModule(window, document, $, undefined) {
+App.core = (function coreModule(window, document, $) {
     // Constants
 
     // SemVer version number of the module
@@ -44,7 +44,7 @@ App.core = (function coreModule(window, document, $, undefined) {
     // Fields
 
     // Store if the module has been initialised
-    var _isInitialised = false;
+    // var _isInitialised = false;
 
     // Native functions
     var _nativeArray = window.Array;
@@ -271,7 +271,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
         // _cacheDom();
 
-        _isInitialised = true;
+        // _isInitialised = true;
     }
 
     /**
@@ -280,7 +280,7 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @return {undefined}
      */
     function destroy() {
-        _isInitialised = false;
+        // _isInitialised = false;
     }
 
     /**
@@ -659,7 +659,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
             return element.href;
         };
-    })();
+    }());
 
     // Get CSS property module
     var getCSSProperty = (function getCSSPropertyModule() {
@@ -712,7 +712,7 @@ App.core = (function coreModule(window, document, $, undefined) {
 
             return null;
         };
-    })();
+    }());
 
     // Get globals module
     var getGlobals = (function getGlobalsModule() {
@@ -742,7 +742,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         return function getGlobals() {
             return _globals;
         };
-    })();
+    }());
 
     /**
      * Get the outerHTML of a specific jQuery selector object element
@@ -918,7 +918,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         return function hasAdBlocker() {
             return _hasAdBlocker;
         };
-    })();
+    }());
 
     /**
      * Check if a string contains only alphanumeric characters ( 0-9 and A-Z )
@@ -1731,7 +1731,7 @@ App.core = (function coreModule(window, document, $, undefined) {
                 next();
             }
         };
-    })();
+    }());
 
     /**
      * Generate a random number
@@ -2833,10 +2833,10 @@ App.core = (function coreModule(window, document, $, undefined) {
                 return type(value) === typeNameMatch;
             };
         });
-    })(_publicAPI);
+    }(_publicAPI));
 
     return _publicAPI;
-})(window, window.document, window.jQuery);
+}(window, window.document, window.jQuery));
 
 /**
  * Create a namespace. Idea based on the work by Nikolas C. Zakas from Maintainable JavaScript

@@ -381,4 +381,4 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         hasWebStorage: hasWebStorage,
         isStyleSupported: isStyleSupported,
     };
-})(window, window.document, window.jQuery, window.App.core);
+}(window, window.document, window.jQuery, window.App.core));

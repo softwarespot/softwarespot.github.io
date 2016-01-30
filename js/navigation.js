@@ -21,7 +21,7 @@ App.namespace().navigation = (function navigationModule(window, document, $, cor
     var _isEventsBound = false;
 
     // Store if the module has been initialised
-    var _isInitialised = false;
+    // var _isInitialised = false;
 
     // Store the body jQuery selector object
     var _$body = null;
@@ -89,7 +89,7 @@ App.namespace().navigation = (function navigationModule(window, document, $, cor
         _cacheDom();
         _bindEvents();
 
-        _isInitialised = true;
+        // _isInitialised = true;
     }
 
     /**
@@ -103,7 +103,7 @@ App.namespace().navigation = (function navigationModule(window, document, $, cor
         _$body = null;
         _$navigationLinks = null;
 
-        _isInitialised = false;
+        // _isInitialised = false;
     }
 
     /**
@@ -185,4 +185,4 @@ App.namespace().navigation = (function navigationModule(window, document, $, cor
         destroy: destroy,
         getVersion: getVersion,
     };
-})(window, window.document, window.jQuery, window.App.core);
+}(window, window.document, window.jQuery, window.App.core));

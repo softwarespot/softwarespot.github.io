@@ -15,7 +15,7 @@
   "dependencies": {
     "es6-collections": "~0.5.5",
     "es6-promise": "~3.0.2",
-    "es6-shim": "~0.34.0",
+    "es6-shim": "^0.34.2",
     "font-awesome": "fontawesome#~4.5.0",
     "handlebars": "~4.0.5",
     "jquery": "~2.1.4",

@@ -24,7 +24,7 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
     // Fields
 
     // Store if the module has been initialised
-    var _isInitialised = false;
+    // var _isInitialised = false;
 
     // Store the jQuery selector object to add the gists data
     var _$content = null;
@@ -57,7 +57,7 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
         _cacheDom(config.dom);
         _load(config.username);
 
-        _isInitialised = true;
+        // _isInitialised = true;
     }
 
     /**
@@ -68,7 +68,7 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
     function destroy() {
         _$content = null;
 
-        _isInitialised = false;
+        // _isInitialised = false;
     }
 
     /**
@@ -169,4 +169,4 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
         destroy: destroy,
         getVersion: getVersion,
     };
-})(window, window.document, window.jQuery, window.App.core);
+}(window, window.document, window.jQuery, window.App.core));
