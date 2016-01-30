@@ -661,6 +661,59 @@ App.core = (function coreModule(window, document, $, undefined) {
         };
     })();
 
+    // Get CSS property module
+    var getCSSProperty = (function getCSSPropertyModule() {
+        // Cache the HTML node
+        var _documentElement = document.documentElement;
+        var _prefixes = ['Khtml', 'Moz', 'Ms', 'O', 'Webkit'];
+
+        // Don't inherit from Object.prototype
+        var _cached = _nativeObjectCreate(null);
+
+        /**
+         * Get a valid CSS property
+         *
+         * @param {string} property CSS property in either camel-case (borderRadius) or kebab-case (border-radius) minus the vendor prefix
+         * @return {string|null}  CSS property with either a vendor prefix attached; otherwise, null
+         */
+        return function getCSSProperty(property) {
+            if (!isString(property) || property.length === 0) {
+                return null;
+            }
+
+            // Check if the property is cached
+            var cached = _cached[property];
+            if (!isUndefined(cached)) {
+                return cached;
+            }
+
+            var sanitizedProperty = stringToCamelCase(property);
+
+            // Check if the property is supported without vendor prefixes
+            if (!isUndefined(_documentElement.style[sanitizedProperty])) {
+                _cached[property] = sanitizedProperty;
+
+                return property;
+            }
+
+            // Check common vendor prefixes
+            sanitizedProperty = stringUCFirst(sanitizedProperty);
+
+            var length = _prefixes.length;
+            while (length-- > 0) {
+                cached = _prefixes[length] + sanitizedProperty;
+                if (!isUndefined(_documentElement.style[cached])) {
+                    _cached[property] = cached;
+                    return cached;
+                }
+            }
+
+            _cached[property] = null;
+
+            return null;
+        };
+    })();
+
     // Get globals module
     var getGlobals = (function getGlobalsModule() {
         // Create an iFrame and append to the current body to determine the browser's native window object properties
@@ -2595,6 +2648,7 @@ App.core = (function coreModule(window, document, $, undefined) {
         elementClosest: elementClosest,
         elementWrap: elementWrap,
         getAbsoluteUrl: getAbsoluteUrl,
+        getCSSProperty: getCSSProperty,
         getGlobals: getGlobals,
         getjQueryOuterHTML: getjQueryOuterHTML,
         has: has,
