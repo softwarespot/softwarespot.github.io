@@ -646,11 +646,11 @@ App.core = (function coreModule(window, document, $, undefined) {
      * @param {string} url Url to get the absolute path of
      * @return {string} Absolute url; otherwise, an empty string
      */
-    var getAbsoluteUrl = (function getAbsoluteUrl() {
+    var getAbsoluteUrl = (function getAbsoluteUrlModule() {
         var element = document.createElement('a');
         element.style.display = 'none';
 
-        return function getAbsoluteUrlClosure(url) {
+        return function getAbsoluteUrl(url) {
             if (!isString(url)) {
                 return STRING_EMPTY;
             }
@@ -660,27 +660,6 @@ App.core = (function coreModule(window, document, $, undefined) {
             return element.href;
         };
     })();
-
-    /**
-     * Get the outerHTML of a specific jQuery selector object element
-     *
-     * @param {jQuery} $element jQuery selector object
-     * @param {number} index A zero-based integer indicating which element to retrieve
-     * @return {string|null} Stringified contents of the DOM element; otherwise, null
-     */
-    function getjQueryOuterHTML($element, index) {
-        if (!isjQuery($element)) {
-            return null;
-        }
-
-        index = isNumber(index) ? index : 0;
-        var outerHTML = $element.eq(index)
-
-        // outerHTML is not available on older browsers
-        .prop('outerHTML');
-
-        return isUndefined(outerHTML) ? null : outerHTML;
-    }
 
     // Get globals module
     var getGlobals = (function getGlobalsModule() {
@@ -711,6 +690,27 @@ App.core = (function coreModule(window, document, $, undefined) {
             return _globals;
         };
     })();
+
+    /**
+     * Get the outerHTML of a specific jQuery selector object element
+     *
+     * @param {jQuery} $element jQuery selector object
+     * @param {number} index A zero-based integer indicating which element to retrieve
+     * @return {string|null} Stringified contents of the DOM element; otherwise, null
+     */
+    function getjQueryOuterHTML($element, index) {
+        if (!isjQuery($element)) {
+            return null;
+        }
+
+        index = isNumber(index) ? index : 0;
+        var outerHTML = $element.eq(index)
+
+        // outerHTML is not available on older browsers
+        .prop('outerHTML');
+
+        return isUndefined(outerHTML) ? null : outerHTML;
+    }
 
     /**
      * Check if an object contains a key
