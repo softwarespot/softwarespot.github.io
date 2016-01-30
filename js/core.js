@@ -2469,12 +2469,12 @@ App.core = (function coreModule(window, document, $, undefined) {
         iFrame.width = '1px';
 
         // Set the id of the iFrame
-        if (!isString(id)) {
+        if (isString(id)) {
             iFrame.id = id;
         }
 
         // Set the source of the iFrame
-        if (!isString(src)) {
+        if (isString(src)) {
             iFrame.src = src;
         }
 
