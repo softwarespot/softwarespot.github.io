@@ -461,7 +461,7 @@ App.core = (function coreModule(window, document, $) {
             if (searchFor === value ||
 
                 // Unique approach to searching for NaN
-                (isSearchNaN && value !== value)) {
+                (isSearchNaN && value !== value)) { // eslint-disable-line no-self-compare
                 return true;
             }
 
@@ -1188,7 +1188,7 @@ App.core = (function coreModule(window, document, $) {
      * @returns {boolean} True, the value is NaN; otherwise, false
      */
     var isNaN = isFunction(_nativeNumberIsNaN) ? _nativeNumberIsNaN : function isNaN(value) {
-        return isNumber(value) && value !== value;
+        return isNumber(value) && value !== value; // eslint-disable-line no-self-compare
     };
 
     /**
@@ -1610,7 +1610,7 @@ App.core = (function coreModule(window, document, $) {
             return value1 !== 0 || 1 / value1 === 1 / value2;
         }
 
-        return value1 !== value1 && value2 !== value2;
+        return value1 !== value1 && value2 !== value2; // eslint-disable-line no-self-compare
     };
 
     /**
@@ -2489,7 +2489,7 @@ App.core = (function coreModule(window, document, $) {
      */
     function type(value) {
         var tag = (_nativeObjectToString.call(value).match(_reTypeOf)[REGEXP_FIRST_MATCH] || 'undefined').toLowerCase();
-        if (tag === 'number' && value !== value) {
+        if (tag === 'number' && value !== value) { // eslint-disable-line
             // Override number if a NaN
             tag = 'nan';
         }
