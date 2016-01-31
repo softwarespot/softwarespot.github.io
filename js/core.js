@@ -1561,6 +1561,15 @@ App.core = (function coreModule(window, document, $) {
     }
 
     /**
+     * Create an empty object that doesn't inherit from Object.prototype
+     *
+     * @return {object} An empty object that hasn't inherited properties from Object.prototype
+     */
+    function objectEmpty() {
+        return isFunction(_nativeObjectCreate) ? _nativeObjectCreate(null) : {};
+    }
+
+    /**
      * Iterate over an object's keys
      *
      * @param {object} object Object to iterate over
@@ -1913,6 +1922,26 @@ App.core = (function coreModule(window, document, $) {
     }
 
     /**
+     * Check if a string contains only lower-case characters
+     *
+     * @param {string} value String value to check
+     * @return {[boolean} True, the string contains only lower-case characters; otherwise, false
+     */
+    function stringIsLowerCase(value) {
+        return isString(value) && value.length > 0 && value.toLowerCase() === value;
+    }
+
+    /**
+     * Check if a string contains only upper-case characters
+     *
+     * @param {string} value String value to check
+     * @return {[boolean} True, the string contains only upper-case characters; otherwise, false
+     */
+    function stringIsUpperCase(value) {
+        return isString(value) && value.length > 0 && value.toUpperCase() === value;
+    }
+
+    /**
      * Convert the first character of a string to lower-case
      *
      * @param {string} value String value to convert
@@ -1928,7 +1957,7 @@ App.core = (function coreModule(window, document, $) {
     }
 
     /**
-     * Map characters in a string using a callback function fn => value
+     * Map characters in a string using a callback function fn => char
      *
      * @param {string} value String value to map
      * @param {function} fn Function callback for each character
@@ -2079,10 +2108,6 @@ App.core = (function coreModule(window, document, $) {
      */
     function stringStripCR(value) {
         return isStringNotEmpty(value) ? value.replace(_reCarriageReturn, STRING_EMPTY) : STRING_EMPTY;
-    }
-
-    function stringStripDiatrics(value) {
-
     }
 
     /**
@@ -2735,6 +2760,7 @@ App.core = (function coreModule(window, document, $) {
         mathTrunc: mathTrunc,
         noop: noop,
         now: now,
+        objectEmpty: objectEmpty,
         objectForEach: objectForEach,
         objectIs: objectIs,
         objectNamespace: objectNamespace,
@@ -2755,6 +2781,8 @@ App.core = (function coreModule(window, document, $) {
         stringEscapeHTML: stringEscapeHTML,
         stringFormat: stringFormat,
         stringIncludes: stringContains,
+        stringIsLowerCase: stringIsLowerCase,
+        stringIsUpperCase: stringIsUpperCase,
         stringLCFirst: stringLCFirst,
         stringMap: stringMap,
         stringNullUndefinedToEmpty: stringNullUndefinedToEmpty,
