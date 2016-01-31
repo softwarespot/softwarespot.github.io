@@ -251,9 +251,6 @@ App.core = (function coreModule(window, document, $) {
     // Parsing the native toString() return value e.g. [object Object]
     var _reTypeOf = /(?:^\[object\s(.*?)\]$)/;
 
-    // Unique id cache
-    var _uniqueId = 0;
-
     // Methods
 
     /**
@@ -2075,16 +2072,6 @@ App.core = (function coreModule(window, document, $) {
     }
 
     /**
-     * Strip EOL characters ( ASCII 10 and ASCII 13 ) in a string
-     *
-     * @param {string} value String value to strip the EOL characters
-     * @return {string} String stripped of EOL characters; otherwise, an empty string on error
-     */
-    function stringStripEOL(value) {
-        return isStringNotEmpty(value) ? value.replace(_reEOLChars, STRING_EMPTY) : STRING_EMPTY;
-    }
-
-    /**
      * Strip carriage return characters ( ASCII 10 ) in a string
      *
      * @param {string} value String value to strip
@@ -2092,6 +2079,20 @@ App.core = (function coreModule(window, document, $) {
      */
     function stringStripCR(value) {
         return isStringNotEmpty(value) ? value.replace(_reCarriageReturn, STRING_EMPTY) : STRING_EMPTY;
+    }
+
+    function stringStripDiatrics(value) {
+
+    }
+
+    /**
+     * Strip EOL characters ( ASCII 10 and ASCII 13 ) in a string
+     *
+     * @param {string} value String value to strip the EOL characters
+     * @return {string} String stripped of EOL characters; otherwise, an empty string on error
+     */
+    function stringStripEOL(value) {
+        return isStringNotEmpty(value) ? value.replace(_reEOLChars, STRING_EMPTY) : STRING_EMPTY;
     }
 
     /**
@@ -2496,18 +2497,24 @@ App.core = (function coreModule(window, document, $) {
         return type;
     }
 
-    /**
-     * Generate a unique id string, with an optional prefix
-     * Idea by underscore, URL: https://github.com/jashkenas/underscore/blob/master/underscore.js
-     *
-     * @param {boolean|number|string} prefix Optional prefix
-     * @return {string} Unique id string
-     */
-    function uniqueId(prefix) {
-        var id = STRING_EMPTY + (++_uniqueId);
+    // Unique id module
+    var uniqueId = (function uniqueIdModule() {
+        // Unique id cache
+        var _uniqueId = 0;
 
-        return isBoolean(prefix) || isNumber(prefix) || isString(prefix) ? prefix + id : id;
-    }
+        /**
+         * Generate a unique id string, with an optional prefix
+         * Idea by underscore, URL: https://github.com/jashkenas/underscore/blob/master/underscore.js
+         *
+         * @param {boolean|number|string} prefix Optional prefix
+         * @return {string} Unique id string
+         */
+        return function uniqueId(prefix) {
+            var id = STRING_EMPTY + (++_uniqueId);
+
+            return isBoolean(prefix) || isNumber(prefix) || isString(prefix) ? prefix + id : id;
+        };
+    }());
 
     /**
      * Create an iFrame element
