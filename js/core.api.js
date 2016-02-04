@@ -3,7 +3,7 @@
 /**
  * API module
  *
- * Modified: 2016/01/03
+ * Modified: 2016/02/04
  * @author softwarespot
  */
 App.namespace('core').api = (function apiModule(window, document, $, core) {

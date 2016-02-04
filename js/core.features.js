@@ -9,7 +9,7 @@
  * @link https://github.com/NielsLeenheer/html5test/
  * @link https://github.com/viljamis/feature.js/
  *
- * Modified: 2016/01/03
+ * Modified: 2016/02/04
  * @author softwarespot
  */
 App.namespace('core').features = (function featuresModule(window, document, $, core) {
