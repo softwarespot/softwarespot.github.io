@@ -105,13 +105,14 @@ App.core = (function coreModule(window, document, $) {
     var _nativeRegExp = window.RegExp;
 
     var _nativeString = window.String;
-    var _nativeStringEndsWith = _nativeString.prototype.endsWith;
-    var _nativeStringIncludes = _nativeString.prototype.includes;
-    var _nativeStringRepeat = _nativeString.prototype.repeat;
-    var _nativeStringStartsWith = _nativeString.prototype.startsWith;
-    var _nativeStringTrim = _nativeString.prototype.trim;
-    var _nativeStringTrimLeft = _nativeString.prototype.trimLeft;
-    var _nativeStringTrimRight = _nativeString.prototype.trimRight;
+    var _nativeStringPrototype = _nativeString.prototype;
+    var _nativeStringEndsWith = _nativeStringPrototype.endsWith;
+    var _nativeStringIncludes = _nativeStringPrototype.includes;
+    var _nativeStringRepeat = _nativeStringPrototype.repeat;
+    var _nativeStringStartsWith = _nativeStringPrototype.startsWith;
+    var _nativeStringTrim = _nativeStringPrototype.trim;
+    var _nativeStringTrimLeft = _nativeStringPrototype.trimLeft;
+    var _nativeStringTrimRight = _nativeStringPrototype.trimRight;
 
     // Escaped characters and their HTML entity equivalents
     var _htmlEscapeChars = {
@@ -366,16 +367,16 @@ App.core = (function coreModule(window, document, $) {
     }
 
     /**
-     * Create a new array of an array-like iterable object
+     * Create a new array of an array-like enumerable object
      * Idea by MDN, URL: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/from
      *
-     * @param {array|object} arrayLike An array-like or iterable object to convert to an array
+     * @param {array|object} arrayLike An array-like or enumerable object to convert to an array
      * @param {function} fn Optional map function to call on every element of the array. Function signature is fn => value, index
      * @param {object|undefined} context Current context. If null or undefined then 'this' is used
-     * @return {array} New array; otherwise, an empty array on error
+     * @return {array} Enumerable object as an array datatype; otherwise, an empty array on error
      */
     var arrayFrom = isFunction(_nativeArrayFrom) ? _nativeArrayFrom : function arrayFrom(arrayLike, fn, context) {
-        // If not an iterable object, then return an empty array
+        // If not an enumerable object, then return an empty array
         if (isNil(arrayLike)) {
             return [];
         }
@@ -763,10 +764,10 @@ App.core = (function coreModule(window, document, $) {
     }
 
     /**
-     * Check if an object contains a key
+     * Check if an object contains a key, skipping those which might exist up the prototype chain
      *
      * @param {object} object Object to check
-     * @param {string} property Property to check exists in the object
+     * @param {string} property Property to check exists on the object
      * @return {boolean} True, the property exists; otherwise, false
      */
     function has(object, property) {
