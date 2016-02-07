@@ -1,18 +1,18 @@
-/**
+/*
  * Custom CSS
  *
- * Modified: 2015/11/26
+ * Modified: 2015/02/07
  * @author softwarespot
- */
+*/
 
- /*Body styling*/
- body {
+/* Body styling */
+body {
     background: #fafafa;
     font-family: 'Open Sans', sans-serif, Arial;
     color: #222;
 }
 
-/*Style a links as well as increasing the clickable area*/
+/* Style a links as well as increasing the clickable area */
 a {
     background: transparent;
     color: #2980b9;
@@ -35,7 +35,7 @@ a img:hover {
     transform: scale(1.3, 1.3);
 }
 
-/*Navigation*/
+/* Navigation */
 nav,
 nav ul {
     margin: 0;
@@ -98,7 +98,7 @@ nav a:hover {
     color: #fafafa;
 }
 
-.external-links a[href^="http"]::after {
+.external-links a[href^='http']::after {
     content: '\f14c';
     font-family: 'FontAwesome';
     margin: 5px;
@@ -106,7 +106,7 @@ nav a:hover {
     top: -10px;
 }
 
-/*SVG images*/
+/* SVG images */
 img.small,
 img.x-small {
     height: 128px;
@@ -119,7 +119,7 @@ img.x-small {
     transform: rotate(90deg);
 }
 
-/*Custom badge*/
+/* Custom badge */
 .badge {
     display: inline-block;
     margin: 0 50px 0 0;
@@ -144,12 +144,12 @@ img.x-small {
     transform: scale(1.2, 1.2);
 }
 
-/*Blog*/
+/* Blog */
 .blog-entry {
     text-align: left;
 }
 
-/*Add space after and before quotation marks*/
+/* Add space after and before quotation marks */
 .fa-quote-left {
     margin-right: 5px;
 }
@@ -158,17 +158,19 @@ img.x-small {
     margin-left: 5px;
 }
 
-/*Mobile first queries*/
+/* Mobile first queries */
 
-/*Larger than mobile*/
-@media (min-width: 400px) {
-}
+/* Larger than mobile */
 
-/*Larger than phablet*/
-@media (min-width: 550px) {
-}
+/* @media (min-width: 400px) {
+} */
 
-/*Larger than tablet*/
+/* Larger than phablet */
+
+/* @media (min-width: 550px) {
+} */
+
+/* Larger than tablet */
 @media (min-width: 750px) {
     .container {
         padding: 20px 20px;
@@ -176,10 +178,12 @@ img.x-small {
     }
 }
 
-/*Larger than desktop*/
-@media (min-width: 1000px) {
-}
+/* Larger than desktop */
 
-/*Larger than Desktop HD*/
-@media (min-width: 1200px) {
-}
+/* @media (min-width: 1000px) {
+} */
+
+/* Larger than Desktop HD */
+
+/* @media (min-width: 1200px) {
+} */

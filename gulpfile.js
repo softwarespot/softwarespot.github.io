@@ -9,6 +9,8 @@ var htmlMin = require('gulp-htmlmin');
 var php = require('gulp-connect-php');
 var prettify = require('gulp-jsbeautifier');
 var rename = require('gulp-rename');
+var styleLint = require('gulp-stylelint').default;
+var styleLintConsoleReporter = require('gulp-stylelint-console-reporter').default;
 var uglify = require('gulp-uglify');
 var del = require('del');
 
@@ -114,6 +116,16 @@ gulp.task('clean', function cleanTask(cb) {
         Assets.images.dest + '/**/*.*',
         Assets.js.dest + '/**/*.*',
     ], cb);
+});
+
+// Check the main css file(s) meets the following standards outlined in .stylelintrc
+gulp.task('csslint', function cssLintTask() {
+  return gulp.src(Assets.css.custom.all)
+    .pipe(styleLint({
+      reporters: [
+        styleLintConsoleReporter()
+      ]
+    }));
 });
 
 // Minify the main css file(s)
@@ -299,7 +311,7 @@ gulp.task('build', ['cssmin', 'htmlmin', 'uglify']);
 
 // Watch for changes to the main css, html and js file(s)
 gulp.task('watch', function watchTask() {
-    gulp.watch(Assets.css.custom.all, ['cssmin']);
+    gulp.watch(Assets.css.custom.all, ['csslint', 'cssmin']);
     gulp.watch(Assets.html.custom.all, ['htmlmin']);
     gulp.watch(Assets.js.custom.all, ['eslint', 'uglify']);
 });
@@ -308,6 +320,7 @@ gulp.task('watch', function watchTask() {
 gulp.task('default', ['clean', 'build', 'images', 'vendor']);
 
 // 'gulp build' to build the main css and js file(s)
+// 'gulp csslint' to check the syntax of the main css file(s)
 // 'gulp cssmin' to minify the main css file(s)
 // 'gulp eslint' to check the syntax of the main js file(s)
 // 'gulp htmlmin' to minify the main html file(s)
