@@ -2113,7 +2113,7 @@ App.core = (function coreModule(window, document, $) {
 
     // Strip diacritics module
     var stringStripDiacritics = (function stringStripDiacriticsModule() {
-        var _diacritics = {};
+        var _diacritics = objectEmpty();
         [{
             base: ' ',
             chars: '\u00A0',
