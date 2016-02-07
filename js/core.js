@@ -1,10 +1,10 @@
 // Create an 'App' namespace if it doesn't already exist
-var App = App || {};
+var App = App || (window.Object.create ? window.Object.create(null) : {});
 
 /**
  * Core module
  *
- * Modified: 2016/02/04
+ * Modified: 2016/02/07
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $) {
@@ -262,7 +262,7 @@ App.core = (function coreModule(window, document, $) {
      */
     function init( /* config */ ) {
         // Default config that can be overwritten by passing through the config variable
-        // var defaultConfig = {};
+        // var defaultConfig = core.objectEmpty();
 
         // Combine the passed config
         // $.extend(defaultConfig, config);

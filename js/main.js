@@ -3,7 +3,7 @@
 /**
  * Main module
  *
- * Modified: 2016/02/04
+ * Modified: 2016/02/07
  * @author softwarespot
  */
 App.namespace().main = (function mainModule(window, document, $) {
@@ -30,7 +30,7 @@ App.namespace().main = (function mainModule(window, document, $) {
      */
     function init(/* config */) {
         // Default config that can be overwritten by passing through the config variable
-        // var defaultConfig = {};
+        // var defaultConfig = core.objectEmpty();
 
         // Combine the passed config
         // $.extend(defaultConfig, config);

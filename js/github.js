@@ -6,7 +6,7 @@
 /**
  * GitHub module
  *
- * Modified: 2016/02/04
+ * Modified: 2016/02/07
  * @author softwarespot
  */
 App.namespace().github = (function githubModule(window, document, $, core) {
@@ -47,7 +47,7 @@ App.namespace().github = (function githubModule(window, document, $, core) {
         core.api.init();
 
         // Default config that can be overwritten by passing through the config variable
-        var defaultConfig = {};
+        var defaultConfig = core.objectEmpty();
 
         // Combine the passed config
         $.extend(defaultConfig, config);
