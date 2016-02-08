@@ -3188,13 +3188,16 @@ App.core = (function coreModule(window, document, $) {
         ];
 
         typeNames.forEach(function forEachTypeName(typeName) {
-            var typeNameMatch = typeName.toLowerCase();
             var isType = 'is' + typeName;
+            var typeNameMatch = typeName.toLowerCase();
+
+            // Check whether the type of the value matches that of typeNameMatch
+            function isTypeNameMatch(value) {
+                return type(value) === typeNameMatch;
+            }
 
             // Extend if a function doesn't exist on the global object already
-            global[isType] = isFunction(global[isType]) ? global[isType] : function isTypeNameMatch(value) {
-                return type(value) === typeNameMatch;
-            };
+            global[isType] = isFunction(global[isType]) ? global[isType] : isTypeNameMatch;
         });
     }(_publicAPI));
 
