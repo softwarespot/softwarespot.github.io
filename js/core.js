@@ -260,7 +260,7 @@ App.core = (function coreModule(window, document, $) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init( /* config */ ) {
+    function init(/* config */) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = core.objectEmpty();
 
@@ -1765,7 +1765,7 @@ App.core = (function coreModule(window, document, $) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /* , reject */ ) {
+        return new _nativePromise(function readyPromise(resolve /* , reject */) {
             if (document.readyState !== 'loading') {
                 resolve();
             } else {
