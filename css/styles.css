@@ -3,13 +3,13 @@
  *
  * Modified: 2015/02/07
  * @author softwarespot
-*/
+ */
 
 /* Body styling */
 body {
     background: #fafafa;
-    font-family: 'Open Sans', sans-serif, Arial;
     color: #222;
+    font-family: 'Open Sans', sans-serif, Arial;
 }
 
 /* Style a links as well as increasing the clickable area */
