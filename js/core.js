@@ -52,6 +52,9 @@ App.core = (function coreModule(window, document, $) {
     var _nativeArrayArrayOf = _nativeArray.of;
     var _nativeArrayIsArray = _nativeArray.isArray;
 
+    var _nativeArrayPrototype = _nativeArray.prototype;
+    var _nativeArrayPush = _nativeArrayPrototype.push;
+
     // var _nativeArrayPrototype = _nativeArray.prototype;
     // var _nativeArraySlice = _nativeArrayPrototype.slice;
 
@@ -489,6 +492,22 @@ App.core = (function coreModule(window, document, $) {
     };
 
     /**
+     * Merge a secondary array into another
+     * Idea by David Walsh, URL: https://davidwalsh.name/merge-arrays-javascript
+     *
+     * @param {array} array Array to merge into
+     * @param {array} arrayMerge Array to merge
+     * @return {undefined}
+     */
+    function arrayMerge(array, arrayMerge) {
+        if (!isArray(array) || !isArray(arrayMerge)) {
+            return;
+        }
+
+        _nativeArrayPush.apply(array, arrayMerge);
+    }
+
+    /**
      * Peek at the last item in the array
      *
      * @param {array} array The array to peek at
@@ -500,8 +519,13 @@ App.core = (function coreModule(window, document, $) {
         }
 
         var length = array.length;
+        if (length === 0) {
+            return null;
+        }
 
-        return length > 0 ? array[length - 1] : null;
+        var value = array[length - 1];
+
+        return !isNil(value) ? value : null;
     }
 
     /**
@@ -3024,6 +3048,7 @@ App.core = (function coreModule(window, document, $) {
         arrayFrom: arrayFrom,
         arrayIncludes: arrayIncludes,
         arrayOf: arrayOf,
+        arrayMerge: arrayMerge,
         arrayPeek: arrayPeek,
         arrayRemove: arrayRemove,
         debounce: debounce,
