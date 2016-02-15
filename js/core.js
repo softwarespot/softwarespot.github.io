@@ -117,6 +117,9 @@ App.core = (function coreModule(window, document, $) {
     var _nativeStringTrimLeft = _nativeStringPrototype.trimLeft;
     var _nativeStringTrimRight = _nativeStringPrototype.trimRight;
 
+    var _nativeClearTimeout = window.clearTimeout;
+    var _nativeSetTimeout = window.setTimeout;
+
     // Escaped characters and their HTML entity equivalents
     var _htmlEscapeChars = {
         '&': '&amp;',
@@ -540,7 +543,7 @@ App.core = (function coreModule(window, document, $) {
             }
 
             if (isNotNull(timer)) {
-                window.clearTimeout(timer);
+                _nativeClearTimeout(timer);
                 timer = null;
             }
 
@@ -550,7 +553,7 @@ App.core = (function coreModule(window, document, $) {
             // If the context is null or undefined then use 'this'
             context = isNil(context) ? this : context;
 
-            timer = window.setTimeout(function setTimeout() {
+            timer = _nativeSetTimeout(function setTimeout() {
                 fn.apply(context, args);
             }, delay);
         };
@@ -1003,7 +1006,7 @@ App.core = (function coreModule(window, document, $) {
      * @return {boolean} True, inside a browser; otherwise, false
      */
     function isBrowser() {
-        return !!(!isUndefined(window) && !isUndefined(window.navigator) && window.document);
+        return !!(!isUndefined(window) && !isUndefined(_nativeNavigator) && document);
     }
 
     /**
