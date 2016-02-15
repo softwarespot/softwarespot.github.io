@@ -100,6 +100,9 @@ App.core = (function coreModule(window, document, $) {
     var _nativeObjectHasOwnProperty = _nativeObjectPrototype.hasOwnProperty;
     var _nativeObjectToString = _nativeObjectPrototype.toString;
 
+    var _nativeNavigator = window.navigator;
+    var _nativeNavigatorOnline = _nativeNavigator.onLine;
+
     var _nativePromise = window.Promise;
 
     var _nativeRegExp = window.RegExp;
@@ -1280,6 +1283,24 @@ App.core = (function coreModule(window, document, $) {
      */
     function isOdd(value) {
         return isInteger(value) && value % 2 !== 0;
+    }
+
+    /**
+     * Check if currently offline i.e. connected to the Internet
+     *
+     * @return {boolean} True, currently offline; otherwise, false
+     */
+    function isOffline() {
+        return _nativeNavigatorOnline === false;
+    }
+
+    /**
+     * Check if currently online i.e. connected to the Internet
+     *
+     * @return {boolean} True, currently online; otherwise, false
+     */
+    function isOnline() {
+        return _nativeNavigatorOnline === true;
     }
 
     /**
@@ -3059,6 +3080,8 @@ App.core = (function coreModule(window, document, $) {
         isObject: isObject,
         isObjectLiteral: isObjectLiteral,
         isOdd: isOdd,
+        isOffline: isOffline,
+        isOnline: isOnline,
         isPrime: isPrime,
 
         // isPromise: isPromise,
