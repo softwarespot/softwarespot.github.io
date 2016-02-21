@@ -2597,7 +2597,8 @@ App.core = (function coreModule(window, document, $) {
             return STRING_EMPTY;
         }
 
-        return value.replace(_reEscapedCamelCaseChar, '-$1')
+        return value
+            .replace(_reEscapedCamelCaseChar, '-$1')
             .replace(_reEscapedCaseChars, '-')
             .toLowerCase();
     }
@@ -2630,7 +2631,8 @@ App.core = (function coreModule(window, document, $) {
             return STRING_EMPTY;
         }
 
-        return value.replace(_reEscapedCamelCaseChars, '$1_$2')
+        return value
+            .replace(_reEscapedCamelCaseChars, '$1_$2')
             .replace(_reEscapedCaseChars, '_')
             .toLowerCase();
     }
@@ -2863,7 +2865,10 @@ App.core = (function coreModule(window, document, $) {
      * @return {string} Classname of the value
      */
     function type(value) {
-        var tag = (_nativeObjectToString.call(value).match(_reTypeOf)[REGEXP_FIRST_MATCH] || 'undefined').toLowerCase();
+        var tag = (_nativeObjectToString
+            .call(value)
+            .match(_reTypeOf)[REGEXP_FIRST_MATCH] || 'undefined')
+            .toLowerCase();
         if (tag === 'number' && value !== value) { // eslint-disable-line
             // Override number if a NaN
             tag = 'nan';
