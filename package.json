@@ -9,7 +9,7 @@
   "devDependencies": {
     "del": "^2.1.0",
     "eslint": "^2.2.0",
-    "eslint-config-airbnb": "^6.0.0",
+    "eslint-config-airbnb": "^6.0.1",
     "eslint-plugin-react": "^4.0.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
