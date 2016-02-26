@@ -1974,7 +1974,7 @@ App.core = (function coreModule(window, document, $) {
      * Check if a string contains only lower-case characters
      *
      * @param {string} value String value to check
-     * @return {[boolean} True, the string contains only lower-case characters; otherwise, false
+     * @return {boolean} True, the string contains only lower-case characters; otherwise, false
      */
     function stringIsLowerCase(value) {
         return isString(value) && value.length > 0 && value.toLowerCase() === value;
@@ -1984,7 +1984,7 @@ App.core = (function coreModule(window, document, $) {
      * Check if a string contains only upper-case characters
      *
      * @param {string} value String value to check
-     * @return {[boolean} True, the string contains only upper-case characters; otherwise, false
+     * @return {boolean} True, the string contains only upper-case characters; otherwise, false
      */
     function stringIsUpperCase(value) {
         return isString(value) && value.length > 0 && value.toUpperCase() === value;
