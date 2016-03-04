@@ -1294,12 +1294,8 @@ App.core = (function coreModule(window, document, $) {
      * @returns {boolean} True, the value is an object literal; otherwise, false
      */
     function isObjectLiteral(value) {
-        if (!_isObjectLike(value)) {
-            return false;
-        }
-
         // Based on the idea by jQuery
-        return value.constructor && has(value.constructor.prototype, 'isPrototypeOf');
+        return _isObjectLike(value) && value.constructor && has(value.constructor.prototype, 'isPrototypeOf');
     }
 
     /**
@@ -1526,7 +1522,7 @@ App.core = (function coreModule(window, document, $) {
         // Replace semi-colon(s) (;) with pipe(s) (|)
         extensions = toString(extensions).replace(';', '|');
 
-        return (new _nativeRegExp('(?:\.(?:' + extensions + ')$)', 'i')).test(value);
+        return (new _nativeRegExp('(?:\\.(?:' + extensions + ')$)', 'i')).test(value);
     }
 
     /**
