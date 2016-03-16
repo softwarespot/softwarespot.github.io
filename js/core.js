@@ -2066,7 +2066,7 @@ App.core = (function coreModule(window, document, $) {
             array[j--] = temp;
         }
 
-        return array.join('');
+        return array.join(STRING_EMPTY);
     }
 
     /**
