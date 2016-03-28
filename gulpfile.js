@@ -120,12 +120,13 @@ gulp.task('clean', function cleanTask(cb) {
 
 // Check the main css file(s) meets the following standards outlined in .stylelintrc
 gulp.task('csslint', function cssLintTask() {
-  return gulp.src(Assets.css.custom.all)
-    .pipe(styleLint({
-      reporters: [
-        styleLintConsoleReporter()
-      ]
-    }));
+    return gulp.src(Assets.css.custom.all)
+            .pipe(styleLint({
+                reporters: [
+                    styleLintConsoleReporter(),
+                ],
+            })
+        );
 });
 
 // Minify the main css file(s)
@@ -143,12 +144,12 @@ gulp.task('cssmin', function cssMinTask() {
     del([dest + '/' + minified]);
 
     return gulp.src([
-            source + '/styles.css',
-        ])
-        .pipe(concat(minified))
-        .pipe(cssmin(_cssMinSettings))
-        .pipe(rename(minified))
-        .pipe(gulp.dest(dest));
+        source + '/styles.css',
+    ])
+    .pipe(concat(minified))
+    .pipe(cssmin(_cssMinSettings))
+    .pipe(rename(minified))
+    .pipe(gulp.dest(dest));
 });
 
 // Check the main js file(s) meets the following standards outlined in .eslintrc
@@ -244,17 +245,17 @@ gulp.task('uglify', function uglifyTask() {
     del([dest + '/' + minified]);
 
     return gulp.src([
-            source + '/core.js',
-            source + '/core.api.js',
-            source + '/core.features.js',
-            source + '/gists.js',
-            source + '/main.js',
-            source + '/navigation.js',
-        ])
-        .pipe(concat(minified))
-        .pipe(uglify(_uglifySettings))
-        .pipe(rename(minified))
-        .pipe(gulp.dest(dest));
+        source + '/core.js',
+        source + '/core.api.js',
+        source + '/core.features.js',
+        source + '/gists.js',
+        source + '/main.js',
+        source + '/navigation.js',
+    ])
+    .pipe(concat(minified))
+    .pipe(uglify(_uglifySettings))
+    .pipe(rename(minified))
+    .pipe(gulp.dest(dest));
 });
 
 // Concat and uglify the vendor scripts/styles
@@ -264,10 +265,10 @@ gulp.task('vendor', function vendorTask() {
 
     // Copy fonts to the destination directory
     gulp.src([
-            bowerComponents + 'font-awesome/fonts/**/*.{eof,svg,ttf,woff,woff2}',
-            bowerComponents + 'open-sans/fonts/**/*.{eof,svg,ttf,woff,woff2}',
-        ])
-        .pipe(gulp.dest(Assets.fonts.dest));
+        bowerComponents + 'font-awesome/fonts/**/*.{eof,svg,ttf,woff,woff2}',
+        bowerComponents + 'open-sans/fonts/**/*.{eof,svg,ttf,woff,woff2}',
+    ])
+    .pipe(gulp.dest(Assets.fonts.dest));
 
     // Store the css destination directory
     var cssDest = Assets.css.dest;
@@ -277,15 +278,15 @@ gulp.task('vendor', function vendorTask() {
 
     // Concatenate and minify styles
     gulp.src([
-            bowerComponents + 'font-awesome/css/font-awesome.css',
-            bowerComponents + 'open-sans/css/open-sans.css',
-            bowerComponents + 'normalize-css/normalize.css',
-            bowerComponents + 'skeleton/css/skeleton.css',
-            bowerComponents + 'nprogress/nprogress.css',
-        ])
-        .pipe(concat(cssMinified))
-        .pipe(cssmin(_cssMinSettings))
-        .pipe(gulp.dest(cssDest));
+        bowerComponents + 'font-awesome/css/font-awesome.css',
+        bowerComponents + 'open-sans/css/open-sans.css',
+        bowerComponents + 'normalize-css/normalize.css',
+        bowerComponents + 'skeleton/css/skeleton.css',
+        bowerComponents + 'nprogress/nprogress.css',
+    ])
+    .pipe(concat(cssMinified))
+    .pipe(cssmin(_cssMinSettings))
+    .pipe(gulp.dest(cssDest));
 
     // Store the js destination directory
     var jsDest = Assets.js.dest;
@@ -295,15 +296,15 @@ gulp.task('vendor', function vendorTask() {
 
     // Concatenate and uglify scripts
     gulp.src([
-            bowerComponents + 'jquery/dist/jquery.js',
-            bowerComponents + 'handlebars/handlebars.js',
-            bowerComponents + 'momentjs/moment.js',
-            bowerComponents + 'jquery-handlebars/jquery-handlebars.js',
-            bowerComponents + 'nprogress/nprogress.js',
-        ])
-        .pipe(concat(jsMinified))
-        .pipe(uglify(_uglifySettings))
-        .pipe(gulp.dest(jsDest));
+        bowerComponents + 'jquery/dist/jquery.js',
+        bowerComponents + 'handlebars/handlebars.js',
+        bowerComponents + 'momentjs/moment.js',
+        bowerComponents + 'jquery-handlebars/jquery-handlebars.js',
+        bowerComponents + 'nprogress/nprogress.js',
+    ])
+    .pipe(concat(jsMinified))
+    .pipe(uglify(_uglifySettings))
+    .pipe(gulp.dest(jsDest));
 });
 
 // Build the main css and js file(s)
