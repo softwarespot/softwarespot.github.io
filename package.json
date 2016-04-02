@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "del": "^2.1.0",
-    "eslint": "^2.5.3",
+    "eslint": "^2.6.0",
     "eslint-config-airbnb": "^6.2.0",
     "eslint-plugin-react": "^4.2.3",
     "gulp": "^3.9.1",
