@@ -2861,9 +2861,9 @@ App.core = (function coreModule(window, document, $) {
      * @return {string} Classname of the value
      */
     function type(value) {
-        var tag = (_nativeObjectToString
+        var tag = _nativeObjectToString
             .call(value)
-            .match(_reTypeOf)[REGEXP_FIRST_MATCH] || 'undefined')
+            .replace(_reTypeOf, '$1')
             .toLowerCase();
         if (tag === 'number' && value !== value) { // eslint-disable-line
             // Override number if a NaN
