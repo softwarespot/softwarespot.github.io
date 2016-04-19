@@ -29,9 +29,6 @@ App.core = (function coreModule(window, document, $) {
     // Milliseconds in a second
     var MILLISECONDS_IN_A_SECOND = 1000;
 
-    // First regular expression match
-    var REGEXP_FIRST_MATCH = 1;
-
     // Store ellipses string
     var STRING_ELLIPSES = '...';
 
@@ -904,7 +901,7 @@ App.core = (function coreModule(window, document, $) {
      * Load a script file
      * Idea by Liam Newmarch, URL: http://liamnewmarch.co.uk/promises/
      *
-     * @param  {string} sourceFile Script file to load
+     * @param {string} sourceFile Script file to load
      * @return {promise} A new promise that passes the script file loaded as an argument
      */
     function include(sourceFile) {
@@ -1835,7 +1832,7 @@ App.core = (function coreModule(window, document, $) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /* , reject */ ) {
+        return new _nativePromise(function readyPromise(resolve /* , reject */) {
             if (document.readyState === 'complete' || document.readyState !== 'loading') {
                 resolve();
             } else {
