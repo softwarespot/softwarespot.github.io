@@ -269,7 +269,7 @@ App.core = (function coreModule(window, document, $) {
      * @param {object} config Options to configure the module
      * @return {undefined}
      */
-    function init(/* config */) {
+    function init( /* config */ ) {
         // Default config that can be overwritten by passing through the config variable
         // var defaultConfig = core.objectEmpty();
 
@@ -581,6 +581,32 @@ App.core = (function coreModule(window, document, $) {
                 fn.apply(context, args);
             }, delay);
         };
+    }
+
+    /**
+     * Create a deferred
+     *
+     * @param {function|undefined} fn An optional function to call with deferred object
+     * @return {object} An object with the property function 'promise, 'resolve' and 'reject'
+     */
+    function deferred(fn) {
+        var defer = {};
+
+        var promise = new _nativePromise(function promiseDeferred(resolve, reject) {
+            defer.resolve = resolve;
+            defer.reject = reject;
+        });
+
+        defer.promise = function promiseFn() {
+            return promise;
+        };
+
+        // Pass the deferred object to the callback function
+        if (type(fn) === 'function') {
+            fn(defer);
+        }
+
+        return defer;
     }
 
     /**
@@ -1809,8 +1835,8 @@ App.core = (function coreModule(window, document, $) {
      * @return {promise} A promise that is resolved once the DOM is loaded
      */
     function ready() {
-        return new _nativePromise(function readyPromise(resolve /* , reject */) {
-            if (document.readyState !== 'loading') {
+        return new _nativePromise(function readyPromise(resolve /* , reject */ ) {
+            if (document.readyState === 'complete' || document.readyState !== 'loading') {
                 resolve();
             } else {
                 document.addEventListener('DOMContentLoaded', function domContentLoadedListener() {
@@ -3053,6 +3079,7 @@ App.core = (function coreModule(window, document, $) {
         arrayPeek: arrayPeek,
         arrayRemove: arrayRemove,
         debounce: debounce,
+        deferred: deferred,
         dom: dom,
         elementClosest: elementClosest,
         elementWrap: elementWrap,
