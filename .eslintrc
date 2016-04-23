@@ -6,6 +6,7 @@
     "comma-dangle": [2, "always-multiline"],
     "indent": [2, 4, {"SwitchCase": 1}],
     "max-len": [2, 256, 4],
+    "no-underscore-dangle": 0,
     "no-param-reassign": 0,
     "no-shadow": 0,
     "no-use-before-define": 0,
