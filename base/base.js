@@ -23,6 +23,18 @@ App.namespace().base = (function baseModule(window, document, $, core) {
     // Store if the module has been initialised
     var _isInitialised = false;
 
+    // Initialise the module
+    $(function baseReady() {
+        // init({});
+    });
+
+    // Public API
+    return {
+        init: init,
+        destroy: destroy,
+        getVersion: getVersion,
+    };
+
     // Methods
 
     /**
@@ -98,16 +110,4 @@ App.namespace().base = (function baseModule(window, document, $, core) {
 
         _isEventsBound = false;
     }
-
-    // Invoked when the DOM has loaded
-    $(function baseReady() {
-        // init({});
-    });
-
-    // Public API
-    return {
-        init: init,
-        destroy: destroy,
-        getVersion: getVersion,
-    };
 }(window, window.document, window.jQuery, window.App.core));

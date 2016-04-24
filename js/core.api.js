@@ -143,6 +143,21 @@ App.namespace('core').api = (function apiModule(window, document, $, core) {
     // Store the document jQuery selector object
     var _$document = null;
 
+    // Initialise the module
+    $(function apiReady() {
+        init();
+    });
+
+    // Public API
+    return {
+        init: init,
+        destroy: destroy,
+        getVersion: getVersion,
+        HTTPStatus: httpStatus,
+        Methods: methods,
+        parseUrl: parseUrl,
+    };
+
     // Methods
 
     /**
@@ -237,19 +252,4 @@ App.namespace('core').api = (function apiModule(window, document, $, core) {
      */
 
     // function _cacheDom() {}
-
-    // Invoked when the DOM has loaded
-    $(function apiReady() {
-        init();
-    });
-
-    // Public API
-    return {
-        init: init,
-        destroy: destroy,
-        getVersion: getVersion,
-        HTTPStatus: httpStatus,
-        Methods: methods,
-        parseUrl: parseUrl,
-    };
 }(window, window.document, window.jQuery, window.App.core));

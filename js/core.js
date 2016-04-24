@@ -775,14 +775,14 @@ App.core = (function coreModule(window, document, $) {
         // Don't inherit from Object.prototype
         var _globals = _nativeObjectCreate(null);
 
-        // Get all the properties in the window global object
-        for (var key in window) {
+        // Get all the properties in the window's global object
+        keys(window).forEach(function forEachKey(key) {
             // If they are not in the cloned window, the assume it's a custom property
             // Note: Using Object.prototype.hasOwnProperty.call will result in incorrect results
             if (!(key in _clone)) {
                 _globals[key] = window[key];
             }
-        }
+        });
 
         /**
          * Get custom properties attached to the window object
@@ -849,8 +849,8 @@ App.core = (function coreModule(window, document, $) {
             ignoreHasOwnProperty = false;
         }
 
-        for (var key in object) {
-            if (ignoreHasOwnProperty === true || has(object, key)) {
+        for (var key in object) { // eslint-disable-line no-restricted-syntax
+            if (ignoreHasOwnProperty || has(object, key)) {
                 array.push(key);
             }
         }
@@ -1112,13 +1112,7 @@ App.core = (function coreModule(window, document, $) {
             return value.length === 0;
         }
 
-        for (var key in value) {
-            if (has(value, key)) {
-                return false;
-            }
-        }
-
-        return true;
+        return keys(value).length === 0;
     }
 
     /**
@@ -1658,11 +1652,11 @@ App.core = (function coreModule(window, document, $) {
         // If the context is null or undefined then use the 'object'
         context = isNil(context) ? object : context;
 
-        for (var key in object) {
-            if (ignoreHasOwnProperty === true || has(object, key)) {
-                fn.call(context, object[key], key, object);
-            }
-        }
+        keys(object, ignoreHasOwnProperty).forEach(function forEachKey(key) {
+            fn.call(context, object[key], key, object);
+        });
+
+        return;
     }
 
     /**
@@ -2270,7 +2264,9 @@ App.core = (function coreModule(window, document, $) {
             chars: '\u01CB',
         }, {
             base: 'O',
-            chars: '\u24C4\uFF2F\xD2\xD3\xD4\u1ED2\u1ED0\u1ED6\u1ED4\xD5\u1E4C\u022C\u1E4E\u014C\u1E50\u1E52\u014E\u022E\u0230\xD6\u022A\u1ECE\u0150\u01D1\u020C\u020E\u01A0\u1EDC\u1EDA\u1EE0\u1EDE\u1EE2\u1ECC\u1ED8\u01EA\u01EC\xD8\u01FE\u0186\u019F\uA74A\uA74C',
+            chars: '\u24C4\uFF2F\xD2\xD3\xD4\u1ED2\u1ED0\u1ED6\u1ED4\xD5\u1E4C\u022C\u1E4E\u014C\u1E50\u1E52\u014E\u022E\u0230\xD6' +
+                '\u022A\u1ECE\u0150\u01D1\u020C\u020E\u01A0\u1EDC\u1EDA\u1EE0\u1EDE\u1EE2\u1ECC\u1ED8\u01EA\u01EC\xD8\u01FE\u0186\u019F' +
+                '\uA74A\uA74C',
         }, {
             base: 'OE',
             chars: '\u0152',
@@ -2417,7 +2413,9 @@ App.core = (function coreModule(window, document, $) {
             chars: '\u01CC',
         }, {
             base: 'o',
-            chars: '\u24DE\uFF4F\xF2\xF3\xF4\u1ED3\u1ED1\u1ED7\u1ED5\xF5\u1E4D\u022D\u1E4F\u014D\u1E51\u1E53\u014F\u022F\u0231\xF6\u022B\u1ECF\u0151\u01D2\u020D\u020F\u01A1\u1EDD\u1EDB\u1EE1\u1EDF\u1EE3\u1ECD\u1ED9\u01EB\u01ED\xF8\u01FF\uA74B\uA74D\u0275\u0254\u1D11',
+            chars: '\u24DE\uFF4F\xF2\xF3\xF4\u1ED3\u1ED1\u1ED7\u1ED5\xF5\u1E4D\u022D\u1E4F\u014D\u1E51\u1E53\u014F\u022F\u0231' +
+                '\xF6\u022B\u1ECF\u0151\u01D2\u020D\u020F\u01A1\u1EDD\u1EDB\u1EE1\u1EDF\u1EE3\u1ECD\u1ED9\u01EB\u01ED\xF8\u01FF' +
+                '\uA74B\uA74D\u0275\u0254\u1D11',
         }, {
             base: 'oe',
             chars: '\u0153',
@@ -3057,7 +3055,7 @@ App.core = (function coreModule(window, document, $) {
 
     // function _cacheDom() {}
 
-    // Invoked when the DOM has loaded
+    // Initialise the module
     $(function coreReady() {
         destroy();
         init();

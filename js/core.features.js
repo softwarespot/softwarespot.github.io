@@ -68,6 +68,23 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
     var _documentElement = document.documentElement;
     var _prefixes = ['Khtml', 'Moz', 'Ms', 'O', 'Webkit'];
 
+    // Public API
+    return {
+        init: init,
+        destroy: destroy,
+        getVersion: getVersion,
+        hasCSSSupports: hasCSSSupports,
+        hasGeoLocation: hasGeoLocation,
+        hasHistory: hasHistory,
+        hasInput: hasInput,
+        hasLocalStorage: hasLocalStorage,
+        hasNotification: hasNotification,
+        hasPromise: hasPromise,
+        hasSessionStorage: hasSessionStorage,
+        hasWebStorage: hasWebStorage,
+        isStyleSupported: isStyleSupported,
+    };
+
     // Methods
 
     /**
@@ -364,21 +381,4 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
             'removeItem' in storage &&
             'clear' in storage;
     }
-
-    // Public API
-    return {
-        init: init,
-        destroy: destroy,
-        getVersion: getVersion,
-        hasCSSSupports: hasCSSSupports,
-        hasGeoLocation: hasGeoLocation,
-        hasHistory: hasHistory,
-        hasInput: hasInput,
-        hasLocalStorage: hasLocalStorage,
-        hasNotification: hasNotification,
-        hasPromise: hasPromise,
-        hasSessionStorage: hasSessionStorage,
-        hasWebStorage: hasWebStorage,
-        isStyleSupported: isStyleSupported,
-    };
 }(window, window.document, window.jQuery, window.App.core));

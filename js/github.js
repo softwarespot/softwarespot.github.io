@@ -35,6 +35,31 @@ App.namespace().github = (function githubModule(window, document, $, core) {
     var _templateDone = '';
     var _templateFail = '';
 
+    // Initialise the module
+    $(function githubReady() {
+        // init();
+    });
+
+    // Public API
+    return {
+        init: function init() {
+            _init({
+                dom: {
+                    // Required property
+                    html: '#github-section',
+                },
+                templates: {
+                    fail: '#template-github-error',
+                    done: '#template-github',
+                },
+                username: 'softwarespot',
+            });
+        },
+
+        destroy: destroy,
+        getVersion: getVersion,
+    };
+
     // Methods
 
     /**
@@ -145,29 +170,4 @@ App.namespace().github = (function githubModule(window, document, $, core) {
             validate: isSuccess,
         });
     }
-
-    // Invoked when the DOM has loaded
-    $(function githubReady() {
-        // init();
-    });
-
-    // Public API
-    return {
-        init: function init() {
-            _init({
-                dom: {
-                    // Required property
-                    html: '#github-section',
-                },
-                templates: {
-                    fail: '#template-github-error',
-                    done: '#template-github',
-                },
-                username: 'softwarespot',
-            });
-        },
-
-        destroy: destroy,
-        getVersion: getVersion,
-    };
 }(window, window.document, window.jQuery, window.App.core));

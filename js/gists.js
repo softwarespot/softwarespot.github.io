@@ -33,6 +33,31 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
     var _templateDone = '';
     var _templateFail = '';
 
+    // Public API
+    return {
+        init: function init() {
+            _init({
+                dom: {
+                    // Required property
+                    html: '#gists-section',
+                },
+                templates: {
+                    fail: '#template-gists-error',
+                    done: '#template-gists',
+                },
+                username: 'softwarespot',
+            });
+        },
+
+        destroy: destroy,
+        getVersion: getVersion,
+    };
+
+    // Initialise the module
+    $(function gistsReady() {
+        // init();
+    });
+
     // Methods
 
     /**
@@ -144,29 +169,4 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
             validate: isSuccess,
         });
     }
-
-    // Invoked when the DOM has loaded
-    $(function gistsReady() {
-        // init();
-    });
-
-    // Public API
-    return {
-        init: function init() {
-            _init({
-                dom: {
-                    // Required property
-                    html: '#gists-section',
-                },
-                templates: {
-                    fail: '#template-gists-error',
-                    done: '#template-gists',
-                },
-                username: 'softwarespot',
-            });
-        },
-
-        destroy: destroy,
-        getVersion: getVersion,
-    };
 }(window, window.document, window.jQuery, window.App.core));

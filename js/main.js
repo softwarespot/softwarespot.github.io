@@ -20,6 +20,18 @@ App.namespace().main = (function mainModule(window, document, $) {
     // Store if the module has been initialised
     // var _isInitialised = false;
 
+    // Initialise the module
+    $(function mainReady() {
+        // init();
+    });
+
+    // Public API
+    return {
+        init: init,
+        destroy: destroy,
+        getVersion: getVersion,
+    };
+
     // Methods
 
     /**
@@ -66,16 +78,4 @@ App.namespace().main = (function mainModule(window, document, $) {
     function _cacheDom() {
         // Empty
     }
-
-    // Initialise the module
-    $(function mainReady() {
-        // init();
-    });
-
-    // Public API
-    return {
-        init: init,
-        destroy: destroy,
-        getVersion: getVersion,
-    };
 }(window, window.document, window.jQuery, window.App.core));

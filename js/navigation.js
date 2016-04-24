@@ -71,6 +71,18 @@ App.namespace().navigation = (function navigationModule(window, document, $, cor
         },
     };
 
+    // Initialise the module
+    $(function navigationReady() {
+        // init();
+    });
+
+    // Public API
+    return {
+        init: init,
+        destroy: destroy,
+        getVersion: getVersion,
+    };
+
     // Methods
 
     /**
@@ -173,16 +185,4 @@ App.namespace().navigation = (function navigationModule(window, document, $, cor
             scrollTop: $element.offset().top,
         }, speed);
     }
-
-    // Initialise the module
-    $(function navigationReady() {
-        // init();
-    });
-
-    // Public API
-    return {
-        init: init,
-        destroy: destroy,
-        getVersion: getVersion,
-    };
 }(window, window.document, window.jQuery, window.App.core));
