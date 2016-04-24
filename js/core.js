@@ -162,6 +162,14 @@ App.core = (function coreModule(window, document, $) {
     // var _objectStringsWeakMap = '[object WeakMap]';
     // var _objectStringsWeakSet = '[object WeakSet]';
 
+    // DOM ready related variables
+    var _domReadyResolve = null;
+    var _domReadyPromise = new _nativePromise(function promiseReady(resolve) {
+        _domReadyResolve = resolve;
+    });
+
+    _domReady();
+
     // Regular expressions
 
     // Alphanumeric characters
@@ -1820,20 +1828,20 @@ App.core = (function coreModule(window, document, $) {
     }
 
     /**
-     * Execute code once the DOM has loaded
-     * Idea by bliss, URL: http://blissfuljs.com/docs.html#fn-ready
+     * Invoke a function once the DOM has loaded
      *
-     * @return {promise} A promise that is resolved once the DOM is loaded
+     * @param {function} fn Callback function to invoke
+     * @return {promise} A promise that is resolved once the DOM is ready
      */
-    function ready() {
-        return new _nativePromise(function readyPromise(resolve /* , reject */) {
-            if (document.readyState === 'complete' || document.readyState !== 'loading') {
+    function ready(fn) {
+        if (type(fn) === 'function') {
+            _domReadyPromise.then(fn);
+        }
+
+        return new _nativePromise(function promise(resolve /* , reject */) {
+            _domReadyPromise.then(function then() {
                 resolve();
-            } else {
-                document.addEventListener('DOMContentLoaded', function domContentLoadedListener() {
-                    resolve();
-                });
-            }
+            });
         });
     }
 
@@ -2963,6 +2971,43 @@ App.core = (function coreModule(window, document, $) {
         document.body.appendChild(iFrame);
 
         return iFrame;
+    }
+
+    /**
+     * Register events for DOM ready
+     *
+     * @return {undefined}
+     */
+    function _domReady() {
+        /**
+         * Callback function for the DOM ready addEventListener calls
+         *
+         * @return {undefined}
+         */
+        function _domContentLoaded() {
+            if (_domReadyResolve === null) {
+                return;
+            }
+
+            _domReadyResolve();
+
+            // Set to null to indicate the DOM is ready
+            _domReadyResolve = null;
+
+            // Clear up the event handlers
+            document.removeEventListener('DOMContentLoaded', _domContentLoaded);
+            window.removeEventListener('load', _domContentLoaded);
+        }
+
+        // Check if the DOM has completed loading or is not in a loading state
+        if (document.readyState === 'complete' || document.readyState !== 'loading') {
+            _domContentLoaded();
+        } else {
+            document.addEventListener('DOMContentLoaded', _domContentLoaded);
+
+            // Fallback to when the window has been fully loaded. This will always be called
+            window.addEventListener('load', _domContentLoaded);
+        }
     }
 
     /**
