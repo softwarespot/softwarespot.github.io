@@ -707,8 +707,6 @@ App.core = (function coreModule(window, document, $) {
      */
     var getAbsoluteUrl = (function getAbsoluteUrlModule() {
         var element = document.createElement('a');
-        element.style.display = 'none';
-
         return function getAbsoluteUrl(url) {
             if (!isString(url)) {
                 return STRING_EMPTY;
