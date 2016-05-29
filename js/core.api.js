@@ -144,7 +144,7 @@ App.namespace('core').api = (function apiModule(window, document, $, core) {
     var _$document = null;
 
     // Initialise the module
-    $(function apiReady() {
+    core.ready(function apiReady() {
         init();
     });
 

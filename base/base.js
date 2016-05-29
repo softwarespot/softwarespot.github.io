@@ -24,7 +24,7 @@ App.namespace().base = (function baseModule(window, document, $, core) {
     var _isInitialised = false;
 
     // Initialise the module
-    $(function baseReady() {
+    core.ready(function baseReady() {
         // init({});
     });
 

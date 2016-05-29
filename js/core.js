@@ -163,10 +163,8 @@ App.core = (function coreModule(window, document, $) {
     // var _objectStringsWeakSet = '[object WeakSet]';
 
     // DOM ready related variables
-    var _domReadyResolve = null;
-    var _domReadyPromise = new _nativePromise(function promiseReady(resolve) {
-        _domReadyResolve = resolve;
-    });
+    var _domReadyDefer = deferred();
+    var _domReadyResolve = _domReadyDefer.resolve;
 
     _domReady();
 
@@ -179,10 +177,10 @@ App.core = (function coreModule(window, document, $) {
     var _reAlpha = /(?:^[A-Za-z]+$)/;
 
     // ASCII characters ( ASCII 0 - 127 )
-    var _reASCII = /(?:^[\x00-\x7F]*$)/;
+    var _reASCII = /(?:^[\x00-\x7F]*$)/; // eslint-disable-line no-control-regex
 
     // Extended ASCII characters ( ASCII 0 - 255 )
-    var _reASCIIExtended = /(?:^[\x00-\xFF]*$)/;
+    var _reASCIIExtended = /(?:^[\x00-\xFF]*$)/; // eslint-disable-line no-control-regex
 
     // Base64
     var _reBase64 = /(?:^(?:[0-9A-Za-z+/]{4})*(?:[0-9A-Za-z+/]{2}==|[0-9A-Za-z+/]{3}=)?$)/;
@@ -588,21 +586,21 @@ App.core = (function coreModule(window, document, $) {
         };
     }
 
-    /**
+     /**
      * Create a deferred
      *
      * @param {function|undefined} fn An optional function to call with deferred object
      * @return {object} An object with the property function 'promise, 'resolve' and 'reject'
      */
     function deferred(fn) {
-        var defer = {};
+        var defer = _nativeObjectCreate(null);
 
-        var promise = new _nativePromise(function promiseDeferred(resolve, reject) {
+        var promise = new _nativePromise(function promiseCreate(resolve, reject) {
             defer.resolve = resolve;
             defer.reject = reject;
         });
 
-        defer.promise = function promiseFn() {
+        defer.promise = function promiseDeferred() {
             return promise;
         };
 
@@ -1832,15 +1830,17 @@ App.core = (function coreModule(window, document, $) {
      * @return {promise} A promise that is resolved once the DOM is ready
      */
     function ready(fn) {
+        var promise = _domReadyDefer.promise();
         if (type(fn) === 'function') {
-            _domReadyPromise.then(fn);
+            promise.then(fn);
         }
 
-        return new _nativePromise(function promise(resolve /* , reject */) {
-            _domReadyPromise.then(function then() {
-                resolve();
-            });
+        var defer = deferred();
+        promise.then(function then() {
+            defer.resolve();
         });
+
+        return defer.promise();
     }
 
     /**

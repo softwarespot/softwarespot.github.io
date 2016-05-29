@@ -72,7 +72,7 @@ App.namespace().navigation = (function navigationModule(window, document, $, cor
     };
 
     // Initialise the module
-    $(function navigationReady() {
+    core.ready(function navigationReady() {
         // init();
     });
 

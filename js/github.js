@@ -36,7 +36,7 @@ App.namespace().github = (function githubModule(window, document, $, core) {
     var _templateFail = '';
 
     // Initialise the module
-    $(function githubReady() {
+    core.ready(function githubReady() {
         // init();
     });
 

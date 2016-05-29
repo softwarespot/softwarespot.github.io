@@ -21,7 +21,7 @@ App.namespace().main = (function mainModule(window, document, $) {
     // var _isInitialised = false;
 
     // Initialise the module
-    $(function mainReady() {
+    core.ready(function mainReady() {
         // init();
     });
 

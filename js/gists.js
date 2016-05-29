@@ -33,6 +33,11 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
     var _templateDone = '';
     var _templateFail = '';
 
+    // Initialise the module
+    core.ready(function gistsReady() {
+        // init();
+    });
+
     // Public API
     return {
         init: function init() {
@@ -52,11 +57,6 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
         destroy: destroy,
         getVersion: getVersion,
     };
-
-    // Initialise the module
-    $(function gistsReady() {
-        // init();
-    });
 
     // Methods
 
@@ -136,7 +136,7 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
         var jqxhr = $.ajax(options);
 
         // If the request completed successfully
-        jqxhr.done(function done(response/* , textStatus, $this */) {
+        jqxhr.done(function done(response /* , textStatus, $this */ ) {
             // window.console.log(response);
             // window.console.log(textStatus);
             // window.console.log($this);
@@ -147,7 +147,7 @@ App.namespace().gists = (function gistsModule(window, document, $, core) {
         });
 
         // If the request failed
-        jqxhr.fail(function fail(/* $this, textStatus, errorThrown */) {
+        jqxhr.fail(function fail( /* $this, textStatus, errorThrown */ ) {
             // window.console.log($this);
             // window.console.log(textStatus);
             // window.console.log(errorThrown);
