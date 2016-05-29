@@ -6,7 +6,7 @@
  * Modified: 2016/02/07
  * @author softwarespot
  */
-App.namespace().main = (function mainModule(window, document, $) {
+App.namespace().main = (function mainModule(window, document, core) {
     // Constants
 
     // SemVer version number of the module
@@ -78,4 +78,4 @@ App.namespace().main = (function mainModule(window, document, $) {
     function _cacheDom() {
         // Empty
     }
-}(window, window.document, window.jQuery, window.App.core));
+}(window, window.document, window.App.core));
