@@ -4,7 +4,7 @@ var App = App || (window.Object.create ? window.Object.create(null) : {});
 /**
  * Core module
  *
- * Modified: 2016/02/07
+ * Modified: 2016/05/29
  * @author softwarespot
  */
 App.core = (function coreModule(window, document, $) {
@@ -958,7 +958,7 @@ App.core = (function coreModule(window, document, $) {
 
     // Has ad blocker module
     var hasAdBlocker = (function hasAdBlockerModule() {
-        var _iFrame = _createIFrame('ads-text-iframe', 'http://domain.com/ads.html');
+        var _iFrame = _createIFrame('ads-text-iframe', '//domain.com/ads.html');
         var _hasAdBlocker = _iFrame.style.display === 'none' ||
             _iFrame.style.display === 'hidden' ||
             _iFrame.style.visibility === 'hidden' ||
