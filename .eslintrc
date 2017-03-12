@@ -2,10 +2,28 @@
   "extends": "airbnb-base/legacy",
   "rules": {
     // Override Airbnb's style guide defaults for ES5
-    "camelcase": ["error", {"properties": "always"}],
-    "comma-dangle": ["error", "always-multiline"],
-    "indent": ["error", 4, {"SwitchCase": 1}],
-    "max-len": ["error", 256, 4],
+    "camelcase": [
+      "error",
+      {
+        "properties": "always"
+      }
+    ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "indent": [
+      "error",
+      4,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "max-len": [
+      "error",
+      255,
+      4
+    ],
     "no-underscore-dangle": "off",
     "no-param-reassign": "off",
     "no-shadow": "off",

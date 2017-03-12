@@ -153,10 +153,11 @@ App.namespace('core').features = (function featuresModule(window, document, $, c
         property = core.stringUCFirst(property);
 
         var length = _prefixes.length;
-        while (length-- > 0) {
+        while (length > 0) {
             if (!core.isUndefined(_documentElement.style[_prefixes[length] + property])) {
                 return true;
             }
+            length -= 1;
         }
 
         return false;

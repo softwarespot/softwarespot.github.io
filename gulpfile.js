@@ -100,10 +100,8 @@ var _uglifySettings = {
     compress: {
         comparisons: true,
         conditionals: true,
-        /* jscs: disable */
-        dead_code: true,
-        drop_console: true,
-        /* jscs: enable */
+        dead_code: true, // eslint-disable-line camelcase
+        drop_console: true, // eslint-disable-line camelcase
         unsafe: true,
         unused: true,
     },

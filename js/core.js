@@ -204,7 +204,7 @@ App.core = (function coreModule(window, document, $) {
     var _reEOLChars = /\r?\n|\r/gm;
 
     // Escape hyphens (-), underscores (_) or whitespace
-    var _reEscapedCaseChars = /(?:[\-_\s]+)/g;
+    var _reEscapedCaseChars = /(?:[-_\s]+)/g;
 
     // Escape upper-case characters
     var _reEscapedCamelCaseChar = /([A-Z])/g;
@@ -249,7 +249,7 @@ App.core = (function coreModule(window, document, $) {
     var _reSupplant = /(?:{([^{}]*)})/g;
 
     // Convert a kebab-case or snake-case string to camel-case
-    var _reToCamelCase = /(?:[\-_\s]+([^\-_\s]))/g;
+    var _reToCamelCase = /(?:[-_\s]+([^\-_\s]))/g;
 
     // Strip leading whitespace
     var _reTrimLeft = /^[\s\uFEFF\xA0]+/;
@@ -349,7 +349,9 @@ App.core = (function coreModule(window, document, $) {
             var i = start;
             var j = 0;
             while (i < length) {
-                array[j++] = args[i++];
+                array[j] = args[i];
+                i += 1;
+                j += 1;
             }
 
             array.length = j;
@@ -425,7 +427,7 @@ App.core = (function coreModule(window, document, $) {
                 array[i] = value;
             }
 
-            i++;
+            i += 1;
         }
 
         array.length = length;
@@ -478,7 +480,7 @@ App.core = (function coreModule(window, document, $) {
                 return true;
             }
 
-            incrementer++;
+            incrementer += 1;
         }
 
         return false;
@@ -628,18 +630,20 @@ App.core = (function coreModule(window, document, $) {
         // If the context is null or undefined then use 'document'
         context = isNil(context) ? document : context;
 
-        var reQuerySelector = /(?:^#?[0-9A-Za-z\-]+|\.[0-9A-Za-z\-.]+$)/;
+        var reQuerySelector = /(?:^#?[0-9A-Za-z-]+|\.[0-9A-Za-z\-.]+$)/;
         if (reQuerySelector.test(selector)) {
             var selection = 0;
             switch (selector[selection]) {
                 case '#':
-                    var result = document.getElementById(selector.substr(++selection));
+                    selection += 1;
+                    var result = document.getElementById(selector.substr(selection));
 
                     return isNull(result) ? [] : [result];
                 case '.':
                     var reReplaceDots = /\./g;
+                    selection += 1;
 
-                    return arrayFrom(context.getElementsByClassName(selector.substr(++selection).replace(reReplaceDots, ' ')));
+                    return arrayFrom(context.getElementsByClassName(selector.substr(selection).replace(reReplaceDots, ' ')));
                 default:
                     return arrayFrom(context.getElementsByTagName(selector));
             }
@@ -755,12 +759,13 @@ App.core = (function coreModule(window, document, $) {
             sanitizedProperty = stringUCFirst(sanitizedProperty);
 
             var length = _prefixes.length;
-            while (length-- > 0) {
+            while (length > 0) {
                 cached = _prefixes[length] + sanitizedProperty;
                 if (!isUndefined(_documentElement.style[cached])) {
                     _cached[property] = cached;
                     return cached;
                 }
+                length -= 1;
             }
 
             _cached[property] = null;
@@ -1361,9 +1366,10 @@ App.core = (function coreModule(window, document, $) {
         var sqrt = _nativeMathSqrt(value);
         var start = 2;
         while (start <= sqrt) {
-            if (value % start++ === 0) {
+            if (value % start === 0) {
                 return false;
             }
+            start += 1;
         }
 
         return value > 1;
@@ -1659,8 +1665,6 @@ App.core = (function coreModule(window, document, $) {
         keys(object, ignoreHasOwnProperty).forEach(function forEachKey(key) {
             fn.call(context, object[key], key, object);
         });
-
-        return;
     }
 
     /**
@@ -1818,7 +1822,7 @@ App.core = (function coreModule(window, document, $) {
             return 0;
         }
 
-        var random = _nativeMathRandom() * (max - min) + min;
+        var random = (_nativeMathRandom() * (max - min)) + min;
 
         return isInteger === false ? random : _nativeMathFloor(random);
     }
@@ -2021,7 +2025,7 @@ App.core = (function coreModule(window, document, $) {
         }
 
         var index = 0;
-        return (value[index++].toLowerCase()) + value.slice(index);
+        return (value[index + 1].toLowerCase()) + value.slice(index);
     }
 
     /**
@@ -2067,7 +2071,7 @@ App.core = (function coreModule(window, document, $) {
 
         return isFunction(_nativeStringRepeat) ?
             _nativeStringRepeat.call(value, count) :
-            (new _nativeArray(++count)).join(value);
+            (new _nativeArray(count + 1)).join(value);
     }
 
     /**
@@ -2085,8 +2089,10 @@ App.core = (function coreModule(window, document, $) {
         var halfLength = length / 2;
         while (i < halfLength) {
             var temp = array[i];
-            array[i++] = array[j];
-            array[j--] = temp;
+            array[i] = array[j];
+            array[j] = temp;
+            i += 1;
+            j -= 1;
         }
 
         return array.join(STRING_EMPTY);
@@ -2140,7 +2146,7 @@ App.core = (function coreModule(window, document, $) {
 
         // Create an array with the length - length of the string + 1 and select the maximum value i.e. if negative zero will be chosen
         padding = toString(padding);
-        padding = new _nativeArray(_nativeMathMax(_nativeMathAbs(length) - value.length + 1, 0)).join(padding);
+        padding = new _nativeArray(_nativeMathMax((_nativeMathAbs(length) - value.length) + 1, 0)).join(padding);
 
         return length >= 0 ? padding + value : value + padding;
     }
@@ -2484,7 +2490,7 @@ App.core = (function coreModule(window, document, $) {
             var chars = diacritic.chars;
 
             // Iterate through all the characters in the string and map to its base character
-            for (var i = 0, length = chars.length; i < length; i++) {
+            for (var i = 0, length = chars.length; i < length; i += 1) {
                 var char = chars[i];
                 _diacritics[char] = base;
             }
@@ -2589,7 +2595,7 @@ App.core = (function coreModule(window, document, $) {
 
         // Convert the first character to lower-case
         var index = 0;
-        value = value[index++].toLowerCase() + value.slice(index);
+        value = value[index + 1].toLowerCase() + value.slice(index);
 
         return value.replace(_reToCamelCase, function charToUpper(all, char) {
             return char.toUpperCase();
@@ -2726,7 +2732,7 @@ App.core = (function coreModule(window, document, $) {
         }
 
         var index = 0;
-        return (value[index++].toUpperCase()) + value.slice(index);
+        return (value[index + 1].toUpperCase()) + value.slice(index);
     }
 
     /**
@@ -2938,7 +2944,8 @@ App.core = (function coreModule(window, document, $) {
          * @return {string} Unique id string
          */
         return function uniqueId(prefix) {
-            var id = STRING_EMPTY + (++_uniqueId);
+            _uniqueId += 1;
+            var id = STRING_EMPTY + (_uniqueId);
 
             return isBoolean(prefix) || isNumber(prefix) || isString(prefix) ? prefix + id : id;
         };
