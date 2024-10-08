@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <title>SoftwareSpot</title>
+
+        <link
+            crossorigin
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap"
+            rel="stylesheet"
+            referrerpolicy="no-referrer"
+        />
+        <link
+            crossorigin
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            referrerpolicy="no-referrer"
+        />
+
+        <!-- See URL: https://dev.to/luispa/lets-try-react-without-nodejs-3a7 -->
+        <script
+            crossorigin
+            src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+        <script
+            crossorigin
+            src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+        <script
+            crossorigin
+            src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+        <script
+            crossorigin
+            src="https://cdn.jsdelivr.net/npm/react-bootstrap@2/dist/react-bootstrap.min.js"
+            referrerpolicy="no-referrer"
+        ></script>
+    </head>
+
+    <body>
+        <div id="root"></div>
+        <script type="text/babel" data-type="module">
+            (async function main() {
+                const { useEffect, useRef, useState } = window.React;
+                const { Container } = window.ReactBootstrap;
+
+                function App() {
+                    return <>WIP (2024-10-08)</>;
+                }
+
+                const root = ReactDOM.createRoot(document.getElementById('root'));
+                root.render(
+                    <React.StrictMode>
+                        <App />
+                    </React.StrictMode>,
+                );
+            })();
+        </script>
+    </body>
+</html>
