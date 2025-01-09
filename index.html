@@ -43,22 +43,7 @@
         <!-- See URL: https://dev.to/luispa/lets-try-react-without-nodejs-3a7 -->
         <script
             crossorigin
-            src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"
-            referrerpolicy="no-referrer"
-        ></script>
-        <script
-            crossorigin
-            src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"
-            referrerpolicy="no-referrer"
-        ></script>
-        <script
-            crossorigin
             src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"
-            referrerpolicy="no-referrer"
-        ></script>
-        <script
-            crossorigin
-            src="https://cdn.jsdelivr.net/npm/react-bootstrap@2/dist/react-bootstrap.min.js"
             referrerpolicy="no-referrer"
         ></script>
     </head>
@@ -66,15 +51,19 @@
     <body>
         <div id="root"></div>
         <script type="text/babel" data-type="module">
+            // See URL: https://peterkellner.net/2024/05/10/running-react-19-from-a-cdn-and-using-esm.sh/
+            import React from 'https://esm.sh/react@^19';
+            import ReactDOMClient from 'https://esm.sh/react-dom@^19/client';
+            import { Container } from 'https://esm.sh/react-bootstrap@^2';
+
             (async function main() {
-                const { useEffect, useRef, useState } = window.React;
-                const { Container } = window.ReactBootstrap;
+                const { useEffect, useRef, useState } = React;
 
                 function App() {
                     return <Container>v2 is work in progress</Container>;
                 }
 
-                const root = window.ReactDOM.createRoot(document.getElementById('root'));
+                const root = ReactDOMClient.createRoot(document.getElementById('root'));
                 root.render(
                     <React.StrictMode>
                         <App />
